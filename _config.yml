@@ -21,7 +21,7 @@
 title: Prince Okoli's scribbles
 description: >- # this means to ignore newlines until next variable."
   Repository for some things that I've been thinking about.
-baseurl: "/weblog" # the subpath of your site, e.g. /blog
+baseurl: "/princyok.github.io" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  princyok
 linkedin_username: princeokoli
