@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Catching AI with its pants down – Prelude and Part 1"
+title:  "Catching AI with its pants down"
 date:   "2020-03-13"
 categories: machine-learning
 permalink:
