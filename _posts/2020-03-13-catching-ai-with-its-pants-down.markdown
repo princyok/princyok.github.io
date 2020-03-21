@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: post_custom
 title:  "Catching AI with its pants down"
 date:   "2020-03-13"
 categories: machine-learning
@@ -15,7 +15,7 @@ comments: true
 ### **Objective**
 The goal of this writeup is to present modern AI, which is largely powered by deep neural networks, in a highly accessible form. I will walk you through building a deep neural network from scratch without reliance on any machine learning libraries and we will use our network to tackle real public research datasets.
 
-To keep this very accessible, all the mathematics will be simplified to a level that a high school graduate who can code (and did okay in math) should be able to follow. Together we will strip the mighty, massively hyped AI of its cloths.
+To keep this very accessible, all the mathematics will be simplified to a level that anyone with a high-school or first-year-university level of math knowledge and that can code (especially if Python) should be able to follow. Together we will strip the mighty, massively hyped AI of its cloths.
 
 The original plan was to explain everything in one giant article, but that quickly prove unwieldy. So, I decided to break things up into two articles. This first article covers the prelude (basically some casual ramblings about AI) and part 1 (focuses on building an artificial neuron from scratch), and the sequel article (work in progress) will go over network of artificial neurons (a.k.a. neural networks). However, the codes for both articles have been made available.
 
