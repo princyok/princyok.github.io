@@ -8,25 +8,31 @@ comments: true
 ---
 {% include scripts.html %}
 
+<table>
+<td>
+<i>We will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth!</i>
+</td>
+</table>
+
 * TOC
 {:toc}
 
 ## **Prelude: Some Musings About AI**
 ### **Objective**
-The goal of this writeup is to present modern AI, which is largely powered by deep neural networks, in a highly accessible form. I will walk you through building a deep neural network from scratch without reliance on any machine learning libraries and we will use our network to tackle real public research datasets.
+The goal of this writeup is to present modern artificial intelligence (AI), which is largely powered by deep neural networks, in a highly accessible form. I will walk you through building a deep neural network from scratch without reliance on any machine learning libraries and we will use our network to tackle real public research datasets.
 
-To keep this very accessible, all the mathematics will be simplified to a level that anyone with a high-school or first-year-university level of math knowledge and that can code (especially if Python) should be able to follow. Together we will strip the mighty, massively hyped AI of its cloths.
+To keep this very accessible, all the mathematics will be simplified to a level that anyone with a high-school or first-year-university level of math knowledge and that can code (especially if Python) should be able to follow. Together we will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth. When I say AI here, I'm being a little silly with buzzspeak and actually mean deep neural networks.
+<!-- 
+The original plan was to explain everything in one giant article, but that quickly proved unwieldy. So, I decided to break things up into two articles. This first article covers the prelude (basically some casual ramblings about AI) and part 1 (focuses on building an artificial neuron from scratch), and the sequel article (work in progress) will go over network of artificial neurons (a.k.a. neural networks). However, the codes for both articles have been made available. -->
 
-The original plan was to explain everything in one giant article, but that quickly prove unwieldy. So, I decided to break things up into two articles. This first article covers the prelude (basically some casual ramblings about AI) and part 1 (focuses on building an artificial neuron from scratch), and the sequel article (work in progress) will go over network of artificial neurons (a.k.a. neural networks). However, the codes for both articles have been made available.
-
-I tried to make this first writeup very detailed, simple and granular, such that by the end of the series of planned writeups, you hopefully should have enough knowledge to investigate and code more advanced architectures from scratch if you chose to do so.
+This writeup aims to be very detailed, simple and granular, such that by the end, you hopefully should have enough knowledge to investigate and code more advanced architectures from scratch if you chose to do so.
 
 ### **Motivation**
 My feeling is if you want to understand a really complicated device like a brain, you should build one. I mean, you can look at cars, and you could think you could understand cars. When you try to build a car, you suddenly discover then there's this stuff that has to go under the hood, otherwise it doesn't work.
 
 The entirety of the above paragraph is one of my favourite quotes by Geoffrey Hinton, one of the three Godfathers of Deep Learning. I don’t think we need any further motivation for why we should peek under the hood to see precisely what’s really going on in a deep learning AI system.
 
-Tearing apart whatever is under the hood has been my canon for my machine learning journey, so it was natural that I would build a deep neural network from scratch especially after I couldn’t find any such complete implementation online (as of late 2018). After I was done, some of my colleagues thought it would be good if I put together some explanation of what I did, and so the idea for this writeup was born. After dragging my feet forever, here it is.
+Tearing apart whatever is under the hood has been my canon for my machine learning journey, so it was natural that I would build a deep neural network from scratch especially after I couldn’t find any such complete implementation online (as of late 2018). Some of my colleagues thought it would be good if I put together some explanation of what I did, and so the idea for this writeup was born.
 
 ### **Artificial General Intelligence: The Holy Grail of AI**
 Artificial intelligence (AI) is the intelligence, or the impression thereof, exhibited by things made by we humans. The kind of intelligence we have is natural intelligence. A lot of things can fall under the umbrella of AI because the definition is vague. Everything from the computer player of Chess Titans on Windows 7 to Tesla’s autopilot is called AI.
@@ -1095,7 +1101,7 @@ So, to summarize, the operations involved in the summing of $ \frac{\partial J}{
 </td>
 </table>
 
-Although, we don't really need to see the equation for $ \frac{\partial J}{\partial w} $ in its contraction format, we will present it for thee sake of it. We already know that $ \frac{\partial J}{\partial w} $ is:
+Although, we don't really need to see the equation for $ \frac{\partial J}{\partial w} $ in its contraction format, we will present it for the sake of it. We already know that $ \frac{\partial J}{\partial w} $ is:
 
 $$
 \frac{\partial J}{\partial w}=\ \frac{\partial J}{\partial \boldsymbol{z}}X^T
