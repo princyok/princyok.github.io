@@ -4,6 +4,7 @@ title:  "Catching AI with its pants down"
 date:   "2020-03-13"
 categories: machine-learning
 permalink:
+comments: true
 ---
 {% include scripts.html %}
 
