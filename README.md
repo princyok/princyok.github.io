@@ -1,2 +1,2 @@
 # Prince's scribbles (my weblog)
-My weblog. Uses Jekyll.
+My weblog. Uses [Jekyll](https://jekyllrb.com/).
