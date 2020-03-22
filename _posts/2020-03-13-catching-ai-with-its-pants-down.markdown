@@ -38,14 +38,14 @@ Tearing apart whatever is under the hood has been my canon for my machine learni
 ### **Artificial General Intelligence: The Holy Grail of AI**
 Artificial intelligence (AI) is the intelligence, or the impression thereof, exhibited by things made by we humans. The kind of intelligence we have is natural intelligence. A lot of things can fall under the umbrella of AI because the definition is vague. Everything from the computer player of Chess Titans on Windows 7 to Tesla’s autopilot is called AI.
 
-Artificial general intelligence (AGI) is the machine intelligence that can handle anything a human can. You can think of the T-800 from The Terminator or Sonny from I, Robot (although in my opinion, the movie’s view of AI, at least with regards to Sonny, aligns more with symbolic, rule-based AI instead of machine learning). Such AI system is also referred to as strong AI.
+Artificial general intelligence (AGI) is the machine intelligence that can handle anything a human can. You can think of the T-800 from The **The Terminator** or Sonny from ***I, Robot*** (although in my opinion, the movie’s view of AI, at least with regards to Sonny, aligns more with symbolic, rule-based AI instead of machine learning). Such AI system is also referred to as strong AI.
 
-{% include image.html url="/assets/images/artificial_neuron/t800_terminator.png" description="The T-800 strong AI" %}
+{% include image.html url="/assets/images/artificial_neuron/t800_terminator.png" description="The T-800 Terminator, a classic imagination of a strong AI that can learn through verbal interactions and solve variety problems on the fly." %}
 
 AGI would be able to solve problems that were not explicitly specified in its design phase.
 There is no AGI system in existence today, nor is there any research group that is known to be anywhere close to deploying one. In fact, there is not even a semblance of consensus on when AGI could become reality.
 
-Tech author Martin Ford, for his 2018 book Architects of Intelligence, surveyed 23 leading AI figures about when there would be a 50 percent chance of AGI being built [ref1;ref2]. Those surveyed included DeepMind CEO Demis Hassabis, Head of Google AI Jeff Dean, and Geoffrey Hinton (one of the three Godfathers of Deep Learning).
+Tech author Martin Ford, for his 2018 book ***Architects of Intelligence***, surveyed 23 leading AI figures about when there would be a 50 percent chance of AGI being built. Those surveyed included DeepMind CEO Demis Hassabis, Head of Google AI Jeff Dean, and Geoffrey Hinton (one of the three Godfathers of Deep Learning).
 
 Of the 23 surveyed, 16 answered anonymously, and 2 answered with their names. The most immediate estimate of 2029 came from Google director of engineering Ray Kurzweil and the most distant estimate of 2200 came from Rod Brooks (the former director of MIT’s AI lab and co-founder of iRobot). The average estimate was 2099.
 
@@ -516,7 +516,7 @@ We can easily notice that $$\boldsymbol{a}$$, $$\boldsymbol{y}$$ and $$\boldsymb
 
 And it did okay. It got the first datapoint wrong (it predicted high energy instead of the correct label of low energy) but got the other two right. That’s 66.7% accuracy. We likely won’t be this lucky if we use more datapoints.
 
-To improve the performance of the artificial neuron, we need to train it. That simply means that we need to find the right values for the parameters w\ and b such that when we feed our neuron any datapoint from the dataset, it will estimate the correct energy level.
+To improve the performance of the artificial neuron, we need to train it. That simply means that we need to find the right values for the parameters $ w $ and $ b $ such that when we feed our neuron any datapoint from the dataset, it will estimate the correct energy level.
 
 This is the general idea of how the perceptron, or any other kind of artificial neuron, works. That is, we should be able to compute a set of parameters ($$w_0,\ w_1,\ w_2,\ \ldots,\ w_n$$) such that the perceptron is able to produce the correct output when given an input.
 
@@ -1111,7 +1111,7 @@ $$
 And we also already know that $ \frac{\partial J}{\partial \boldsymbol{z}} $ is a $ 1 $-by-$ m $ row vector and $ X $ is an $ n $-by-$ m $ matrix, which makes $ X^T $ an $ m $-by-$ n $ matrix. In tensor contraction format, the above equation is:
 
 $$
-\left(\frac{\partial J}{\partial \boldsymbol{w}}\right)_i=\sum_{j}{\left(\frac{\partial J}{\partial \boldsymbol{z}}\right)_j\bullet\left(X^T\right)_{j,i}}
+\left(\frac{\partial J}{\partial\boldsymbol{w}}\right)_i=\sum_{j=1}^{m}{\left(\frac{\partial J}{\partial\boldsymbol{z}}\right)_j\bullet\left(X^T\right)_{j,i}}
 $$
 
 ### **Summary of workflow**
