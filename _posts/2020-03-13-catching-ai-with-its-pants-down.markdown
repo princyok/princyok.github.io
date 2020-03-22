@@ -1,6 +1,7 @@
 ---
-layout: post_custom
+layout: post
 title:  "Catching AI with its pants down"
+logline: "Detailed writeup exploring the inner workings of neural nets and how to biuld a general-purpose feedforward neural net from scratch."
 date:   "2020-03-13"
 categories: machine-learning
 permalink:
