@@ -23,7 +23,9 @@ comments: true
 The goal of this writeup is to present modern artificial intelligence (AI), which is largely powered by deep neural networks, in a highly accessible form. I will walk you through building a deep neural network from scratch without reliance on any machine learning libraries and we will use our network to tackle real public research datasets.
 
 To keep this very accessible, all the mathematics will be simplified to a level that anyone with a high-school or first-year-university level of math knowledge and that can code (especially if Python) should be able to follow. Together we will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth. When I say AI here, I'm being a little silly with buzzspeak and actually mean deep neural networks.
-<!-- 
+
+All the code presented in this article can be found at [this GitHub repo](https://github.com/princyok/deep_learning_without_ml_libraries), and includes code for artificial nearon and deep neural networks from scratch.
+<!--
 The original plan was to explain everything in one giant article, but that quickly proved unwieldy. So, I decided to break things up into two articles. This first article covers the prelude (basically some casual ramblings about AI) and part 1 (focuses on building an artificial neuron from scratch), and the sequel article (work in progress) will go over network of artificial neurons (a.k.a. neural networks). However, the codes for both articles have been made available. -->
 
 This writeup aims to be very detailed, simple and granular, such that by the end, you hopefully should have enough knowledge to investigate and code more advanced architectures from scratch if you chose to do so.
@@ -38,20 +40,20 @@ Tearing apart whatever is under the hood has been my canon for my machine learni
 ### **Artificial General Intelligence: The Holy Grail of AI**
 Artificial intelligence (AI) is the intelligence, or the impression thereof, exhibited by things made by we humans. The kind of intelligence we have is natural intelligence. A lot of things can fall under the umbrella of AI because the definition is vague. Everything from the computer player of Chess Titans on Windows 7 to Tesla’s autopilot is called AI.
 
-Artificial general intelligence (AGI) is the machine intelligence that can handle anything a human can. You can think of the T-800 from The **The Terminator** or Sonny from ***I, Robot*** (although in my opinion, the movie’s view of AI, at least with regards to Sonny, aligns more with symbolic, rule-based AI instead of machine learning). Such AI system is also referred to as strong AI.
+Artificial general intelligence (AGI) is the machine intelligence that can handle anything a human can. You can think of the T-800 from *The Terminator* or Sonny from *I, Robot* (although in my opinion, the movie’s view of AI, at least with regards to Sonny, aligns more with symbolic, rule-based AI instead of machine learning). Such AI system is also referred to as strong AI.
 
-{% include image.html url="/assets/images/artificial_neuron/t800_terminator.png" description="The T-800 Terminator, a classic imagination of a strong AI that can learn through verbal interactions and solve variety problems on the fly." %}
+{% include image.html url="/assets/images/artificial_neuron/t800_terminator.png" description="The T-800 Terminator, a classic imagination of a strong AI that can learn through verbal interactions and solve problems on the fly." %}
 
 AGI would be able to solve problems that were not explicitly specified in its design phase.
 There is no AGI system in existence today, nor is there any research group that is known to be anywhere close to deploying one. In fact, there is not even a semblance of consensus on when AGI could become reality.
 
-Tech author Martin Ford, for his 2018 book ***Architects of Intelligence***, surveyed 23 leading AI figures about when there would be a 50 percent chance of AGI being built. Those surveyed included DeepMind CEO Demis Hassabis, Head of Google AI Jeff Dean, and Geoffrey Hinton (one of the three Godfathers of Deep Learning).
+Tech author Martin Ford, for his 2018 book *Architects of Intelligence*, surveyed 23 leading AI figures about when there would be a 50 percent chance of AGI being built. Those surveyed included DeepMind CEO Demis Hassabis, Head of Google AI Jeff Dean, and Geoffrey Hinton (one of the three Godfathers of Deep Learning).
 
 Of the 23 surveyed, 16 answered anonymously, and 2 answered with their names. The most immediate estimate of 2029 came from Google director of engineering Ray Kurzweil and the most distant estimate of 2200 came from Rod Brooks (the former director of MIT’s AI lab and co-founder of iRobot). The average estimate was 2099.
 
 There are many other surveys out there that give results in the 2030s and 2040s. I feel this is because people have a tendency to want the technologies that they are hopeful about to become reality in their lifetimes, so they tend to guess 20 to 30 years from the present, because that’s long enough time for a lot of progress to be made in any field and short enough to fit within their lifetime.
 
-For instance, I too get that gut feeling that space propulsions that can reach low-end relativistic speeds should be just 20 to 40 years away; how else will the Breakthrough Starshot (founded by  Zuckerberg, Milner and the late Hawking) get a spacecraft to Proxima Centauri b. Same for fault-tolerant quantum computers, fusion power with gain factor greater than 1, etc. They are all just 20 to 40 years away, because these are all things I really want to see happen.
+For instance, I too get that gut feeling that space propulsions that can reach low-end relativistic speeds should be just 20 to 40 years away; how else will the Breakthrough Starshot (founded by  Zuckerberg, Milner and the late Hawking) get a spacecraft to Proxima Centauri b. Same for fault-tolerant quantum computers, fusion power with gain factor far greater than 1, etc. They are all just 20 to 40 years away, because these are all things I really want to see happen.
 
 Also, it seems that [AI entrepreneurs tend to be much more optimistic about how close we are to AGI than AI researchers](https://blog.aimultiple.com/artificial-general-intelligence-singularity-timing/) are. Someone should do a bigger survey for that, ha!
 
@@ -66,24 +68,22 @@ In reinforcement learning, you have an agent that tries to maximize future cumul
 
 The important point is that deep neural networks have been a key transformative force in the development of powerful ANI solutions in recent times.
 
-
-## **Part 1: Building an Artificial Neuron From Scratch**
-### **Machine learning Overview**
+### **Machine learning**
 The rise of the deep learning hype has been a huge boon for its parent field of machine learning. Machine learning is simply the study of building computers systems that can “learn” from examples (i.e. data). The reason for the quotes around “learn” is that the term is just a machine learning lingo for [mathematical optimization](https://en.wikipedia.org/wiki/Mathematical_optimization) (and we will talk more about this later). We will also use the term “training” a lot, and it also refers to the same mathematical optimization.
 
-{% include image.html url="/assets/images/artificial_neuron/training_vs_test_cat_dog_illustration.png" description="Machine learning is about how to make a computer learn the associations presented in the training set such that it can correctly label the images in the test set correctly. This is specifically supervised learning, a category of machine learning where the computer program is provided with correctly labelled examples to learn from. This is a task that is trivial for humans, but was practically impossible for computer programs to consistently perform well at it until convolutional neural networks came along. This was because it is extremely laborious to manually write programs to identify all the patterns needed to identify the primary object in the image)." %}
+{% include image.html url="/assets/images/artificial_neuron/training_vs_test_cat_dog_illustration.png" description="In machine learning, the model learns the associations presented in the training set; that is, images with certain kinds of patterns, which we humans trivially recognize as characteristics of a cat or dog, map to a certain label (cat or dog). It uses the knowledge learned to correctly label the images in the test set, which are images it never saw during training. This is specifically supervised learning, a category of machine learning where the computer program is provided with correctly labelled examples to learn from." %}
 
-In machine learning, you have a model that takes in data and spits out something relevant to that data. For the task of labelling images of cats and dogs (see image above), a model will receive images as input data and then it will output the correct labels for those images.
+In machine learning, you have a model that takes in data and spits out something relevant to that data. For the task of labelling images of cats and dogs (see image above), a model will receive images as input data and then it will output the correct labels for those images. This is a task that is trivial for humans, but was practically impossible for computer programs to consistently perform well at until convolutional neural networks came along. This was because it is extremely laborious to manually write programs to identify all the patterns needed to identify the primary object in the image, which leaves machine learning as a more feasible route.
 
-{% include image.html 
+{% include image.html
 url="/assets/images/artificial_neuron/image_to_numbers.png"
 description=
-"A digital image is just a collection of pixels, and each pixel is simply a box shaded with one color. For a greyscale image like above, there is only one color with intensity ranging from 0 (for pure black) to 256 (for pure white). For machine learning, we simply covert the image to a collection of numbers, e.g. an array or matrix." 
+"A digital image is just a collection of pixels, and each pixel is simply a box shaded with one color. For a greyscale image like above, there is only one color with intensity ranging from 0 (for pure black) to 256 (for pure white). For machine learning, we simply covert the image to a collection of numbers, e.g. an array or matrix."
 %}
 
 Another example: With DeepMind’s AlphaGo, the program takes in the current board configuration as input data and spits out the next move to play that will maximize the chances of winning the match.
 
-#### **Toy datasets**
+#### **Toy dataset for this writeup**
 Before we advance any further to artificial neurons, let’s introduce a toy dataset that will accompany subsequent discussions and be used to provide vivid illustration.
 
 You can think of the data as being generated from an experiment where a device launches balls of various masses unto a board that can roll backward, and when it does roll back all the way to touch the sensor, that shot is recorded as high energy, otherwise it is classified as low energy.
@@ -164,6 +164,7 @@ $$
 
 If you’ve heard of naïve Bayes or logistic regression, linear regression, etc., then you’ve heard of other examples of machine learning estimators. But those are not the focus of this article.
 
+## **Part 1: Building an Artificial Neuron From Scratch**
 ### **The brain as a function**
 The computational theory of mind (CTM) says that we can interpret human cognitive processes as computational functions i.e. the human mind behaves just like a computer. Note that while this theory is considered a good model for human cognition (it was the unchallenged standard in the 1960s and 1970s and still widely subscribed to), no one has been able to show how consciousness can emerge from a system modelled on the basis of this theory, but that’s another topic for another time. For a short primer on the theory, see [this article](https://plato.stanford.edu/entries/computational-mind/) from the Stanford Encyclopedia of Philosophy.
 
@@ -173,7 +174,7 @@ But how does the brain do what it does?
 
 In a nutshell, the brain is made up of two main kinds of cells: glial cells and neurons (a.k.a. nerve cells). There are about 86 billion neurons and even more glial cells in the nervous system (brain, spinal cord and nerves) of an adult human [ref1]. The primary function of glial cells is to provide physical protection and other kinds of support to neurons, so we are not very interested in glial cells here. It’s the neuron we came for.
 
-{% include image.html url="/assets/images/artificial_neuron/biological_neuron.png" description="A biological neuron is the building block of the nervous system, which includes the brain." %}
+{% include image.html url="/assets/images/artificial_neuron/biological_neuron.png" description="A biological neuron is the building block of the nervous system, which includes the brain. Source: <a href='https://cdn.kastatic.org/ka-perseus-images/3567fc3560de474001ec0dafb068170d30b0c751.png'>Khan Academy</a>." %}
 
 The primary function of biological neurons (to differentiate from the artificial neurons that make up an artificial neural network) is to process and transmit signals, and there are three main types, sensory neurons (concentrated in your sensory organs like eyes, ears, etc.), motor neurons (carry signals between the brain and spinal cord, and from both to the muscles), and interneurons (found only in the brain and spinal cord, and they process information).
 
@@ -212,8 +213,8 @@ The activation value can be thought of as a loose adaptation of the biological a
 
 The algebraic representation of an artificial neuron is:
 
-$$ 
-a=f\left(z\right) 
+$$
+a=f\left(z\right)
 $$
 
 {% include indent_paragraph.html content=
@@ -226,7 +227,7 @@ z=w_1\ \bullet x_1+w_2\ \bullet x_2+\ldots+w_n\ \bullet x_n+w_0=\sum_{i=0}^{n}{w
 $$
 
 {% include indent_paragraph.html content=
-"Where $ n $ is the number of features in our dataset." 
+"Where $ n $ is the number of features in our dataset."
 %}
 
 It’s important to start putting these equations in the context of data. Using our toy dataset, the application of this equation can be demonstrated by taking any datapoint and subbing the values into the above equation. For instance, if we sub in the 0<sup>th</sup> datapoint (6.5233, 1.5484, 0), we get:
@@ -302,7 +303,7 @@ We observe that the equation for an artificial neuron can be condensed into this
 $$a=f(x;w,b)$$
 
 {% include indent_paragraph.html content=
-"Where $ x=(x_1,\ x_2,\ldots,\ x_n) $ and $ w=(w_1,\ w_2,\ldots,w_n) $" 
+"Where $ x=(x_1,\ x_2,\ldots,\ x_n) $ and $ w=(w_1,\ w_2,\ldots,w_n) $"
 %}
 
 The equation is read as $ a $ is a function of $ x $ parameterized by $ w $ and $ b $. And in fact, we’ve just introduced vectors. One geometrical interpretation of a vector in a given space (could be 2D, 3D space, etc.) is that it is a point with a “sense” of direction, or just an arrow pointing from the origin to a point.
@@ -314,11 +315,11 @@ a=f(\boldsymbol{x};\boldsymbol{w},b)
 $$
 
 {% include indent_paragraph.html content=
-"Where 
-$ 
+"Where
+$
 \boldsymbol{x}=\left[\begin{matrix}x_1\\x_2\\\vdots\\x_n\\\end{matrix}\right]
-$ 
-and 
+$
+and
 $
 \boldsymbol{w}=\left[\begin{matrix}w_1\\w_2\\\vdots\\w_n\\\end{matrix}\right]^T
 $."
@@ -344,7 +345,7 @@ So, when you see a pair of scalars getting multiplied and then the products from
 
 A quick description of tensor: you probably already think of a vector as an array with one dimension (or axis). this makes it a first-order tensor, and a matrix is a second-order tensor as it has two axes. Similar objects with more than two axes are higher order tensors. In summary, a tensor is the generalization of vectors, matrices and higher order tensors.
 
-The equations we've seen above are under the premise that we will be handling only one datapoint at a time. But we need to be able to handle more than one datapoint simultanously (we also need this when we start looking into neural networks because operations on matrices are easily parallelized). For this reason, we will do one more important thing to the equations we’ve seen above, which is to take them to matrix form. 
+The equations we've seen above are under the premise that we will be handling only one datapoint at a time. But we need to be able to handle more than one datapoint simultanously (we also need this when we start looking into neural networks because operations on matrices are easily parallelized). For this reason, we will do one more important thing to the equations we’ve seen above, which is to take them to matrix form.
 
 Improvement in parallelized computing is a huge reason deep learning returned to the spotlight in the last decade. Parallelization is also the reason GPUs have become a champion for machine learning, because they have thousands of cores unlike CPUs which typically have cores that number in the single digits.
 
@@ -369,7 +370,7 @@ z_j=w_1\ \bullet x_{1,j}+w_2\ \bullet x_{2,j}+\ldots+w_n\ \bullet x_{n,j}+w_0=\s
 $$
 
 {% include indent_paragraph.html content=
-"Where the subscript $ j $ keeps track of datapoints. Or you can think of it as, $ i $ tracks the columns and $ j $ tracks rows in our toy dataset."
+"Where the subscript $ j $ keeps track of datapoints. Or you can think of it as, $ i $ tracks the columns and $ j $ tracks rows in our toy dataset. Note that $ w_0 $ is same as $ b $."
 %}
 
 So now we can write them as:
@@ -400,7 +401,7 @@ $$
 "Where $ m $ is the number of datapoints in our batch."
 %}
 
-What's the batch all about? In deep learning, it's very common to deal with very large datasets that may be too big to load into memory all at once, so we sample a batch from the dataset and use that to train our model. That's one iteration. We repeat the sampling for the second iteration, and continue for as many iterations as we choose to. 
+What's the batch all about? In deep learning, it's very common to deal with very large datasets that may be too big to load into memory all at once, so we sample a batch from the dataset and use that to train our model. That's one iteration. We repeat the sampling for the second iteration, and continue for as many iterations as we choose to.
 
 Now we have all the ingredients to convert to matrix format. Our system of equation, will go from this:
 
@@ -421,7 +422,7 @@ z_m=w_1\ \bullet x_{1,m}+w_2\ \bullet x_{2,m}+\ldots+w_n\ \bullet x_{n,m}+w_0
 $$
 
 To this matrix equation:
- 
+
 $$
 \boldsymbol{z}\ =\ \boldsymbol{wX}\ +\ \boldsymbol{b}
 $$
@@ -430,15 +431,15 @@ I encourage you to rework the matrix equation back into the flat form if you’r
 
 The variable $$\boldsymbol{z}$$ is a $$1$$-by-$$m$$ vector, and if only one datapoint, will be a vector of only one entry (which is equivalent to a scalar).
 
-The parameter $$\boldsymbol{w}$$ is always going to be a $$1$$-by-$$n$$ vector, regardless of the number of multiple datapoints.
+The parameter $$\boldsymbol{w}$$ is always going to be a $$1$$-by-$$n$$ vector, regardless of the number of datapoints.
 
 $$
 \boldsymbol{w}=\left[\begin{matrix}w_1\\w_2\\\vdots\\w_n\\\end{matrix}\right]^T
 $$
 
-The variable $$b$$ will be scalar if doing computation for a single datapoint, or it’ll be a $$1$$-by-$$m$$ vector if for multiple datapoints. However, in code implementation it will always be a scalar (or more correctly, a vector that has only one entry), but then it gets [broadcasted](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy) into a vector of the right shape during computation. (If this doesn’t make sense now, move on and return to it paragraph later after you finish the article).
+The variable $$b$$ will be scalar if doing computation for a single datapoint, or it’ll be a $$1$$-by-$$m$$ vector if for multiple datapoints. However, in code implementation it will always be a scalar (or more correctly, a vector that has only one entry), but then it gets [broadcasted](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy) into a vector of the right shape during computation. (If this doesn’t make sense now, move on and return to this paragraph later after you finish the article).
 
-If we defined $$b$$ to be a $$1$$-by-$$m$$ vector, we would have the following problems:
+But note that fundamentally, $$b$$ is a scalar (or a $ 1 $-by-$ 1 $ vector) because it's simply the weight for the bias node, just like each of the other weights. If we defined $$b$$ to be a $$1$$-by-$$m$$ vector, we would have the following problems:
 
 {% include indent_paragraph.html content=
 "The neuron becomes restricted to a fixed batch size. That is, the batch size we use to train the neuron becomes a fixture of the neuron, to the point that we can’t use the neuron to carry out predictions or estimations for a different batch size."
@@ -456,7 +457,7 @@ $$
 
 Keep in mind that these statements about the shapes of these tensors are all for a single artificial neuron, as there are some changes when moving unto neural networks (a network of neurons).
 
-Let’s illustrate with our toy dataset how the preactivation equation works in matrix format. Let’s say we decide that our batch size will be 3, which means we will feed our neuron 3 datapoints (3 rows of our dataset), then our $$X$$ will look like this:
+Let’s illustrate with our toy dataset how the preactivation equation works in matrix format. Let’s say we decide that our batch size will be 3, which means we will feed our neuron 3 datapoints (3 rows of our toy dataset), then our $$X$$ will look like this:
 
 $$
 \boldsymbol{X}=\left[\begin{matrix}6.5233&9.2112&1.7315\\1.5484&12.7141&45.6200\\\end{matrix}\right]
@@ -531,7 +532,6 @@ Note that linearity is not the biggest reason Heaviside functions went out of fa
 The main problem is that the Heaviside function jumps too rapidly, in fact instantaneously, between the two extremes of its range. That is, when traversing the domain of the Heaviside function, starting from negative to positive infinity, we will keep outputting zero (the lowest value in its range), until suddenly at the input of zero, its output snaps to 1 (the maximum value in its range) and then continues outputting that for the rest of infinity. This causes a lot of instability. When doing mathematical optimization, we typically prefer small changes to produce small changes.
 
 ### **Activation functions**
-It is possible to use other kinds of functions as an activation function, and this is indeed what researchers did when the original perceptron failed to deliver. One such replacement was the sigmoid function, which resembles a smoothened Heaviside function.
 
 It is possible to use other kinds of functions as an activation function, and this is indeed what researchers did when the original perceptron failed to deliver. One such replacement was the sigmoid function, which resembles a smoothened Heaviside function.
 
@@ -663,10 +663,10 @@ You must have seen the above equation before if you’ve learned linear regressi
 Logistic loss function (also known as cross entropy loss or negative log-likelihoods), which is typically used for classification tasks:
 
 $$
-Cross\ entropy\ loss:\ \ J=-\frac{1}{m}\bullet\sum_{j}^{m}{y_j\bullet \log(y_j)+(1-a_j)\bullet\log(1-a_j)}=\frac{1}{m}\bullet\sum_{j=0}^{m}\varepsilon_j
+Cross\ entropy\ loss:\ \ J = -\frac{1}{m}\bullet\sum_{j}^{m}{y_j\bullet\log{(a_j)}+(1-y_j)\bullet\log{({1-a}_j)}}=\frac{1}{m}\bullet\sum_{j=0}^{m}\varepsilon_j
 $$
 
-Note that the logarithm in the cross entropy loss is with base $$e$$ (Euler's number). In other words, it is a natural logarithm, which is sometimes abbreviated as $$\ln$$ instead of $$\log$$.
+Note that the logarithm in the cross entropy loss is with base $$e$$ (Euler's number). In other words, it is a natural logarithm, which is sometimes abbreviated as $$\ln$$ instead of $$\log$$. Also note that we are implicitly assuming that our ground truth is binary (i.e. only two classes and therefore binary classification).
 
 Notice that all these loss functions have one thing in common, they are all functions of activation, which also makes them function of the parameters:
 
@@ -677,16 +677,22 @@ $$
 For instance, cross entropy loss function for a single datapoint can be recharacterized as follows:
 
 $$
-Cross\ entropy\ loss=\ -\left(y\bullet\log{y})+(1-a)\bullet\log(1-a)\right)
+Cross\ entropy\ loss=\ -\left(y\bullet\log{a})+(1-y)\bullet\log(1-a)\right)
 $$
 $$
 =-\left(data+\left(1-\frac{1}{1+e^{-z}}\right)\bullet\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)\
 $$
 $$
-=-\left(data+\left(1-\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \bullet x_i}}}\right)\bullet\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \bullet x_i}}}\right)}\right)
+=-\left(data\bullet\log{\left(\frac{1}{1+e^{-z}}\right)}+\left(1-data\right)\bullet\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)
+$$
+$$
+=-\left(data\bullet\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \bullet x_i}}}\right)}+\left(1-data\right)\bullet\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \bullet x_i}}}\right)}\right)
 $$
 $$
 =-\left(data+\left(1-\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \bullet\ data}}}\right)\bullet\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \bullet\ data}}}\right)}\right)\
+$$
+$$
+=-\left(data\bullet\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \bullet d a t a}}}\right)}+\left(1-data\right)\bullet\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \bullet data}}}\right)}\right)\ 
 $$
 
 In other words, the loss function can be described purely as a function of the parameters ($$W$$,$$b$$) and the data ($$X$$, $$y$$). And since data is known, the only unknowns on the right-hand side of the equation are the parameters.
@@ -694,15 +700,15 @@ In other words, the loss function can be described purely as a function of the p
 Let’s recap before we begin the last dash:
 
 {% include indent_paragraph.html content=
-"Recall that an artificial neuron can be succinctly described as a function that takes in $ X $ and uses its parameters $ W $ to do some computations to spit out an activation value that we expect to be close to the actual correct value (the ground truth). This also means that we expect some level of error between the activation value and the ground truth, and the loss function gives us a measure of this error in the form of single scalar value." 
+"Recall that an artificial neuron can be succinctly described as a function that takes in $ X $ and uses its parameters $ W $ to do some computations to spit out an activation value that we expect to be close to the actual correct value (the ground truth). This also means that we expect some level of error between the activation value and the ground truth, and the loss function gives us a measure of this error in the form of single scalar value."
 %}
 
 {% include indent_paragraph.html content=
-"We want the activation to be as close as possible to the ground truth by getting the loss to be as small as possible. In order to do that, we want to find a set of values for $ W $ such that the loss is always as low as possible." 
+"We want the activation to be as close as possible to the ground truth by getting the loss to be as small as possible. In order to do that, we want to find a set of values for $ W $ such that the loss is always as low as possible."
 %}
 
 {% include indent_paragraph.html content=
-"What remains to be seen is how we pull this off." 
+"What remains to be seen is how we pull this off."
 %}
 
 ### **Gradient Descent Algorithm**
@@ -839,7 +845,7 @@ $$
 \frac{\partial a}{\partial z}=\left[\begin{matrix}\frac{\partial a_1}{\partial z_1}&\frac{\partial a_1}{\partial z_2}&\cdots&\frac{\partial a_1}{\partial z_m}\\\frac{\partial a_2}{\partial z_1}&\frac{\partial a_2}{\partial z_2}&\cdots&\frac{\partial a_2}{\partial z_m}\\\vdots&\vdots&\ddots&\vdots\\\frac{\partial a_m}{\partial z_1}&\frac{\partial a_m}{\partial z_2}&\cdots&\frac{\partial a_m}{\partial z_m}\\\end{matrix}\right]
 $$
 
-We follow the same steps as done with the first Jacobian. 
+We follow the same steps as done with the first Jacobian.
 
 $$
 \frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{1}{1+e^{-z_k}}\right)}{\partial z_j}
@@ -976,7 +982,7 @@ $$
 $$
 
 
-Although the further breakdown of $$\frac{\partial J}{\partial\boldsymbol{z}}$$ into $$\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}$$ is shown above, we won’t need to use that since we already fully delineated $$\frac{\partial J}{\partial\boldsymbol{z}}$$ earlier. So, we just tackle $$\frac{\partial J}{\partial\boldsymbol{z}}\frac{\partial z}{\partial\boldsymbol{b}}$$. 
+Although the further breakdown of $$\frac{\partial J}{\partial\boldsymbol{z}}$$ into $$\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}$$ is shown above, we won’t need to use that since we already fully delineated $$\frac{\partial J}{\partial\boldsymbol{z}}$$ earlier. So, we just tackle $$\frac{\partial J}{\partial\boldsymbol{z}}\frac{\partial z}{\partial\boldsymbol{b}}$$.
 
 Actually just $$\frac{\partial z}{\partial\boldsymbol{b}}$$:
 
@@ -1006,7 +1012,7 @@ $$
 
 Remember that even though $$b$$ is a scalar (or $$1$$-by-$$1$$ vector), it gets broadcasted into a 1-by-$$m$$ vector during the forward pass. We must keep in mind that $$b$$ is a parameter of the estimator, and it would be very counterproductive to define it in a way that binds it to the number of examples (datapoints) in a batch. This is why its fundamental form is a scalar.
 
-As mentioned earlier, matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction. 
+As mentioned earlier, matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction.
 
 Here is a quick overview of tensor contraction.
 
@@ -1090,7 +1096,7 @@ The intuition of this summing is that we are averaging across all the datapoints
 <br><br>
 Note that the mathematical operation of averaging is simply the summation of terms divided by the number of terms being summed.
 <br><br>
-We are contracting along the first axis, represented by subscript $ j $, which is also the axis that tracks the datapoints. In other words, we are summing across the datapoints. This is also the first step in an averaging operation. 
+We are contracting along the first axis, represented by subscript $ j $, which is also the axis that tracks the datapoints. In other words, we are summing across the datapoints. This is also the first step in an averaging operation.
 <br><br>
 The next and final step in the averaging is the division of the summation by the number of terms that we are summing up, which would be the batch size (the number of datapoints in the batch). So, what about that?
 <br><br>
@@ -1330,80 +1336,80 @@ class Neuron:
     def __init__(self, X, Y):
         self.X=X
         self.Y=Y
-        
+
         self.X_batch=None
         self.Y_batch=None
-        
+
         self.a=None
         self.z=None
         self.w=None
         self.b=None
-                
+
         self.dAdZ=None
         self.dJdA=None
         self.dJdZ=None
         self.dJdW=None
         self.dJdB=None
-        
+
     def _logistic(self, z):
         a = 1/(1+np.exp(-z))
         return a
-    
+
     def _logistic_gradient(self, a):
         dAdZ = a * (1-a)
         return dAdZ
-        
+
     def _forward(self):
         self.z = np.matmul(self.w, self.X_batch) + self.b
         self.a=self._logistic(self.z)
-    
+
     def _backward(self):
         m = self.X_batch.shape[1]
         self.dAdZ=self._logistic_gradient(self.a)
         self.dJdA = -(1/m) * ((self.Y_batch / self.a) - ((1 - self.Y_batch) / (1 - self.a)))
-        
+
         self.dJdZ = self.dAdZ * self.dJdA
-        
-        self.dJdW= np.matmul(self.dJdZ, self.X_batch.T) 
+
+        self.dJdW= np.matmul(self.dJdZ, self.X_batch.T)
         self.dJdB= np.sum(self.dJdZ, axis=1)
-        
+
     def _update_parameters_via_gradient_descent (self, learning_rate):
         self.w = self.w - learning_rate * self.dJdW
         self.b = self.b - learning_rate * self.dJdB
-        
+
     def _initialize_parameters(self, random_seed=11):
         prng=np.random.RandomState(seed=random_seed)
         n=self.X.shape[0]
         self.w=prng.random(size=(1, n))*0.01
         self.b=np.zeros(shape=(1, 1))
-        
+
     def _compute_accuracy(self):
-        
+
         if np.isnan(self.a).all():
             print("Caution: All the activations are null values.")
             return None
 
         Y_pred=np.where(self.a>0.5, 1, 0)
         Y_true=self.Y_batch
-        
+
         accuracy=np.average(np.where(Y_true==Y_pred, 1, 0))
-        
+
         return accuracy
-    
+
     def _compute_precision(self):
-        
+
         if np.isnan(self.a).all():
             print("Caution: All the activations are null values.")
             return None
-        
+
         Y_true=self.Y_batch
         Y_pred=np.where(self.a>0.5, 1, 0)
-        
+
         pred_positives_mask = (Y_pred==1)
         precision=np.average(np.where(Y_pred[pred_positives_mask]==Y_true[pred_positives_mask]))        
-        
+
         return precision
-    
+
     def train(self,num_iterations, learning_rate, batch_size, random_seed=11):
         print("Training begins...")
         self._initialize_parameters(random_seed=random_seed)
@@ -1412,33 +1418,33 @@ class Neuron:
             random_indices = prng.choice(self.Y.shape[1], (batch_size,), replace=False)
             self.Y_batch = self.Y[:,random_indices]
             self.X_batch = self.X[:,random_indices]
-            
+
             self._forward()
             self._backward()
-            
+
             self._update_parameters_via_gradient_descent(learning_rate=learning_rate)
-            
+
         print("Training Complete!")
-            
+
     def evaluate(self, X, Y, metric="accuracy"):
-        
+
         _available_perfomance_metrics=["accuracy","precision"]
-        
+
         metric=metric.lower()
-        
+
         if not any(m == metric.lower() for m in _available_perfomance_metrics):
             raise ValueError
-                
+
         self.X_batch = X
         self.Y_batch = Y
-        
+
         self._forward()
-                
+
         if metric=="accuracy":
             score=self._compute_accuracy()
         if metric =="precision":
             score=self._compute_precision()
-            
+
         return score
 ```
 You can find it, along with the code for part 3 (deep neural network), in [this GitHub repo](https://github.com/princyok/deep_learning_without_ml_libraries).
