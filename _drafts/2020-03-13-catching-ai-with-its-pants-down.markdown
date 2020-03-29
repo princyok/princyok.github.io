@@ -223,7 +223,7 @@ $$
 The preactivation $ z $ is computed as:
 
 $$
-z=w_1\ \bullet x_1+w_2\ \bullet x_2+\ldots+w_n\ \bullet x_n+w_0=\sum_{i=0}^{n}{w_i\ \bullet x_i}
+z=w_1\ \cdot x_1+w_2\ \cdot x_2+\ldots+w_n\ \cdot x_n+w_0=\sum_{i=0}^{n}{w_i\ \cdot x_i}
 $$
 
 {% include indent_paragraph.html content=
@@ -233,7 +233,7 @@ $$
 It’s important to start putting these equations in the context of data. Using our toy dataset, the application of this equation can be demonstrated by taking any datapoint and subbing the values into the above equation. For instance, if we sub in the 0<sup>th</sup> datapoint (6.5233, 1.5484, 0), we get:
 
 $$
-z=w_1\ \bullet 6.5233+w_2\ \bullet1.5484+w_0
+z=w_1\ \cdot 6.5233+w_2\ \cdot1.5484+w_0
 $$
 
 We will keep the weights as variables for now (but that will change a few paragraphs later).
@@ -249,9 +249,9 @@ $$
 
 If you took a moment to really look at the equation for preactivation, you will notice something is off, compared to the artificial neuron diagram. Where did $$w_0$$ come from? And what about $$x_0$$? The answer is the “bias term”. It allows our function to shift, and its presence is purely a mathematical necessity.
 
-The variable $$w_0$$ is known as the bias, and $$x_0$$ is a constant that is always equal to one and has nothing to do with the data, unlike $$x_1$$ to $$x_n$$ that comes from the data (e.g. the pixels of the images in the case of the image classification example). That’s how $$w_0 \bullet x_0$$ reduces to just $$w_0$$.
+The variable $$w_0$$ is known as the bias, and $$x_0$$ (commonly referred to as the bias node) is a constant that is always equal to one and has nothing to do with the data, unlike $$x_1$$ to $$x_n$$ that comes from the data (e.g. the pixels of the images in the case of the image classification example). That’s how $$w_0 \cdot x_0$$ reduces to just $$w_0$$.
 
-In fact, by the time we start talking about the network of artificial neurons (also known as neural networks), we will refer to $$w_0$$ as $$b$$, and this is the letter often used in literature to represent the bias. The weights ($$w_1,\ w_2,\ \ldots,\ w_n$$) and bias ($$w_0$$ or $$b$$) collectively are known as the parameters of the artificial neuron.
+Moreover, we will henceforth refer to $$w_0$$ as $$b$$, and this is the letter often used in literature to represent the bias. The weights ($$w_1,\ w_2,\ \ldots,\ w_n$$) and bias ($$w_0$$ or $$b$$) collectively are known as the parameters of the artificial neuron.
 
 <table>
 <td>
@@ -267,13 +267,13 @@ As already mentioned, the bias term allows our function to shift. Its presence i
 The equation for z is a linear equation:
 
 $$
-z=w_1\ \bullet x_1+w_2\ \bullet x_2+\ldots+w_n\ \bullet x_n+w_0
+z=w_1\ \cdot x_1+w_2\ \cdot x_2+\ldots+w_n\ \cdot x_n+w_0
 $$
 
 If we limit the number of features (input variables) to only one, we get the equation of a line:
 
 $$
-z=w_1\ \bullet x_1+w_0
+z=w_1\ \cdot x_1+w_0
 $$
 
 {% include indent_paragraph.html content="Where $ w_1 $ is the slope of the line, and $ w_0 $ is the intercept." %}
@@ -292,7 +292,7 @@ But the presence of the bias term in our artificial neuron equation means that t
 <br><br>
 {% include image.html url="/assets/images/artificial_neuron/artificial_neuron_bias_node.png" description="Diagram of an artificial neuron showwing the bias node." %}
 
-But we don’t show the bias nodes because it is generally assumed that everyone should know that it is always there. This is important because it is common for the bias term to be completely omitted in many ML publications, because they know that you should know that it is there!"
+But we don’t show the bias nodes because it is generally assumed that everyone should know that it is always there. This is important because it is common for the bias term to be completely omitted in many ML publications, because they know that you should know that it is there!
 </p>
 </details>
 </td>
@@ -301,7 +301,6 @@ But we don’t show the bias nodes because it is generally assumed that everyone
 We observe that the equation for an artificial neuron can be condensed into this:
 
 $$a=f(x;w,b)$$
-
 {% include indent_paragraph.html content=
 "Where $ x=(x_1,\ x_2,\ldots,\ x_n) $ and $ w=(w_1,\ w_2,\ldots,w_n) $"
 %}
@@ -330,7 +329,7 @@ $."
 If you are doubting, then check if this equation is correct (spoiler alert: it is correct!):
 
 $$
-\boldsymbol{wx}=\sum_{i=0}^{n}{w_i\ \bullet x_i}
+\boldsymbol{wx}=\sum_{i=0}^{n}{w_i\ \cdot x_i}
 $$
 
 Note that the lack of any symbols between $$\boldsymbol{w}$$ and $$\boldsymbol{x}$$ signifies matrix-vector multiplication (or matrix-matrix multiplication), and you will see more of such throughout this article.
@@ -352,21 +351,21 @@ Improvement in parallelized computing is a huge reason deep learning returned to
 Going back to our toy dataset, if we wanted to compute preactivations for the first three datapoints at once, we get these three equations (and please always keep in mind that w_0=b):
 
 $$
-z=w_1\ \bullet6.5233+w_2\ \bullet1.5484+w_0
+z=w_1\ \cdot6.5233+w_2\ \cdot1.5484+w_0
 $$
 
 $$
-z=w_1\ \bullet9.2112+w_2\ \bullet12.7141+w_0
+z=w_1\ \cdot9.2112+w_2\ \cdot12.7141+w_0
 $$
 
 $$
-z=w_1\ \bullet1.7315+w_2\ \bullet45.6200+w_0
+z=w_1\ \cdot1.7315+w_2\ \cdot45.6200+w_0
 $$
 
 Clearly, we need a new subscript to keep track of multiple datapoints, because it’s misleading to keep equating every datapoint to just $$z$$. So, we do something like this:
 
 $$
-z_j=w_1\ \bullet x_{1,j}+w_2\ \bullet x_{2,j}+\ldots+w_n\ \bullet x_{n,j}+w_0=\sum_{i=0}^{n}{w_i\ \bullet x_{i,j}}
+z_j=w_1\ \cdot x_{1,j}+w_2\ \cdot x_{2,j}+\ldots+w_n\ \cdot x_{n,j}+w_0=\sum_{i=0}^{n}{w_i\ \cdot x_{i,j}}
 $$
 
 {% include indent_paragraph.html content=
@@ -376,15 +375,15 @@ $$
 So now we can write them as:
 
 $$
-z_1=w_1\ \bullet6.5233+w_2\ \bullet1.5484+w_0
+z_1=w_1\ \cdot6.5233+w_2\ \cdot1.5484+w_0
 $$
 
 $$
-z_2=w_1\ \bullet9.2112+w_2\ \bullet12.7141+w_0
+z_2=w_1\ \cdot9.2112+w_2\ \cdot12.7141+w_0
 $$
 
 $$
-z_3=w_1\ \bullet1.7315+w_2\ \bullet45.6200+w_0
+z_3=w_1\ \cdot1.7315+w_2\ \cdot45.6200+w_0
 $$
 
 Note that the numerical subscript on $$z$$ above is not counterpart to that on $$w$$. The former tracks datapoints (rows in our toy dataset), and the latter tracks features (columns in our toy dataset).
@@ -406,11 +405,11 @@ What's the batch all about? In deep learning, it's very common to deal with very
 Now we have all the ingredients to convert to matrix format. Our system of equation, will go from this:
 
 $$
-z_1=w_1\ \bullet x_{1,1}+w_2\ \bullet x_{2,1}+\ldots+w_n\ \bullet x_{n,1}+w_0
+z_1=w_1\ \cdot x_{1,1}+w_2\ \cdot x_{2,1}+\ldots+w_n\ \cdot x_{n,1}+w_0
 $$
 
 $$
-z_2=w_1\ \bullet x_{1,2}+w_2\ \bullet x_{2,2}+\ldots+w_n\ \bullet x_{n,2}+w_0
+z_2=w_1\ \cdot x_{1,2}+w_2\ \cdot x_{2,2}+\ldots+w_n\ \cdot x_{n,2}+w_0
 $$
 
 $$
@@ -418,7 +417,7 @@ $$
 $$
 
 $$
-z_m=w_1\ \bullet x_{1,m}+w_2\ \bullet x_{2,m}+\ldots+w_n\ \bullet x_{n,m}+w_0
+z_m=w_1\ \cdot x_{1,m}+w_2\ \cdot x_{2,m}+\ldots+w_n\ \cdot x_{n,m}+w_0
 $$
 
 To this matrix equation:
@@ -437,17 +436,23 @@ $$
 \boldsymbol{w}=\left[\begin{matrix}w_1\\w_2\\\vdots\\w_n\\\end{matrix}\right]^T
 $$
 
-The variable $$b$$ will be scalar if doing computation for a single datapoint, or it’ll be a $$1$$-by-$$m$$ vector if for multiple datapoints. However, in code implementation it will always be a scalar (or more correctly, a vector that has only one entry), but then it gets [broadcasted](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy) into a vector of the right shape during computation. (If this doesn’t make sense now, move on and return to this paragraph later after you finish the article).
+The variable b will be scalar if doing computation for a single datapoint, or it’ll be a $$1$$-by-$$m$$ mvector if for multiple datapoints. Fundamentally, however, the bias is a scalar (or a $$1$$-by-$$1$$ vector) regardless of number datapoints in the batch. There is only one bias for a neuron, and it's simply the weight for the bias node, just like each of the other weights. It only gets [broadcasted](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy) (stretched) into a $$1$$-by-$$m$$ vector to match the shape of $$z$$, so that the matrix equation is valid. The intuition is that you are applying the same bias to all the datapoint in any given batch, the same way you are applying the same group of weights all the datapoint.
 
-But note that fundamentally, $$b$$ is a scalar (or a $ 1 $-by-$ 1 $ vector) because it's simply the weight for the bias node, just like each of the other weights. If we defined $$b$$ to be a $$1$$-by-$$m$$ vector, we would have the following problems:
+Therefore the full answer for the shape of $$b$$ is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish). We must keep in mind that b is a parameter of the estimator, and it would be very counterproductive to define it in a way that binds it to the number of examples (datapoints) in a batch. This is why its fundamental form is a scalar.
 
-{% include indent_paragraph.html content=
-"The neuron becomes restricted to a fixed batch size. That is, the batch size we use to train the neuron becomes a fixture of the neuron, to the point that we can’t use the neuron to carry out predictions or estimations for a different batch size."
-%}
+Here are some problems we would have if we defined b to be fundamentally a 1-by-m vector: 
 
 {% include indent_paragraph.html content=
-"Each example in the batch will have a different corresponding value for $ b $, and this is not the case with $ w $, and it is just simply improper for the parameters to change from example to example."
+"The neuron becomes restricted to a fixed batch size. That is, the batch size we use to train the neuron becomes a fixture of the neuron, to the point that we can’t use the neuron to carry out predictions or estimations for a different batch size.
+<br><br>
+Each example in the batch will have a different corresponding value for $ b $. This is not even the case for $ w $, and it is just simply improper for the parameters to change from datapoint to datapoint. If that happened, then it means the model is not identical for all datapoints. Absolutely appalling."
 %}
+
+When b is broadcasted into the $$1$$-by-$$m$$ vector $$\boldsymbol{b}$$, it is simply the scalar value $$b$$ repeating $$m$$ times. It looks like this:
+
+$$
+\boldsymbol{b}=\left[\begin{matrix}b&b&\cdots&b\\\end{matrix}\right]
+$$
 
 The variables $$\boldsymbol{X}$$ will depend on the shape of the input data that gets fed to the neuron. It could be a vector or matrix (and in neural networks they could even be higher order tensors). When multiple datapoints, it’s an $$n$$-by-$$m$$ matrix, and when a single datapoint it's an $$n$$-by-$$1$$ vector. It looks like this:
 
@@ -529,7 +534,7 @@ Unfortunately, the original perceptron did not fair very well in practice and fa
 
 Note that linearity is not the biggest reason Heaviside functions went out of favour. In fact, a Heaviside function is not purely linear, but instead piecewise linear. It’s also common to see lack of differentiability at zero blamed for the disfavour, but again this is cannot be the critical reason, as there are cheap tricks around this too (e.g. the same type of schemes used to get around the undifferentiability of the rectified linear function at zero, which by the way is currently the most widely used activation function in deep learning).
 
-The main problem is that the Heaviside function jumps too rapidly, in fact instantaneously, between the two extremes of its range. That is, when traversing the domain of the Heaviside function, starting from negative to positive infinity, we will keep outputting zero (the lowest value in its range), until suddenly at the input of zero, its output snaps to 1 (the maximum value in its range) and then continues outputting that for the rest of infinity. This causes a lot of instability. When doing mathematical optimization, we typically prefer small changes to produce small changes.
+The main problem is that the Heaviside function jumps too rapidly, in fact instantaneously, between the two extremes of its range. That is, when traversing the domain of the Heaviside function, starting from negative to positive infinity, we will keep outputting zero (the lowest value in its range), until suddenly at the input of zero, its output snaps to 1 (the maximum value in its range) and then continues outputting that for the rest of infinity. This causes a lot of instability. When doing mathematical optimization, we typically prefer small changes to also produce small changes.
 
 ### **Activation functions**
 
@@ -655,7 +660,7 @@ We will introduce two other loss functions that are very widely used.
 Mean squared error loss function, which is typically used for regression tasks:
 
 $$
-Mean\ Squared\ Error:\ J=\frac{1}{m}\bullet\sum_{j}^{m}\left(y_j-a_j\right)^2
+Mean\ Squared\ Error:\ J=\frac{1}{m}\cdot\sum_{j}^{m}\left(y_j-a_j\right)^2
 $$
 
 You must have seen the above equation before if you’ve learned linear regression in any math course.
@@ -663,7 +668,7 @@ You must have seen the above equation before if you’ve learned linear regressi
 Logistic loss function (also known as cross entropy loss or negative log-likelihoods), which is typically used for classification tasks:
 
 $$
-Cross\ entropy\ loss:\ \ J = -\frac{1}{m}\bullet\sum_{j}^{m}{y_j\bullet\log{(a_j)}+(1-y_j)\bullet\log{({1-a}_j)}}=\frac{1}{m}\bullet\sum_{j=0}^{m}\varepsilon_j
+Cross\ entropy\ loss:\ \ J = -\frac{1}{m}\cdot\sum_{j}^{m}{y_j\cdot\log{(a_j)}+(1-y_j)\cdot\log{({1-a}_j)}}=\frac{1}{m}\cdot\sum_{j=0}^{m}\varepsilon_j
 $$
 
 Note that the logarithm in the cross entropy loss is with base $$e$$ (Euler's number). In other words, it is a natural logarithm, which is sometimes abbreviated as $$\ln$$ instead of $$\log$$. Also note that we are implicitly assuming that our ground truth is binary (i.e. only two classes and therefore binary classification).
@@ -677,22 +682,22 @@ $$
 For instance, cross entropy loss function for a single datapoint can be recharacterized as follows:
 
 $$
-Cross\ entropy\ loss=\ -\left(y\bullet\log{a})+(1-y)\bullet\log(1-a)\right)
+Cross\ entropy\ loss=\ -\left(y\cdot\log{a})+(1-y)\cdot\log(1-a)\right)
 $$
 $$
-=-\left(data+\left(1-\frac{1}{1+e^{-z}}\right)\bullet\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)\
+=-\left(data+\left(1-\frac{1}{1+e^{-z}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)\
 $$
 $$
-=-\left(data\bullet\log{\left(\frac{1}{1+e^{-z}}\right)}+\left(1-data\right)\bullet\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)
+=-\left(data\cdot\log{\left(\frac{1}{1+e^{-z}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)
 $$
 $$
-=-\left(data\bullet\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \bullet x_i}}}\right)}+\left(1-data\right)\bullet\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \bullet x_i}}}\right)}\right)
+=-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot x_i}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot x_i}}}\right)}\right)
 $$
 $$
-=-\left(data+\left(1-\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \bullet\ data}}}\right)\bullet\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \bullet\ data}}}\right)}\right)\
+=-\left(data+\left(1-\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)}\right)\
 $$
 $$
-=-\left(data\bullet\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \bullet d a t a}}}\right)}+\left(1-data\right)\bullet\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \bullet data}}}\right)}\right)\ 
+=-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot d a t a}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot data}}}\right)}\right)\ 
 $$
 
 In other words, the loss function can be described purely as a function of the parameters ($$W$$,$$b$$) and the data ($$X$$, $$y$$). And since data is known, the only unknowns on the right-hand side of the equation are the parameters.
@@ -700,15 +705,11 @@ In other words, the loss function can be described purely as a function of the p
 Let’s recap before we begin the last dash:
 
 {% include indent_paragraph.html content=
-"Recall that an artificial neuron can be succinctly described as a function that takes in $ X $ and uses its parameters $ W $ to do some computations to spit out an activation value that we expect to be close to the actual correct value (the ground truth). This also means that we expect some level of error between the activation value and the ground truth, and the loss function gives us a measure of this error in the form of single scalar value."
-%}
-
-{% include indent_paragraph.html content=
-"We want the activation to be as close as possible to the ground truth by getting the loss to be as small as possible. In order to do that, we want to find a set of values for $ W $ such that the loss is always as low as possible."
-%}
-
-{% include indent_paragraph.html content=
-"What remains to be seen is how we pull this off."
+"Recall that an artificial neuron can be succinctly described as a function that takes in $ X $ and uses its parameters $ W $ to do some computations to spit out an activation value that we expect to be close to the actual correct value (the ground truth). This also means that we expect some level of error between the activation value and the ground truth, and the loss function gives us a measure of this error in the form of single scalar value.
+<br><br>
+We want the activation to be as close as possible to the ground truth by getting the loss to be as small as possible. In order to do that, we want to find a set of values for $ W $ such that the loss is always as low as possible.
+<br><br>
+What remains to be seen is how we pull this off."
 %}
 
 ### **Gradient Descent Algorithm**
@@ -719,19 +720,19 @@ There are many ways to solve this optimization problem, but we will go with the 
 We will illustrate how it works using a simple scenario where we have a dataset made of one feature and one target, and we want to use the mean square error as cost function. We specify a linear activation function ($$a=f(a)$$) for the neuron. Then the equation for our neuron will be:
 
 $$
-a=f\left(z\right)=w_1\ \bullet x_1+w_0
+a=f\left(z\right)=w_1\ \cdot x_1+w_0
 $$
 
 Our cost function will be:
 
 $$
-J=\frac{1}{m}\bullet\sum_{j=0}^{m}{({y}_j-a_j)}^2=\frac{1}{m}\bullet\sum_{j=0}^{m}{(y_j-\ w_{1,j}\ \bullet x_{1,j}+w_{0,j})}^2
+J=\frac{1}{m}\cdot\sum_{j=0}^{m}{({y}_j-a_j)}^2=\frac{1}{m}\cdot\sum_{j=0}^{m}{(y_j-\ w_{1,j}\ \cdot x_{1,j}+w_{0,j})}^2
 $$
 
 Let’s further simplify our scenario by assuming we will only run computations for only one datapoint at a time.
 
 $$
-J={(Y_j-\ w_{1,j}\ \bullet x_{1,j}+w_{0,j})}^2
+J={(Y_j-\ w_{1,j}\ \cdot x_{1,j}+w_{0,j})}^2
 $$
 
 If we hold $$Y_j$$ and $$x_{1,j}$$ constant, which is logical since they come directly from data, we observe that our cost is a function of just the parameters $$w_0$$ and $$w_1$$. And we can easily plot the curve.
@@ -756,7 +757,9 @@ $$
 "Where $ \gamma $ is the step size (a.k.a. learning rate)."
 %}
 
-Stochastic gradient descent means that randomization is introduced during the selection of the batch of datapoints to be used in the calculations of the gradient descent. Some people will distinguish further by defining mini-batch stochastic gradient descent as when batches of datapoints are randomly selected from the dataset while stochastic gradient descent refers to just using a single randomly selected datapoint.
+The above equations are used in updating the parameters at the end of each round or iteration of training. The equations are applied to each of the parameters in the model (the artificial neuron). For instance, for our toy dataset, there would be two weights, one for each feature (input variable) of the dataset, and one bias for the bias node. All three parameters will be updated using the equations. That marks the end of one round or iteration of training.
+
+Stochastic gradient descent means that randomization is introduced during the selection of the batch of datapoints to be used in the calculations of the gradient descent. Some people will distinguish further by defining mini-batch stochastic gradient descent as when a batch of datapoints is randomly selected from the dataset and used, while stochastic gradient descent refers to just using a single randomly selected datapoint for each entire round of computations.
 
 If we had more than two parameters, or a non-linear activation function, or some other property that makes our neuron more complicated, using a plot to find the parameters that minimize the error becomes just impractical. We must use the mathematical formulation.
 
@@ -782,33 +785,53 @@ This is also always true in standard feedforward neural networks (a.k.a. multila
 
 Before we move any further, it’s important you understand what Jacobians are. In a nutshell, the Jacobian of a vector function, which is what we are working with here, is a matrix that contains all of the function’s first order partial derivatives. It is the way to properly characterize the partial derivatives of a vector function. If you were not already familiar with Jacobians or still unclear of what it is, I found [this video](https://www.youtube.com/watch?v=bohL918kXQk) that should help (or just search for “Jacobian matrix” on YouTube and you’ll see many great introductory videos).
 
-From the above equation for $$\boldsymbol{z}$$, we can immediately compute the Jacobian $$\frac{\partial z}{\partial w}$$.
 
-The details goes like this:
+Our Jacobians in matrix representation are as follows:
+
+$$
+\frac{\partial J}{\partial w}=\left[\begin{matrix}\frac{\partial J}{\partial w_1}&\frac{\partial J}{\partial w_2}&\cdots&\frac{\partial J}{\partial w_n}\\\end{matrix}\right]
+$$
+
+$$
+\frac{\partial J}{\partial a}=\left[\begin{matrix}\frac{\partial J}{\partial a_1}&\frac{\partial J}{\partial a_2}&\cdots&\frac{\partial J}{\partial a_m}\\\end{matrix}\right]
+$$
+
+$$
+\frac{\partial a}{\partial z}=\left[\begin{matrix}\frac{\partial a_1}{\partial z_1}&\frac{\partial a_1}{\partial z_2}&\cdots&\frac{\partial a_1}{\partial z_m}\\\frac{\partial a_2}{\partial z_1}&\frac{\partial a_2}{\partial z_2}&\cdots&\frac{\partial a_2}{\partial z_m}\\\vdots&\vdots&\ddots&\vdots\\\frac{\partial a_m}{\partial z_1}&\frac{\partial a_m}{\partial z_2}&\cdots&\frac{\partial a_m}{\partial z_m}\\\end{matrix}\right]
+$$
 
 $$
 \frac{\partial z}{\partial w}=\left[\begin{matrix}\frac{\partial z_1}{\partial w_1}&\frac{\partial z_1}{\partial w_2}&\cdots&\frac{\partial z_1}{\partial w_n}\\\frac{\partial z_2}{\partial w_1}&\frac{\partial z_2}{\partial w_2}&\cdots&\frac{\partial z_2}{\partial w_n}\\\vdots&\vdots&\ddots&\vdots\\\frac{\partial z_m}{\partial w_1}&\frac{\partial z_m}{\partial w_2}&\cdots&\frac{\partial z_m}{\partial w_n}\\\end{matrix}\right]
 $$
 
-We can observe that the Jacobian $$\frac{\partial z}{\partial w}$$ is an $$m$$-by-$$n$$ matrix. But at this stage, our Jacobian isn't giving us anything useful because we still need the solution for each element of the matrix. But we won’t actually solve every single one of those, because it may become impractical if we had, say, a million-by-million matrix.
+{% include indent_paragraph.html content=
+"Where their shapes are: $ \frac{\partial J}{\partial w} $ is $ 1 $-by-$ n $, $ \frac{\partial J}{\partial a} $ is $ 1 $-by-$ m $, $ \frac{\partial a}{\partial z} $ is $ m $-by-$ m $, and $ \frac{\partial z}{\partial w} $ is $ m $-by-$ n $."
+%}
 
-We’ll solve one generalized element of the Jacobian and extend the pattern to the rest. Let’s begin.
+The shapes show us that matrix multiplication present in the chain rule expansion is valid.
+
+From the above equation for $$z$$, we can immediately compute the Jacobian $$\frac{\partial z}{\partial w}$$.
+
+We can observe that the Jacobian $$\frac{\partial z}{\partial w}$$ is an $$m$$-by-$$n$$ matrix. But at this stage, our Jacobian hasn’t given us anything useful because we still need the solution for each element of the matrix. 
+
+We’ll solve an arbitrary element of the Jacobian and extend the pattern to the rest. Let’s begin.
 
 We pick an element $$\frac{\partial z_j}{\partial w_i}$$ from the matrix, and immediately we observe that we have already encountered the generalized elements $$z_j$$ and $$w_i$$ in the following equation:
 
 $$
-z_j=w_1\ \bullet x_{1,j}+w_2\ \bullet x_{2,j}+\ldots+w_n\ \bullet x_{n,j}+w_0=\sum_{i=0}^{n}{w_i\ \bullet x_{i,j}}
+z_j=w_1\ \cdot x_{1,j}+w_2\ \cdot x_{2,j}+\ldots+w_n\ \cdot x_{n,j}+w_0=\sum_{i=0}^{n}{w_i\ \cdot x_{i,j}}
 $$
 
 Therefore:
 
 $$
-\frac{\partial z_j}{\partial w_i}=\frac{\partial\left(\sum_{i=0}^{n}{w_i\ \bullet x_{i,j}}\right)}{\partial w_i}
+\frac{\partial z_j}{\partial w_i}=\frac{\partial\left(\sum_{i=0}^{n}{w_i\ \cdot x_{i,j}}\right)}{\partial w_i}
 $$
+
 The above is a partial derivative w.r.t. $$w_i$$, so we temporarily consider $$x_{i,j}$$ to be a constant.
 
 $$
-\frac{\partial z_j}{\partial w_i}=\frac{\partial\left(\sum_{i=0}^{n}{w_i\ \bullet x_{i,j}}\right)}{\partial w_i}=x_{i,j}
+\frac{\partial z_j}{\partial w_i}=\frac{\partial\left(\sum_{i=0}^{n}{w_i\ \cdot x_{i,j}}\right)}{\partial w_i}=x_{i,j}
 $$
 
 (If it’s unclear how the above worked out, expand out the summation and do the derivatives term by term, and keep in mind that $$x_{i,j}$$ is considered to be constant, because this is a partial differentiation).
@@ -856,7 +879,7 @@ The reason for $$k$$ is that we need a subscript that conveys the idea that $$a$
 Let’s rearrange the activation function a little by multiplying both numerator and denominator by $$e^z_k$$.
 
 $$
-\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{1}{1+e^{-z_k}}\bullet\frac{e_k^z}{e_k^z}\right)}{\partial z_j}=\frac{\partial\left(\frac{e_k^z}{e_k^z+1}\right)}{\partial z_j}
+\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{1}{1+e^{-z_k}}\cdot\frac{e_k^z}{e_k^z}\right)}{\partial z_j}=\frac{\partial\left(\frac{e_k^z}{e_k^z+1}\right)}{\partial z_j}
 $$
 
 The reason for this is to make the use of the [quotient rule of differentiation](https://en.wikipedia.org/wiki/Quotient_rule) for solving the derivative easier to work with.
@@ -869,7 +892,7 @@ $$
 \frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{e^{z_k}}{e^{z_k}+1}\right)}{\partial z_j}=0
 $$
 
-If it’s unclear how the above worked out, then recall that $$z_k$$ is a constant because we are differentiating w.r.t. $$z_j$$.
+If it’s unclear how the above worked out, then notice that when $$k\neq j$$, $$z_k$$ is temporarily a constant because we are differentiating w.r.t. $$z_j$$.
 
 For $$k=j$$:
 
@@ -886,23 +909,23 @@ $$
 We can sort of see the original activation function somewhere in there, so we rearrange the terms and see if we can get something more compact:
 
 $$
-\frac{\partial a_k}{\partial z_j}=\frac{e^{z_k}\bullet\left(e^{z_k}+1\right)-\left(e^{z_k}\right)^2}{\left(e^{z_k}+1\right)^2}=\frac{\left(e^{z_k}\right)^2+e^{z_k}-\left(e^{z_k}\right)^2}{\left(e^{z_k}+1\right)^2}= \color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}} \bullet\left(\frac{1}{e^{z_k}+1}\right)
+\frac{\partial a_k}{\partial z_j}=\frac{e^{z_k}\cdot\left(e^{z_k}+1\right)-\left(e^{z_k}\right)^2}{\left(e^{z_k}+1\right)^2}=\frac{\left(e^{z_k}\right)^2+e^{z_k}-\left(e^{z_k}\right)^2}{\left(e^{z_k}+1\right)^2}= \color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}} \cdot\left(\frac{1}{e^{z_k}+1}\right)
 $$
 
 Now we clearly see the original activation function in there (in <font color="magenta">magenta</font>). But the other term also looks very similar, so we rework it a little more:
 
 $$
-\frac{\partial a_k}{\partial z_j}=\frac{e^{z_k}}{e^{z_k}+1}\bullet\left(\frac{1}{e^{z_k}+1}\right)=\color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}}\bullet\left(1-\color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}}\right)
+\frac{\partial a_k}{\partial z_j}=\frac{e^{z_k}}{e^{z_k}+1}\cdot\left(\frac{1}{e^{z_k}+1}\right)=\color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}}\cdot\left(1-\color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}}\right)
 $$
 
 We can now simply substitute it in the activation (while recalling that $$k\ =\ j$$):
 
-$$\frac{\partial a_k}{\partial z_j}=a_k\bullet\left(1-a_k\right)=a_j\bullet\left(1-a_j\right)$$
+$$\frac{\partial a_k}{\partial z_j}=a_k\cdot\left(1-a_k\right)=a_j\cdot\left(1-a_j\right)$$
 
 Therefore, our Jacobian becomes:
 
 $$
-\frac{\partial a}{\partial z}=\left[\begin{matrix}a_1\bullet\left(1-a_1\right)&0&\cdots&0\\0&a_2\bullet\left(1-a_2\right)&\cdots&0\\\vdots&\vdots&\ddots&\vdots\\0&0&\cdots&a_m\bullet\left(1-a_m\right)\\\end{matrix}\right]
+\frac{\partial a}{\partial z}=\left[\begin{matrix}a_1\cdot\left(1-a_1\right)&0&\cdots&0\\0&a_2\cdot\left(1-a_2\right)&\cdots&0\\\vdots&\vdots&\ddots&\vdots\\0&0&\cdots&a_m\cdot\left(1-a_m\right)\\\end{matrix}\right]
 $$
 
 It’s an $$m$$-by-$$m$$ diagonal matrix.
@@ -913,12 +936,12 @@ However, I will leave the details for the last Jacobian $$\frac{\partial J}{\par
 
 The cost gradient $$\frac{\partial J}{\partial a}$$ depends on the choice of the cost function since it is obviously the gradient of the cost w.r.t. activation. Since we are using a logistic activation function, we will go ahead and use the logistic loss function (a.k.a. cross entropy loss or negative log-likelihoods):
 
-$$J=-\frac{1}{m}\bullet\sum_{j}^{m}{y_j\bullet l o g{(a}_j)+(1-y_j)\bullet\log({1-a}_j)}$$
+$$J=-\frac{1}{m}\cdot\sum_{j}^{m}{y_j\cdot l o g{(a}_j)+(1-y_j)\cdot\log({1-a}_j)}$$
 
 The result for $$\frac{\partial J}{\partial \boldsymbol{a}}$$ is:
 
 $$
-\frac{\partial J}{\partial\boldsymbol{a}}=-\frac{1}{m}\bullet\left(\frac{ \boldsymbol{y}}{\boldsymbol{a}}-\frac{1-\boldsymbol{y}}{1-\boldsymbol{a}}\right)
+\frac{\partial J}{\partial\boldsymbol{a}}=-\frac{1}{m}\cdot\left(\frac{ \boldsymbol{y}}{\boldsymbol{a}}-\frac{1-\boldsymbol{y}}{1-\boldsymbol{a}}\right)
 $$
 
 Note that all the arithmetic operations in the above are all elementwise. The resulting cost gradient is a vector that has same shape as $$a$$ and $$y$$, which is $$1$$-by-$$m$$.
@@ -926,10 +949,8 @@ Note that all the arithmetic operations in the above are all elementwise. The re
 Now we recombine everything. Therefore, the equation for computing the cost gradient for an artificial neuron that uses a logistic activation function and a cross entropy loss is:
 
 $$
-\frac{\partial J}{\partial w}=\ \frac{\partial J}{\partial \boldsymbol{a}}\frac{\partial \boldsymbol{a}}{\partial z}\frac{\partial z}{\partial \boldsymbol{w}}=-\frac{1}{m}\bullet\left(\frac{\boldsymbol{y}}{\boldsymbol{a}}-\frac{1-\boldsymbol{y}}{1-\boldsymbol{a}}\right)\frac{\partial a}{\partial z}X^T
+\frac{\partial J}{\partial w}=\ \frac{\partial J}{\partial \boldsymbol{a}}\frac{\partial \boldsymbol{a}}{\partial z}\frac{\partial z}{\partial \boldsymbol{w}}=-\frac{1}{m}\cdot\left(\frac{\boldsymbol{y}}{\boldsymbol{a}}-\frac{1-\boldsymbol{y}}{1-\boldsymbol{a}}\right)\frac{\partial a}{\partial z}X^T
 $$
-
-I didn’t sub in the diagonal matrix of $$\frac{\partial a}{\partial z}$$ because we can do one more thing to further compact and simplify the above equation. In fact, from here out, there are multiple ways we can choose to arrange and present these terms, and the results will all still be the same.
 
 We choose to combine the first two gradients into $$\frac{\partial J}{\partial \boldsymbol{z}}$$ such that $$\frac{\partial J}{\partial w}$$ is:
 
@@ -937,21 +958,50 @@ $$
 \frac{\partial J}{\partial w}=\ \frac{\partial J}{\partial \boldsymbol{z}}X^T
 $$
 
-Therefore:
+The gradient $$\frac{\partial J}{\partial\boldsymbol{z}}$$ came from this:
 
 $$
 \frac{\partial J}{\partial\boldsymbol{z}}=\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}
 $$
 
-Now we work on $$\frac{\partial J}{\partial \boldsymbol{z}}$$:
+We already have everything for  $$\frac{\partial J}{\partial \boldsymbol{z}}$$:
 
 $$
-\frac{\partial J}{\partial \boldsymbol{z}}=\color{brown}{\frac{\partial J}{\partial \boldsymbol{a}}}\color{blue}{\frac{\partial \boldsymbol{a}}{\partial z}}=\color{brown}{-\frac{1}{m}\bullet\left(\frac{ \boldsymbol{y}}{ \boldsymbol{a}}-\frac{1- \boldsymbol{y}}{1- \boldsymbol{a}}\right) }\color{blue}{\left[\begin{matrix}a_1\bullet\left(1-a_1\right)&0&\cdots&0\\0&a_2\bullet\left(1-a_2\right)&\cdots&0\\\vdots&\vdots&\ddots&\vdots\\0&0&\cdots&a_m\bullet\left(1-a_m\right)\\\end{matrix}\right]}
+\frac{\partial J}{\partial \boldsymbol{z}}=\color{brown}{\frac{\partial J}{\partial \boldsymbol{a}}}\color{blue}{\frac{\partial \boldsymbol{a}}{\partial z}}=\color{brown}{-\frac{1}{m}\cdot\left(\frac{ \boldsymbol{y}}{ \boldsymbol{a}}-\frac{1- \boldsymbol{y}}{1- \boldsymbol{a}}\right) }\color{blue}{\left[\begin{matrix}a_1\cdot\left(1-a_1\right)&0&\cdots&0\\0&a_2\cdot\left(1-a_2\right)&\cdots&0\\\vdots&\vdots&\ddots&\vdots\\0&0&\cdots&a_m\cdot\left(1-a_m\right)\\\end{matrix}\right]}
 $$
 
-We see the multiplication of a vector with a diagonal matrix, and this is a cue for us to use elementwise multiplication (a.k.a. Hadamard product) here, which is denoted as $$\odot$$.
+$$
+\frac{\partial J}{\partial w}=\frac{\partial J}{\partial\boldsymbol{z}}X^T=\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}X^T
+$$
 
-The mathematical relationship between Hadamard product and matrix multiplication plays out like this.
+{% include indent_paragraph.html content=
+"
+Where $ \frac{\partial J}{\partial w} $ is $ 1 $-by-$ n $, $ \frac{\partial J}{\partial z} $ is $ 1 $-by-$ m $, $ \frac{\partial J}{\partial\boldsymbol{a}} $ is a $ 1 $-by-$ m $ vector,  $ \frac{\partial\boldsymbol{a}}{\partial z} $ is an $ m $-by-$ m $ matrix. Note that division between vectors or matrices, e.g. $ \frac{\boldsymbol{y}}{\boldsymbol{a}} $, are always elementwise."
+%}
+
+Notice that everything needed for computing the vital cost gradient $$\frac{\partial J}{\partial w}$$ has either already been computed during forward propagation or is from data. We are simply reusing values already computed prior.
+
+The above equation can now be easily implemented in code in a vectorized fashion. For example, the gradient $ \frac{\partial\boldsymbol{a}}{\partial z} $ will be computed in code by first computing its diagonal as a vector:
+
+$$
+diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}=(\boldsymbol{a}\odot\left(1-\boldsymbol{a}\right))
+$$
+
+$$
+=\left[\begin{matrix}a_1\cdot(1-a_1\ )&a_2\cdot(1-a_2\ )&\cdots&a_m\cdot(1-a_m\ )\\\end{matrix}\right]
+$$
+
+{% include indent_paragraph.html content=
+"Where $ \boldsymbol{a} $ is the $ 1 $-by-$ m $ vector that contains the activations. The symbol $ \odot $ represents elementwise multiplication (a.k.a. Hadamard product). 
+<br><br>
+The $ diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z} $ is the $ 1 $-by-$ m $ vector that you will obtain if you pulled out the diagonal of the matrix $ \frac{\partial\boldsymbol{a}}{\partial z} $ and put it into a row vector."
+%}
+
+Then we will implement some code that can then take the $$diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}$$, which is a $$1$$-by-$$m$$ vector, and inflate it into the diagonal matrix $$\frac{\partial\boldsymbol{a}}{\partial z}$$ by padding it with zeros. If coding in Python and using the NumPy library for our vectorized computations, then the method [`numpy.diagflat`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.diagflat.html) does exactly that.
+
+One good news is that we can take the equation $$\frac{\partial J}{\partial w}=\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}X^T$$ to an alternative form that would allow us to skip the step of inflating the $$diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}$$ and therefore save us a little processing time.
+
+There is a well-known relationship between the multiplication of a vector with a diagonal matrix, and elementwise multiplication (a.k.a. Hadamard product), which is denoted as $$\odot$$. The relationship plays out like this. 
 
 Say we have a row vector $$v$$ and a diagonal matrix $$D$$, and when we flatten the $$D$$ into a row vector $$d$$ (that is, we pull out the diagonal from $$D$$ and put it into a row vector), whose elements is just the diagonal of $$D$$, then we can write:
 
@@ -964,61 +1014,88 @@ $$
 We apply this relationship to our gradients and get:
 
 $$
-\frac{\partial J}{\partial \boldsymbol{z}}=\frac{\partial J}{\partial \boldsymbol{a}}\odot\frac{\partial \boldsymbol{a}}{\partial z}=-\frac{1}{m}\bullet\left(\frac{ \boldsymbol{y}}{ \boldsymbol{a}}-\frac{1- \boldsymbol{y}}{1- \boldsymbol{a}}\right)\ \odot(a\bullet\left(1-a\right))
+\frac{\partial J}{\partial \boldsymbol{z}}=\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}=\frac{\partial J}{\partial \boldsymbol{a}}\odot\left(diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}\right)=-\frac{1}{m}\cdot\left(\frac{ \boldsymbol{y}}{ \boldsymbol{a}}-\frac{1- \boldsymbol{y}}{1- \boldsymbol{a}}\right)\ \odot(a\odot\left(1-a\right))
 $$
 
-Where $$\frac{\partial \boldsymbol{a}}{\partial z}$$ is no longer a diagonal matrix but now a vector whose elements is from the diagonal. And $$\frac{\partial J}{\partial \boldsymbol{z}}$$ is an $$1$$-by-$$m$$ matrix.
-
-Therefore, our final equation for computing the cost gradient $$\frac{\partial J}{\partial w}$$ is:
+In fact, we can casually equate $$\frac{\partial\boldsymbol{a}}{\partial z}$$ to its diagonal vector (the $$diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}$$) since it is just the diagonal that contains any useful information. Therefore, we end up with:
 
 $$
-\frac{\partial J}{\partial w}=\ \frac{\partial J}{\partial \boldsymbol{z}}X^T=\left(-\frac{1}{m}\bullet\left(\frac{ \boldsymbol{y}}{ \boldsymbol{a}}-\frac{1- \boldsymbol{y}}{1- \boldsymbol{a}}\right)\ \odot(a\bullet\left(1-a\right))\right)X^T
+\frac{\partial\boldsymbol{a}}{\partial z}:=(\boldsymbol{a}\odot\left(1-\boldsymbol{a}\right))
 $$
+
+{% include indent_paragraph.html content=
+"Note that `:=` means that this is an assignment statement, not an equation."
+%}
+
+Therefore, our final equation for computing the cost gradient $$\frac{\partial J}{\partial w}$$ can be written as:
+
+$$
+\frac{\partial J}{\partial w}=\frac{\partial J}{\partial\boldsymbol{z}}\frac{\partial z}{\partial w}=\ \frac{\partial J}{\partial\boldsymbol{z}}X^T=\frac{\partial J}{\partial\boldsymbol{a}}\odot\frac{\partial\boldsymbol{a}}{\partial z}X^T=-\frac{1}{m}\bullet\left(\frac{\boldsymbol{y}}{\boldsymbol{a}}-\frac{1-\boldsymbol{y}}{1-\boldsymbol{a}}\right)\ \odot(a\odot\left(1-a\right))X^T
+$$
+
+{% include indent_paragraph.html content=
+"Where $ \frac{\partial\boldsymbol{a}}{\partial z} $ is a $ 1 $-by-$ m $ vector defined as: $ \frac{\partial\boldsymbol{a}}{\partial z}(\boldsymbol{a}\odot\left(1-\boldsymbol{a}\right)) $.
+<br><br>
+Note that we applied a property of how Hadamard product interacts with matrix multiplication:$ \left(\frac{\partial J}{\partial\boldsymbol{a}}\odot\frac{\partial\boldsymbol{a}}{\partial z}\right)X^T=\frac{\partial J}{\partial\boldsymbol{a}}\odot\frac{\partial\boldsymbol{a}}{\partial z}X^T $."
+%}
 
 Now for $$\frac{\partial J}{\partial b}$$, we can borrow a lot of what we did for $$\frac{\partial J}{\partial w}$$ here as well.
 
 $$
-\frac{\partial J}{\partial b}=\frac{\partial J}{\partial \boldsymbol{z}}\ \frac{\partial z}{\partial \boldsymbol{b}}=\frac{\partial J}{\partial \boldsymbol{a}}\frac{\partial \boldsymbol{a}}{\partial z}\frac{\partial z}{\partial \boldsymbol{b}}
+\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\boldsymbol{z}}\ \frac{\partial\boldsymbol{z}}{\partial b}=\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}\frac{\partial z}{\partial b}
 $$
 
+We know that $$\frac{\partial J}{\partial b}$$ has to be a scalar (or $$1$$-by-$$1$$ vector) because there is only one bias in the model, unlike weights, of which there are $$n$$ of them. During gradient descent, there is only one bias value to update, so if we have a vector or matrix for $$\frac{\partial J}{\partial b}$$, then we won’t know what to do with all those values in the vector or matrix.
 
-Although the further breakdown of $$\frac{\partial J}{\partial\boldsymbol{z}}$$ into $$\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}$$ is shown above, we won’t need to use that since we already fully delineated $$\frac{\partial J}{\partial\boldsymbol{z}}$$ earlier. So, we just tackle $$\frac{\partial J}{\partial\boldsymbol{z}}\frac{\partial z}{\partial\boldsymbol{b}}$$.
+We have to recall that the only reason that $$b$$ is a $$1$$-by-$$m$$ vector in the equations for forward propagation is because it gets stretched (broadcasted) into a $$1$$-by-$$m$$ vector to match the shape of $$z$$, so that the equations are valid. Fundamentally, it is a scalar and so is $$\frac{\partial J}{\partial b}$$.
 
-Actually just $$\frac{\partial z}{\partial\boldsymbol{b}}$$:
+Although the further breakdown of $$\frac{\partial J}{\partial\boldsymbol{z}}$$ into $$\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}$$ is shown above, we won’t need to use that since we already fully delineated $$\frac{\partial J}{\partial\boldsymbol{z}}$$ earlier. So, we just tackle $$\frac{\partial J}{\partial\boldsymbol{z}}\frac{\partial\boldsymbol{z}}{\partial\boldsymbol{b}}$$. 
 
-$$
-\frac{\partial\boldsymbol{z}}{\partial\boldsymbol{b}}=\frac{\partial(\boldsymbol{wX}\ +\ \boldsymbol{b})}{\partial\boldsymbol{b}}=\frac{\partial(\boldsymbol{wX})}{\partial\boldsymbol{b}}+\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}=0+\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}=1
-$$
-
-Therefore:
+Actually, just need $$\frac{\partial\boldsymbol{z}}{\partial b}$$ since we already have $$\frac{\partial J}{\partial\boldsymbol{z}}$$. The matrix representation of $$\frac{\partial\boldsymbol{z}}{\partial b}$$ is:
 
 $$
-\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\boldsymbol{z}}
+\frac{\partial\boldsymbol{z}}{\partial b}=\left[\begin{matrix}\frac{\partial z_1}{\partial b}\\\frac{\partial z_2}{\partial b}\\\vdots\\\frac{\partial z_m}{\partial b}\\\end{matrix}\right]\ 
 $$
 
-We just cut corners in the above by doing $$\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}=1$$. How? Well, the equivalence of $$\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}$$ to 1 only holds by assuming that $$b$$ is always a scalar, which organically it is (it is simply the weight for the bias node). But we can’t forget that during computation, $$b$$ gets broadcasted to match the shape of $$z$$.
-
-Logically, $$\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}$$ must always have same shape as $$b$$. This means that during computation, just like $$b$$, $$\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}$$ should get broadcasted into a tensor of ones with same shape as $$z$$.
-
-That is, we should have this:
+Let’s work on it but keeping things in compact format:
 
 $$
-\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\boldsymbol{z}}\ \frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}
+\frac{\partial\boldsymbol{z}}{\partial b}=\frac{\partial(\boldsymbol{wX}\ +\ \boldsymbol{b})}{\partial b}=\frac{\partial(\boldsymbol{wX})}{\partial b}+\frac{\partial\boldsymbol{b}}{\partial b}=0+\frac{\partial\boldsymbol{b}}{\partial b}=\frac{\partial\boldsymbol{b}}{\partial b}=1
+$$
+
+Let’s examine $$\frac{\partial\boldsymbol{b}}{\partial b}$$. It’s an m-by-1 vector that is equal to $$\frac{\partial\boldsymbol{z}}{\partial b}$$, which also means it has same shape as $$\frac{\partial\boldsymbol{z}}{\partial b}$$. You also observe that it has the shape of $$z^T$$. 
+
+When you transpose a vector or matrix, you also transpose their shape, which fortunately is simply done by reversing the order of the shape, so when a 1-by-m vector is transposed, its new shape is m-by-1. So, $$\frac{\partial\boldsymbol{b}}{\partial b}$$ looks like this:
+
+$$
+\frac{\partial\boldsymbol{b}}{\partial b}=\left[\begin{matrix}\frac{\partial b}{\partial b}\\\frac{\partial b}{\partial b}\\\vdots\\\frac{\partial b}{\partial b}\\\end{matrix}\right]=\left[\begin{matrix}1\\1\\\vdots\\1\\\end{matrix}\right]\
+$$
+
+Therefore $$\frac{\partial z}{\partial\boldsymbol{b}}$$ is a vector of all ones that has the shape $$m$$-by-$$1$$ (the shape of $$z^T$$).
+
+$$
+\frac{\partial\boldsymbol{z}}{\partial b}=\frac{\partial\boldsymbol{b}}{\partial b}=\left[\begin{matrix}\frac{\partial b}{\partial b}\\\frac{\partial b}{\partial b}\\\vdots\\\frac{\partial b}{\partial b}\\\end{matrix}\right]=\left[\begin{matrix}1\\1\\\vdots\\1\\\end{matrix}\right]
+$$
+
+Thus $$\frac{\partial J}{\partial b}$$ is fully delineated:
+
+$$
+\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\boldsymbol{z}}\ \frac{\partial\boldsymbol{z}}{\partial b}
 $$
 
 {% include indent_paragraph.html content=
-"Where $ \frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}} $ is a tensor of ones (a vector in the case of just one artificial neuron) with same shape as $ z $; so, think of something like this $ \left[\begin{matrix}1&1&\cdots&1\\\end{matrix}\right] $."
+"Where $ \frac{\partial J}{\partial\boldsymbol{z}} $ is the gradient already computed in the steps for computing $ \frac{\partial J}{\partial\boldsymbol{w}} $, and $ \frac{\partial z}{\partial b} $ is an $ m $-by-$ 1 $ vector of ones (i.e. has same shape as $ z^T $)."
 %}
 
-Remember that even though $$b$$ is a scalar (or $$1$$-by-$$1$$ vector), it gets broadcasted into a 1-by-$$m$$ vector during the forward pass. We must keep in mind that $$b$$ is a parameter of the estimator, and it would be very counterproductive to define it in a way that binds it to the number of examples (datapoints) in a batch. This is why its fundamental form is a scalar.
+The above is easily implemented in code as a vectorized operation by simply vectorizing the creation of the vector of ones (i.e. $$\frac{\partial z}{\partial b}$$). But there is another way we can also characterize the above equation for $$\frac{\partial J}{\partial b}$$.
 
-As mentioned earlier, matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction.
+As mentioned earlier, matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction. 
 
 Here is a quick overview of tensor contraction.
 
 From the perspective of tensor contraction, the vector-matrix multiplication of a row vector $$v$$ and a matrix $$M$$ to produce a row vector $$u$$ is:
 
-$$u_q=\sum_{p}{v_p\bullet M_{p,q}}$$
+$$u_q=\sum_{p}{v_p\cdot M_{p,q}}$$
 
 Where the subscript $$p$$ tracks the only non-unit axis of the vector $$v$$, and the subscript $$q$$ tracks second axis of the matrix $$M$$.
 
@@ -1034,11 +1111,9 @@ M=\left[\begin{matrix}3&5&7\\4&6&8\\\end{matrix}\right]
 $$
 
 {% include indent_paragraph.html content=
-"The vector $ v $ is $ 1 $-by-$ 2 $, and we will use the subscript $ q $ to track the non-unit axis, i.e. the second axis (the one that counts to a maximum of 2). That is: $ v_1=1 $ and $ v_2=2 $"
-%}
-
-{% include indent_paragraph.html content=
-"The matrix $ M $ is $ 2 $-by-$ 3 $, and we will use the subscript $ q $ to track the first axis (the one that counts to a maximum of 2) and $ p $ to track the second axis (the one that counts to a maximum of 3). That is $ M_{2,1}=4 $ and $ M_{1,3}=7 $."
+"The vector $ v $ is $ 1 $-by-$ 2 $, and we will use the subscript $ q $ to track the non-unit axis, i.e. the second axis (the one that counts to a maximum of 2). That is: $ v_1=1 $ and $ v_2=2 $.
+<br><br>
+The matrix $ M $ is $ 2 $-by-$ 3 $, and we will use the subscript $ q $ to track the first axis (the one that counts to a maximum of 2) and $ p $ to track the second axis (the one that counts to a maximum of 3). That is $ M_{2,1}=4 $ and $ M_{1,3}=7 $."
 %}
 
 We know that the vector-matrix multiplication, $$vM$$, produces a vector. Let’s call it $$u$$, and it has the shape $$1$$-by-$$3$$.
@@ -1050,13 +1125,13 @@ $$
 Using the tensor contraction format, we can fully characterize what the resulting vector $$u$$ is, by describing it elementwise:
 
 $$
-u_q=\sum_{p}{v_p\bullet M_{p,q}}
+u_q=\sum_{p}{v_p\cdot M_{p,q}}
 $$
 
 For instance,
 
 $$
-u_1=v_1\bullet M_{1,1}+v_2\bullet M_{2,1}=1\bullet3+2\bullet4=11
+u_1=v_1\cdot M_{1,1}+v_2\cdot M_{2,1}=1\cdot3+2\cdot4=11
 $$
 
 And we can do this for $$u_2$$ and $$u_3$$ (try it). In all, we have:
@@ -1072,7 +1147,7 @@ We can use the tensor contraction format to more properly delineate $$\frac{\par
 In tensor contraction format, $ \frac{\partial J}{\partial b} $ is:
 
 $$
-\frac{\partial J}{\partial b}=\sum_{j=1}^{m}{\left(\frac{\partial J}{\partial\boldsymbol{z}}\right)_j\bullet\left(\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}\right)_j}
+\frac{\partial J}{\partial b}=\sum_{j=1}^{m}{\left(\frac{\partial J}{\partial\boldsymbol{z}}\right)_j\cdot\left(\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}\right)_j}
 $$
 
 And because $$\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}$$ is a vector of ones, we have:
@@ -1085,28 +1160,17 @@ In essence, we summed across the second axis of $ \frac{\partial J}{\partial z} 
 
 We now have all our cost gradients fully delineated.
 
-<table>
-<td>
-<details>
-<summary>
-<b>The intuition of the cost gradient with respect to bias </b>
-</summary>
-<p>
-The intuition of this summing is that we are averaging across all the datapoints. We are taking the average of the gradients for all the datapoints in the batch and set that as our gradient $ \frac{\partial J}{\partial b} $.
-<br><br>
-Note that the mathematical operation of averaging is simply the summation of terms divided by the number of terms being summed.
-<br><br>
-We are contracting along the first axis, represented by subscript $ j $, which is also the axis that tracks the datapoints. In other words, we are summing across the datapoints. This is also the first step in an averaging operation.
-<br><br>
-The next and final step in the averaging is the division of the summation by the number of terms that we are summing up, which would be the batch size (the number of datapoints in the batch). So, what about that?
-<br><br>
-Well that was already baked in when we looked into $ \frac{\partial J}{\partial \boldsymbol{z}}=\frac{\partial J}{\partial \boldsymbol{a}}\frac{\partial a}{\partial \boldsymbol{z}} $. The term $ \frac{1}{m} $ in $ \frac{\partial J}{\partial \boldsymbol{a}} $ is it.
-<br><br>
-So, to summarize, the operations involved in the summing of $ \frac{\partial J}{\partial w}=\ \frac{\partial J}{\partial \boldsymbol{z}}X^T $ along its second axis to produce $ \frac{\partial J}{\partial \boldsymbol{b}} $ is analogous to it taking the average, across all datapoints in the batch, of the cost gradient associated with each datapoint. Also, the same kind of intuition can be drawn for $ \frac{\partial J}{\partial w} $.
-</p>
-</details>
-</td>
-</table>
+
+In all, we can summarize with this:
+
+$$
+\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\boldsymbol{z}}\ \frac{\partial\boldsymbol{z}}{\partial b}=\sum_{j=1}^{m}\left(\frac{\partial J}{\partial\boldsymbol{z}}\right)_j
+$$
+
+{% include indent_paragraph.html content=
+"Where $ \frac{\partial J}{\partial\boldsymbol{z}} $ is the gradient already computed in the steps for computing $ \frac{\partial J}{\partial\boldsymbol{w}} $, and $ \frac{\partial z}{\partial b} $ is an $ m $-by-$ 1 $ vector of ones (i.e. has same shape as $ z^T $)."
+%}
+
 
 Although, we don't really need to see the equation for $ \frac{\partial J}{\partial w} $ in its contraction format, we will present it for the sake of it. We already know that $ \frac{\partial J}{\partial w} $ is:
 
@@ -1117,8 +1181,10 @@ $$
 And we also already know that $ \frac{\partial J}{\partial \boldsymbol{z}} $ is a $ 1 $-by-$ m $ row vector and $ X $ is an $ n $-by-$ m $ matrix, which makes $ X^T $ an $ m $-by-$ n $ matrix. In tensor contraction format, the above equation is:
 
 $$
-\left(\frac{\partial J}{\partial\boldsymbol{w}}\right)_i=\sum_{j=1}^{m}{\left(\frac{\partial J}{\partial\boldsymbol{z}}\right)_j\bullet\left(X^T\right)_{j,i}}
+\left(\frac{\partial J}{\partial\boldsymbol{w}}\right)_i=\sum_{j=1}^{m}{\left(\frac{\partial J}{\partial\boldsymbol{z}}\right)_j\cdot\left(X^T\right)_{j,i}}
 $$
+
+If you singled out a feature from your data (i.e. a column from $$X^T$$) and replaced all of its values for all datapoints with 1, the above equation will turn exactly into the tensor contraction of the equation for $$\frac{\partial J}{\partial b}$$. This is exactly in line with what the bias node represents.
 
 ### **Summary of workflow**
 
@@ -1130,7 +1196,7 @@ We first initialize our parameters, and we will do this randomly.
 
 However, there are a handful of initialization schemes out there that promise to initialize our parameters with values that enable the network to be optimized faster. You can think of it as beginning a journey from a point closer to the destination, which allows you to finish faster than another person who began much farther away because they chose to randomly begin at some arbitrary point.
 
-One such scheme for sigmoid activation functions (e.g. logistic, hyperbolic tangent, etc.), the Xavier Initialization Scheme (introduced by Xavier Glorot in 2010), is implemented in my code for deep neural networks.
+One such scheme for sigmoid activation functions (e.g. logistic, hyperbolic tangent, etc.), the Xavier Initialization Scheme (introduced by [Xavier Glorot in 2010](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf), is implemented in my code for deep neural networks.
 
 #### **Run forward pass**
 
@@ -1147,7 +1213,7 @@ $$
 Then we check our activation $$a$$ against the ground truth $$y$$ and compute the corresponding cost.
 
 $$
-J=-\frac{1}{m}\bullet\sum_{j}^{m}{y_i\bullet l o g{(y}_i)+(1-a_i)\bullet\log({1-a}_i)}
+J=-\frac{1}{m}\cdot\sum_{j}^{m}{y_i\cdot l o g{(y}_i)+(1-a_i)\cdot\log({1-a}_i)}
 $$
 
 But we will not directly use this cost any further in this workflow. We just need it in order to keep track of how good how network is doing.
@@ -1157,7 +1223,7 @@ But we will not directly use this cost any further in this workflow. We just nee
 Now we will optimize our parameters in such a way that our loss decreases. The backward pass begins here. We start by first computing the cost gradient $$\frac{\partial J}{\partial w}$$:
 
 $$
-\frac{\partial J}{\partial w}=\ \frac{\partial J}{\partial \boldsymbol{z}}X^T=\left(-\frac{1}{m}\bullet\left(\frac{ \boldsymbol{y}}{ \boldsymbol{a}}-\frac{1- \boldsymbol{y}}{1- \boldsymbol{a}}\right)\ \odot(a\bullet\left(1-a\right))\right)X^T
+\frac{\partial J}{\partial w}=\ \frac{\partial J}{\partial \boldsymbol{z}}X^T=\left(-\frac{1}{m}\cdot\left(\frac{ \boldsymbol{y}}{ \boldsymbol{a}}-\frac{1- \boldsymbol{y}}{1- \boldsymbol{a}}\right)\ \odot(a\odot\left(1-a\right))\right)X^T
 $$
 
 The beautiful thing about the above equation is that everything on the right-hand side has already been computed during forward pass, so this saves us a considerable amount of computation. This benefit becomes even more apparent when doing a network of artificial neurons, and that is the power of backpropagation.
