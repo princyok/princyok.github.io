@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Catching AI with its pants down"
-logline: "Detailed writeup exploring the inner workings of neural nets and how to biuld a general-purpose feedforward neural net from scratch."
+logline: "Detailed writeup exploring the inner workings of neural nets and how to biuld a standard feedforward neural net from scratch."
 date:   "2020-03-13"
 categories: machine-learning
 permalink:
@@ -18,699 +18,6 @@ comments: true
 * TOC
 {:toc}
 
-## **Prelude: Some Musings About AI**
-### **Objective**
-The goal of this writeup is to present modern artificial intelligence (AI), which is largely powered by deep neural networks, in a highly accessible form. I will walk you through building a deep neural network from scratch without reliance on any machine learning libraries and we will use our network to tackle real public research datasets.
-
-To keep this very accessible, all the mathematics will be simplified to a level that anyone with a high-school or first-year-university level of math knowledge and that can code (especially if Python) should be able to follow. Together we will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth. When I say AI here, I'm being a little silly with buzzspeak and actually mean deep neural networks.
-
-All the code presented in this article can be found at [this GitHub repo](https://github.com/princyok/deep_learning_without_ml_libraries), and includes code for artificial nearon and deep neural networks from scratch.
-<!--
-The original plan was to explain everything in one giant article, but that quickly proved unwieldy. So, I decided to break things up into two articles. This first article covers the prelude (basically some casual ramblings about AI) and part 1 (focuses on building an artificial neuron from scratch), and the sequel article (work in progress) will go over network of artificial neurons (a.k.a. neural networks). However, the codes for both articles have been made available. -->
-
-This writeup aims to be very detailed, simple and granular, such that by the end, you hopefully should have enough knowledge to investigate and code more advanced architectures from scratch if you chose to do so.
-
-### **Motivation**
-My feeling is if you want to understand a really complicated device like a brain, you should build one. I mean, you can look at cars, and you could think you could understand cars. When you try to build a car, you suddenly discover then there's this stuff that has to go under the hood, otherwise it doesn't work.
-
-The entirety of the above paragraph is one of my favourite quotes by Geoffrey Hinton, one of the three Godfathers of Deep Learning. I don’t think we need any further motivation for why we should peek under the hood to see precisely what’s really going on in a deep learning AI system.
-
-Tearing apart whatever is under the hood has been my canon for my machine learning journey, so it was natural that I would build a deep neural network from scratch especially after I couldn’t find any such complete implementation online (as of late 2018). Some of my colleagues thought it would be good if I put together some explanation of what I did, and so the idea for this writeup was born.
-
-### **Artificial General Intelligence: The Holy Grail of AI**
-Artificial intelligence (AI) is the intelligence, or the impression thereof, exhibited by things made by we humans. The kind of intelligence we have is natural intelligence. A lot of things can fall under the umbrella of AI because the definition is vague. Everything from the computer player of Chess Titans on Windows 7 to Tesla’s autopilot is called AI.
-
-Artificial general intelligence (AGI) is the machine intelligence that can handle anything a human can. You can think of the T-800 from *The Terminator* or Sonny from *I, Robot* (although in my opinion, the movie’s view of AI, at least with regards to Sonny, aligns more with symbolic, rule-based AI instead of machine learning). Such AI system is also referred to as strong AI.
-
-{% include image.html url="/assets/images/artificial_neuron/t800_terminator.png" description="The T-800 Terminator, a classic imagination of a strong AI that can learn through verbal interactions and solve problems on the fly." %}
-
-AGI would be able to solve problems that were not explicitly specified in its design phase.
-There is no AGI system in existence today, nor is there any research group that is known to be anywhere close to deploying one. In fact, there is not even a semblance of consensus on when AGI could become reality.
-
-Tech author Martin Ford, for his 2018 book *Architects of Intelligence*, surveyed 23 leading AI figures about when there would be a 50 percent chance of AGI being built. Those surveyed included DeepMind CEO Demis Hassabis, Head of Google AI Jeff Dean, and Geoffrey Hinton (one of the three Godfathers of Deep Learning).
-
-Of the 23 surveyed, 16 answered anonymously, and 2 answered with their names. The most immediate estimate of 2029 came from Google director of engineering Ray Kurzweil and the most distant estimate of 2200 came from Rod Brooks (the former director of MIT’s AI lab and co-founder of iRobot). The average estimate was 2099.
-
-There are many other surveys out there that give results in the 2030s and 2040s. I feel this is because people have a tendency to want the technologies that they are hopeful about to become reality in their lifetimes, so they tend to guess 20 to 30 years from the present, because that’s long enough time for a lot of progress to be made in any field and short enough to fit within their lifetime.
-
-For instance, I too get that gut feeling that space propulsions that can reach low-end relativistic speeds should be just 20 to 40 years away; how else will the Breakthrough Starshot (founded by  Zuckerberg, Milner and the late Hawking) get a spacecraft to Proxima Centauri b. Same for fault-tolerant quantum computers, fusion power with gain factor far greater than 1, etc. They are all just 20 to 40 years away, because these are all things I really want to see happen.
-
-Also, it seems that [AI entrepreneurs tend to be much more optimistic about how close we are to AGI than AI researchers](https://blog.aimultiple.com/artificial-general-intelligence-singularity-timing/) are. Someone should do a bigger survey for that, ha!
-
-### **Artificial Narrow Intelligence**
-The type of AI we interact with today and hear of nonstop in the media is artificial narrow intelligence (ANI), also known as weak AI. It differs from AGI in that the AI is designed to deal with a specific task or a specific group of closely related tasks. Some popular examples are AlphaGo, Google Assistant, Alexa, etc.
-
-A lot of the hype that has sprung up around ANI in the last decade was driven by the progress made with applying deep neural networks (a.k.a. deep learning) to supervised learning tasks (we will talk more about these below) and more recently to reinforcement learning tasks.
-
-A supervised learning task is one were the mathematical model (what we would call the AI if we’re still doing buzzspeak) is trained to associate inputs with their correct outputs, so that it can later produce a correct output when fed an input it never saw during training. An example is when Google Lens recognizes the kind of shoe you are pointing the camera at, or when IBM’s Watson transcribes your vocal speech to text. Google Lens can recognize objects in images because the neural network powering it has been trained with images where the objects in them have been correctly labelled, so that when it later sees a new image it has never seen before, it can still recognize patterns that it already learned during training.
-
-In reinforcement learning, you have an agent that tries to maximize future cumulative reward by exploring and exploiting the environment. That’s what AlphaGo is in a nutshell.
-
-The important point is that deep neural networks have been a key transformative force in the development of powerful ANI solutions in recent times.
-
-### **Machine learning**
-The rise of the deep learning hype has been a huge boon for its parent field of machine learning. Machine learning is simply the study of building computers systems that can “learn” from examples (i.e. data). The reason for the quotes around “learn” is that the term is just a machine learning lingo for [mathematical optimization](https://en.wikipedia.org/wiki/Mathematical_optimization) (and we will talk more about this later). We will also use the term “training” a lot, and it also refers to the same mathematical optimization.
-
-{% include image.html url="/assets/images/artificial_neuron/training_vs_test_cat_dog_illustration.png" description="In machine learning, the model learns the associations presented in the training set; that is, images with certain kinds of patterns, which we humans trivially recognize as characteristics of a cat or dog, map to a certain label (cat or dog). It uses the knowledge learned to correctly label the images in the test set, which are images it never saw during training. This is specifically supervised learning, a category of machine learning where the computer program is provided with correctly labelled examples to learn from." %}
-
-In machine learning, you have a model that takes in data and spits out something relevant to that data. For the task of labelling images of cats and dogs (see image above), a model will receive images as input data and then it will output the correct labels for those images. This is a task that is trivial for humans, but was practically impossible for computer programs to consistently perform well at until convolutional neural networks came along. This was because it is extremely laborious to manually write programs to identify all the patterns needed to identify the primary object in the image, which leaves machine learning as a more feasible route.
-
-{% include image.html
-url="/assets/images/artificial_neuron/image_to_numbers.png"
-description=
-"A digital image is just a collection of pixels, and each pixel is simply a box shaded with one color. For a greyscale image like above, there is only one color with intensity ranging from 0 (for pure black) to 256 (for pure white). For machine learning, we simply covert the image to a collection of numbers, e.g. an array or matrix."
-%}
-
-Another example: With DeepMind’s AlphaGo, the program takes in the current board configuration as input data and spits out the next move to play that will maximize the chances of winning the match.
-
-#### **Toy dataset for this writeup**
-Before we advance any further to artificial neurons, let’s introduce a toy dataset that will accompany subsequent discussions and be used to provide vivid illustration.
-
-You can think of the data as being generated from an experiment where a device launches balls of various masses unto a board that can roll backward, and when it does roll back all the way to touch the sensor, that shot is recorded as high energy, otherwise it is classified as low energy.
-
-{% include image.html url="/assets/images/artificial_neuron/toy_experiment_schematic.png" description="A schematic of the toy experiment." %}
-
-Below is an excerpt of the dataset:
-
-{% include image.html url="/assets/images/artificial_neuron/toy_dataset_excerpt.png" description="A few records (datapoints) from the toy dataset, showing all the features and targets (the column headings)." %}
-
-The dataset has two features or inputs, i.e. `velocity` and `mass`, and a single output, which is `energy level` and it is binary. The last two columns are exactly the same, just that the third is the numerical version of the last and is what we actually use because we need to crunch numbers. In classification, the labels are converted to numbers for the learning process.
-
-#### **Supervised vs. Unsupervised Learning**
-The two main broad categories of machine learning are supervised learning and unsupervised learning. The main distinction between the two is that in the former the program is provided with a target variable (or labelled data in the in the context of classification, which is touched upon a few paragraphs below) and in the latter, no variable is designated as the target variable.
-
-But don’t let the “supervision” in the name fool you, because, as of 2019, working on real-world unsupervised tasks requires more “supervision” (in the form of domain-specific tweaks) than supervised tasks (which can still benefit from domain-specific tweaks). But there is a general sense of expectation that unsupervised learning will start rivalling the success of supervised learning in terms of practical effectiveness (and also hype) within the next few years.
-
-In supervised learning, we always have labelled data. This will have two parts. The juice of the data ($$X$$) and the variable that holds the labels ($$Y$$). $$X$$ is more formally called the input variables, independent variables, predictors, or **features**. $$Y$$ is also called the output variable, response, or dependent variable, ground truth or **target**. It’s quite useful to be able to recognize all these alternative names.
-
-In our toy dataset, mass and velocity are our features, and energy level is our target.
-
-Each datapoint in the dataset also goes by many names in the ML community. Names like “example”, “instance”, “record”, “observation”, etc., are all monikers for “datapoint”. I may use examples and records as alternatives to datapoint every now and then in this article, but I will mostly stick to using datapoint.
-
-
-#### **Supervised learning: Regression vs Classification**
-
-The two broad categories of supervised learning are classification and regression. In classification, the target variable has discrete values, e.g. cat and dog labels. There can’t be a value between cat and dog. It’s either a cat or a dog. Other examples would be a variable that holds labels for whether an email is spam or not spam.
-
-In regression the target variable has continuous values, e.g. account balances. It could be -\\$50 or \\$20 or some number in between that. It could be floating point number like \\$188.5555. Really large positive or really large negative number.
-
-#### **Reinforcement learning**
-Another subset of machine learning that some consider a category of its own alongside supervised learning and unsupervised learning is reinforcement learning. It’s about building programs that take actions that affect an environment in such a way that the cumulative future reward is maximized; in other words, programs that love to win!
-
-You may run into other sources that consider it a hybrid of both supervised and unsupervised learning; this is debatable because there is no label or correction involved in the training process, but there is a reward system that guides the learning process.
-
-Also be careful, because reinforcement learning is not a definitive name for hybrids of the two. There are other subsets of machine learning that are truer hybrids of supervised and unsupervised learning but do not fall under reinforcement learning. For instance, generative adversarial neural networks (the family of machine learning models behind the [deepfake technology](https://www.youtube.com/watch?v=cQ54GDm1eL0)).
-
-### **Estimators**
-When you see an apple, you are able to recognize that the fruit is an apple. When the accelerator (gas pedal) of a car is pressed down, the velocity of the car changes. When you see a ticktacktoe board where the game is ongoing, a decision on what is the best next move emerges. All of these have one thing in common: there is a process that takes an input and spits out an output. The visuals of an apple is the input and the recognition of the name is the output. Pressing down of the accelerator is an input and the rate of change velocity  is the output. All of these processes can be thought of as functions. A function is the mapping of a set of inputs to a set of outputs in such a way that no two or more inputs will result in same output. Almost any process you can think of can be thought of as a function. The hard part is fully characterizing the function that underlies that process.
-
-An estimator is a function that tries to estimate the behavior of another function whose details are not fully unknown.
-
-An estimator is the core component of a supervised machine learning system. It goes by a billion other names including being simply called the model, approximator, hypothesis function, learner, etc. But note that some of these other names, like model and learner, can also refer to more than just the estimator.
-
-Let’s say there is a function ($$f_{actual}$$) that takes $$X$$ as an input and spits out $$Y$$, then an estimator ($$f_{estim}$$) will take in the same $$X$$ as its input and will spit out $$\hat{Y}$$ as an output. This  $$\hat{Y}$$ will be expected to be approximately same as $$Y$$.
-
-$$
-Y=f_{actual}\left(X\right)
-$$
-
-$$
-\hat{Y}=f_{estim}\left(X\right)
-$$
-
-Because we expect that there may be a difference between Y and $$\hat{Y}$$, we introduce an error term to capture that difference:
-
-$$
-\varepsilon=Y-\hat{Y}
-$$
-
-Therefore, we can then see that:
-
-$$
-Y=\hat{Y}+\varepsilon
-$$
-
-Or written as:
-
-$$
-Y=f_{actual}\left(X\right)=f_{estim}\left(X\right)+\varepsilon
-$$
-
-We notice that if we can minimize $$\varepsilon$$ down to a really small value, then we can have an estimator that behaves like the real function that we are trying to estimate:
-
-$$
-Y\approx\hat{Y}=f_{estim}\left(X\right)
-$$
-
-If you’ve heard of naïve Bayes or logistic regression, linear regression, etc., then you’ve heard of other examples of machine learning estimators. But those are not the focus of this article.
-
-## **Part 1: Building an Artificial Neuron From Scratch**
-### **The brain as a function**
-The computational theory of mind (CTM) says that we can interpret human cognitive processes as computational functions i.e. the human mind behaves just like a computer. Note that while this theory is considered a good model for human cognition (it was the unchallenged standard in the 1960s and 1970s and still widely subscribed to), no one has been able to show how consciousness can emerge from a system modelled on the basis of this theory, but that’s another topic for another time. For a short primer on the theory, see [this article](https://plato.stanford.edu/entries/computational-mind/) from the Stanford Encyclopedia of Philosophy.
-
-According to CTM, if we have a mathematical model of all the computations that goes on in the brain, we should, one day, be able to replicate the capabilities of the brain with computers.
-
-But how does the brain do what it does?
-
-In a nutshell, the brain is made up of two main kinds of cells: glial cells and neurons (a.k.a. nerve cells). There are about 86 billion neurons and even more glial cells in the nervous system (brain, spinal cord and nerves) of an adult human [ref1]. The primary function of glial cells is to provide physical protection and other kinds of support to neurons, so we are not very interested in glial cells here. It’s the neuron we came for.
-
-{% include image.html url="/assets/images/artificial_neuron/biological_neuron.png" description="A biological neuron is the building block of the nervous system, which includes the brain. Source: <a href='https://cdn.kastatic.org/ka-perseus-images/3567fc3560de474001ec0dafb068170d30b0c751.png'>Khan Academy</a>." %}
-
-The primary function of biological neurons (to differentiate from the artificial neurons that make up an artificial neural network) is to process and transmit signals, and there are three main types, sensory neurons (concentrated in your sensory organs like eyes, ears, etc.), motor neurons (carry signals between the brain and spinal cord, and from both to the muscles), and interneurons (found only in the brain and spinal cord, and they process information).
-
-For instance, when you grab a very hot cup, sensory neurons in the nerves of your fingers send a signal to interneurons in your spinal cord. Some interneurons pass the signal on to motor neurons in your hand, which causes you to drop the cup, while other interneurons send a signal to those in your brain, and you experience pain.
-
-So clearly, in order to start modelling the brain, we have to first understand the neuron and try to model it.
-
-Neurons in the brain usually work in groups known as neural circuits (or biological neural networks), where they provide some biological function. A neuron has 3 main parts: the dendrites, soma (cell body) and axon.
-
-The dendrite of the one neuron is connected to the axon terminal of another neuron, and on and on, resulting in a network of connected neurons. This connection is known as the synapses, and there is no actual physical connection, because the neurons don’t actually touch each other. Instead, a neuron will release chemicals (neurotransmitters) that carry the electrical signal to the dendrite of the next neuron. The strength of the transmission is known as the synaptic strength. The more often signals are transmitted across a synapse, the stronger the synaptic strength becomes. This rule, commonly known as Hebb’s rule (introduced in 1949 by Donald Hebb), is colloquially stated as, “neurons that fire together wire together.” We will revisit this concept when we dive into artificial neural networks.
-
-Neurons receive signal via their dendrites and outputs signal via their axon terminals. And each neuron can be connected to thousands of other neurons. When a neuron receives signals from other neurons, it combines all the input signals and generates a voltage, known as graded potential, on the membrane of the soma that is proportional, in size and duration, to the sum of the input signals. The graded potential gets smaller as it travels through the soma to reach the axon. If the graded potential that reaches the trigger zone (near where the axon meets the soma) is higher than a threshold value unique to the neuron, the neuron fires a huge electric signal, called the action potential, that travels down the axon and through the synapse to become the input signal for the neurons downstream.
-
-###  **Artificial neuron**
-In the 1950s, the psychologist Frank Rosenblatt introduced a very simple mathematical abstraction of the biological neuron. Using the limited knowledge of biological neurons that we had, Rosenblatt developed a model that mimicked the following behavior: signals that are received from dendrites are sent down the axon once the strength of the input signal crosses a certain threshold. The outputted signal can then serve as an input to another neuron. Rosenblatt named this mathematical model the perceptron [ref1].
-
-Rosenblatt’s original perceptron was a simple [Heaviside function](https://en.wikipedia.org/wiki/Heaviside_step_function) that outputs zero if the input signal is equal to or less than 0 and outputs 1 if the input is greater than zero [ref1]. Therefore, zero was the threshold above which an input makes the neuron to fire. The perceptron is an example of an artificial neuron, and we will see other examples.
-
-An artificial neuron is simply a mathematical function that serves as the elementary unit of a neural network. It is also known as a node or a unit, with the latter being very common in the machine learning publications. I may jump between these names a lot, and it’s not bad if you get used to it.
-
-This mathematical function will have a collection of inputs, $$x_1,x_2,\ \ldots,\ x_n$$, and a single output, a, commonly known as the activation value (or post-activation value), or often without the term “value” (i.e. simply activation).
-
-{% include image.html url="/assets/images/artificial_neuron/artificial_neuron.png" description="Diagram of an artificial neuron." %}
-
-But what then happens inside a unit (an artificial neuron)?
-
-The inputs that are fed into a unit are used in two key operations in order to generate the activation:
-
-1. Summation: The inputs ($ x_i $) are multiplied with the weights ($$w_i$$) and summed together. This summation is sometimes called the preactivation value, or without the term “value”.
-
-2. Activation function: the resulting sum (i.e. the preactivation) is passed through a mathematical function.
-
-{% include image.html url="/assets/images/artificial_neuron/artificial_neuron_interior.png" description="Diagram of an artificial neuron showing what happens inside it." %}
-
-The activation value can be thought of as a loose adaptation of the biological action potential, and the weights as the synaptic strength.
-
-The algebraic representation of an artificial neuron is:
-
-$$
-a=f\left(z\right)
-$$
-
-{% include indent_paragraph.html content=
-"Where $ a $ is the activation, $ z $ is the preactivation, and $ f $ is the activation function (in the case of the original perceptron, this is the Heaviside function)."
-%}
-The preactivation $ z $ is computed as:
-
-$$
-z=w_1\ \cdot x_1+w_2\ \cdot x_2+\ldots+w_n\ \cdot x_n+w_0=\sum_{i=0}^{n}{w_i\ \cdot x_i}
-$$
-
-{% include indent_paragraph.html content=
-"Where $ n $ is the number of features in our dataset."
-%}
-
-It’s important to start putting these equations in the context of data. Using our toy dataset, the application of this equation can be demonstrated by taking any datapoint and subbing the values into the above equation. For instance, if we sub in the 0<sup>th</sup> datapoint (6.5233, 1.5484, 0), we get:
-
-$$
-z=w_1\ \cdot 6.5233+w_2\ \cdot1.5484+w_0
-$$
-
-We will keep the weights as variables for now (but that will change a few paragraphs later).
-The complete algebraic representation of the original perceptron, which has the Heaviside function as its activation function, is:
-
-$$
-a =
-\begin{cases}
- 1 &\text{if } z > 0 \\
-0 &\text{if } z \leq 0
-\end{cases}
-$$
-
-If you took a moment to really look at the equation for preactivation, you will notice something is off, compared to the artificial neuron diagram. Where did $$w_0$$ come from? And what about $$x_0$$? The answer is the “bias term”. It allows our function to shift, and its presence is purely a mathematical necessity.
-
-The variable $$w_0$$ is known as the bias, and $$x_0$$ (commonly referred to as the bias node) is a constant that is always equal to one and has nothing to do with the data, unlike $$x_1$$ to $$x_n$$ that comes from the data (e.g. the pixels of the images in the case of the image classification example). That’s how $$w_0 \cdot x_0$$ reduces to just $$w_0$$.
-
-Moreover, we will henceforth refer to $$w_0$$ as $$b$$, and this is the letter often used in literature to represent the bias. The weights ($$w_1,\ w_2,\ \ldots,\ w_n$$) and bias ($$w_0$$ or $$b$$) collectively are known as the parameters of the artificial neuron.
-
-<table>
-<td>
-<details>
-<summary>
-<b>
-The need for the bias term:
-</b>
-</summary>
-<p>
-As already mentioned, the bias term allows our function to shift. Its presence is purely a mathematical necessity.
-<br><br>
-The equation for z is a linear equation:
-
-$$
-z=w_1\ \cdot x_1+w_2\ \cdot x_2+\ldots+w_n\ \cdot x_n+w_0
-$$
-
-If we limit the number of features (input variables) to only one, we get the equation of a line:
-
-$$
-z=w_1\ \cdot x_1+w_0
-$$
-
-{% include indent_paragraph.html content="Where $ w_1 $ is the slope of the line, and $ w_0 $ is the intercept." %}
-
-Everything looks good. If we are given exactly two datapoints, we will be able to perfectly fit a line through them, and we will be able to calculate the slope and intercept of that line, thereby fully solving the equation of that line. That process of solving the equation to fit the data made of two points is “learning”. In fact, feel free to call it machine learning.
-<br><br>
-But what if we omitted the intercept? Well, we may never be able to perfectly fit a line through those two datapoints. Actually, we will never be able to perfectly fit a straight line through both points if it happens that the line that perfectly fits on them does not go through the origin (which is intercept of zero).
-<br><br>
-{% include image.html url="/assets/images/artificial_neuron/line_varying_slopes.png" description="Plot of lines of various slopes (m) all passing through the origin (c=0) and compared against two datapoints that cannot be perfectly fitted by a line whose y-intercept is 0, because a vertical shift is necessary." %}
-
-But by having the intercept term, we can shift the line vertically.
-<br><br>
-In general, it goes like this: If we have a function $ f(x) $, then $ f\left(x\right)+c $ applies a vertical shift of $ c $ on the function. Whereas, $ f(x+c) $ applies a horizontal shift of $ c $. This should be enough refresher of this high school topic, and it is also the reason why we need the bias term.
-<br><br>
-But the presence of the bias term in our artificial neuron equation means that the true diagram should look like this:
-<br><br>
-{% include image.html url="/assets/images/artificial_neuron/artificial_neuron_bias_node.png" description="Diagram of an artificial neuron showwing the bias node." %}
-
-But we don’t show the bias nodes because it is generally assumed that everyone should know that it is always there. This is important because it is common for the bias term to be completely omitted in many ML publications, because they know that you should know that it is there!
-</p>
-</details>
-</td>
-</table>
-
-We observe that the equation for an artificial neuron can be condensed into this:
-
-$$a=f(x;w,b)$$
-{% include indent_paragraph.html content=
-"Where $ x=(x_1,\ x_2,\ldots,\ x_n) $ and $ w=(w_1,\ w_2,\ldots,w_n) $"
-%}
-
-The equation is read as $ a $ is a function of $ x $ parameterized by $ w $ and $ b $. And in fact, we’ve just introduced vectors. One geometrical interpretation of a vector in a given space (could be 2D, 3D space, etc.) is that it is a point with a “sense” of direction, or just an arrow pointing from the origin to a point.
-
-So effectively we have this:
-
-$$
-a=f(\boldsymbol{x};\boldsymbol{w},b)
-$$
-
-{% include indent_paragraph.html content=
-"Where
-$
-\boldsymbol{x}=\left[\begin{matrix}x_1\\x_2\\\vdots\\x_n\\\end{matrix}\right]
-$
-and
-$
-\boldsymbol{w}=\left[\begin{matrix}w_1\\w_2\\\vdots\\w_n\\\end{matrix}\right]^T
-$."
-%}
-
-
-
-If you are doubting, then check if this equation is correct (spoiler alert: it is correct!):
-
-$$
-\boldsymbol{wx}=\sum_{i=0}^{n}{w_i\ \cdot x_i}
-$$
-
-Note that the lack of any symbols between $$\boldsymbol{w}$$ and $$\boldsymbol{x}$$ signifies matrix-vector multiplication (or matrix-matrix multiplication), and you will see more of such throughout this article.
-
-A useful idea for converting an equation or a system of them into a matrix or vector equation is to recognize that:
-
-1.	Vector-vector multiplication is same as the dot product of two vectors.
-2.	Dot product is simply elementwise multiplication (a.k.a. Hadamard product) followed by summation of the products.
-3.	Vector-matrix multiplication directly reduces to the dot product between the row or column vectors of a matrix and a vector. This makes vector-matrix multiplication, which is a subset of matrix multiplication, one example of tensor contraction. (We will revisit this later).
-
-So, when you see a pair of scalars getting multiplied and then the products from all such pairs are added, you should immediately suspect that such an equation can be easily substituted with a tensorized version.
-
-A quick description of tensor: you probably already think of a vector as an array with one dimension (or axis). this makes it a first-order tensor, and a matrix is a second-order tensor as it has two axes. Similar objects with more than two axes are higher order tensors. In summary, a tensor is the generalization of vectors, matrices and higher order tensors.
-
-The equations we've seen above are under the premise that we will be handling only one datapoint at a time. But we need to be able to handle more than one datapoint simultanously (we also need this when we start looking into neural networks because operations on matrices are easily parallelized). For this reason, we will do one more important thing to the equations we’ve seen above, which is to take them to matrix form.
-
-Improvement in parallelized computing is a huge reason deep learning returned to the spotlight in the last decade. Parallelization is also the reason GPUs have become a champion for machine learning, because they have thousands of cores unlike CPUs which typically have cores that number in the single digits.
-
-Going back to our toy dataset, if we wanted to compute preactivations for the first three datapoints at once, we get these three equations (and please always keep in mind that w_0=b):
-
-$$
-z=w_1\ \cdot6.5233+w_2\ \cdot1.5484+w_0
-$$
-
-$$
-z=w_1\ \cdot9.2112+w_2\ \cdot12.7141+w_0
-$$
-
-$$
-z=w_1\ \cdot1.7315+w_2\ \cdot45.6200+w_0
-$$
-
-Clearly, we need a new subscript to keep track of multiple datapoints, because it’s misleading to keep equating every datapoint to just $$z$$. So, we do something like this:
-
-$$
-z_j=w_1\ \cdot x_{1,j}+w_2\ \cdot x_{2,j}+\ldots+w_n\ \cdot x_{n,j}+w_0=\sum_{i=0}^{n}{w_i\ \cdot x_{i,j}}
-$$
-
-{% include indent_paragraph.html content=
-"Where the subscript $ j $ keeps track of datapoints. Or you can think of it as, $ i $ tracks the columns and $ j $ tracks rows in our toy dataset. Note that $ w_0 $ is same as $ b $."
-%}
-
-So now we can write them as:
-
-$$
-z_1=w_1\ \cdot6.5233+w_2\ \cdot1.5484+w_0
-$$
-
-$$
-z_2=w_1\ \cdot9.2112+w_2\ \cdot12.7141+w_0
-$$
-
-$$
-z_3=w_1\ \cdot1.7315+w_2\ \cdot45.6200+w_0
-$$
-
-Note that the numerical subscript on $$z$$ above is not counterpart to that on $$w$$. The former tracks datapoints (rows in our toy dataset), and the latter tracks features (columns in our toy dataset).
-
-You can already notice the system of equations. And if it had been a batch of 100 datapoints, or even the entire dataset, it starts becoming unwieldy to carry around thousands of equations. Therefore we vectorize!
-
-We summarize the preactivations for all the datapoints in our batch:
-
-$$
-\boldsymbol{z}=all\ z_j\ in\ the\ batch=[\begin{matrix}z_1&z_2&\cdots&z_m\\\end{matrix}]
-$$
-
-{% include indent_paragraph.html content=
-"Where $ m $ is the number of datapoints in our batch."
-%}
-
-What's the batch all about? In deep learning, it's very common to deal with very large datasets that may be too big to load into memory all at once, so we sample a batch from the dataset and use that to train our model. That's one iteration. We repeat the sampling for the second iteration, and continue for as many iterations as we choose to.
-
-Now we have all the ingredients to convert to matrix format. Our system of equation, will go from this:
-
-$$
-z_1=w_1\ \cdot x_{1,1}+w_2\ \cdot x_{2,1}+\ldots+w_n\ \cdot x_{n,1}+w_0
-$$
-
-$$
-z_2=w_1\ \cdot x_{1,2}+w_2\ \cdot x_{2,2}+\ldots+w_n\ \cdot x_{n,2}+w_0
-$$
-
-$$
-\vdots
-$$
-
-$$
-z_m=w_1\ \cdot x_{1,m}+w_2\ \cdot x_{2,m}+\ldots+w_n\ \cdot x_{n,m}+w_0
-$$
-
-To this matrix equation:
-
-$$
-\boldsymbol{z}\ =\ \boldsymbol{wX}\ +\ \boldsymbol{b}
-$$
-
-I encourage you to rework the matrix equation back into the flat form if you’re unclear on how the two are the same. I promise, it will be a great refresher of math you probably saw in high school or first year of university.
-
-The variable $$\boldsymbol{z}$$ is a $$1$$-by-$$m$$ vector, and if only one datapoint, will be a vector of only one entry (which is equivalent to a scalar).
-
-The parameter $$\boldsymbol{w}$$ is always going to be a $$1$$-by-$$n$$ vector, regardless of the number of datapoints.
-
-$$
-\boldsymbol{w}=\left[\begin{matrix}w_1\\w_2\\\vdots\\w_n\\\end{matrix}\right]^T
-$$
-
-The variable b will be scalar if doing computation for a single datapoint, or it’ll be a $$1$$-by-$$m$$ mvector if for multiple datapoints. Fundamentally, however, the bias is a scalar (or a $$1$$-by-$$1$$ vector) regardless of number datapoints in the batch. There is only one bias for a neuron, and it's simply the weight for the bias node, just like each of the other weights. It only gets [broadcasted](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy) (stretched) into a $$1$$-by-$$m$$ vector to match the shape of $$z$$, so that the matrix equation is valid. The intuition is that you are applying the same bias to all the datapoint in any given batch, the same way you are applying the same group of weights all the datapoint.
-
-Therefore the full answer for the shape of $$b$$ is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish). We must keep in mind that b is a parameter of the estimator, and it would be very counterproductive to define it in a way that binds it to the number of examples (datapoints) in a batch. This is why its fundamental form is a scalar.
-
-Here are some problems we would have if we defined b to be fundamentally a 1-by-m vector: 
-
-{% include indent_paragraph.html content=
-"The neuron becomes restricted to a fixed batch size. That is, the batch size we use to train the neuron becomes a fixture of the neuron, to the point that we can’t use the neuron to carry out predictions or estimations for a different batch size.
-<br><br>
-Each example in the batch will have a different corresponding value for $ b $. This is not even the case for $ w $, and it is just simply improper for the parameters to change from datapoint to datapoint. If that happened, then it means the model is not identical for all datapoints. Absolutely appalling."
-%}
-
-When b is broadcasted into the $$1$$-by-$$m$$ vector $$\boldsymbol{b}$$, it is simply the scalar value $$b$$ repeating $$m$$ times. It looks like this:
-
-$$
-\boldsymbol{b}=\left[\begin{matrix}b&b&\cdots&b\\\end{matrix}\right]
-$$
-
-The variables $$\boldsymbol{X}$$ will depend on the shape of the input data that gets fed to the neuron. It could be a vector or matrix (and in neural networks they could even be higher order tensors). When multiple datapoints, it’s an $$n$$-by-$$m$$ matrix, and when a single datapoint it's an $$n$$-by-$$1$$ vector. It looks like this:
-
-$$
-X=\left[\begin{matrix}x_{1,1}&x_{1,2}&\cdots&x_{1,m}\\x_{2,1}&x_{2,2}&\cdots&x_{2,m}\\\vdots&\vdots&\ddots&\vdots\\x_{n,1}&x_{n,2}&\cdots&x_{n,m}\\\end{matrix}\right]
-$$
-
-Keep in mind that these statements about the shapes of these tensors are all for a single artificial neuron, as there are some changes when moving unto neural networks (a network of neurons).
-
-Let’s illustrate with our toy dataset how the preactivation equation works in matrix format. Let’s say we decide that our batch size will be 3, which means we will feed our neuron 3 datapoints (3 rows of our toy dataset), then our $$X$$ will look like this:
-
-$$
-\boldsymbol{X}=\left[\begin{matrix}6.5233&9.2112&1.7315\\1.5484&12.7141&45.6200\\\end{matrix}\right]
-$$
-
-And the corresponding $$y$$ is this:
-
-$$
-\boldsymbol{y}=\ \left[\begin{matrix}0&1&0\\\end{matrix}\right]
-$$
-
-Let’s say we randomly initialize our weight vector to this (which is actually what is done in practice, but more like “controlled” randomization):
-
-$$
-\boldsymbol{w}=\left[\begin{matrix}w_1\\w_2\\\end{matrix}\right]^T=\left[\begin{matrix}0.5&-0.3\\\end{matrix}\right]
-$$
-
-And we set our bias to zero. Note that it will be a scalar, but broadcasted during computation to match whatever shape $$\boldsymbol{z}$$ has:
-
-$$
-b=0
-$$
-
-Then we can compute our preactivation for this batch of 3 datapoints:
-
-$$
-\boldsymbol{z}\ =\ \left[\begin{matrix}0.5&-0.3\\\end{matrix}\right]\left[\begin{matrix}6.5233&9.2112&1.7315\\1.5484&12.7141&45.6200\\\end{matrix}\right]\ +\left[\begin{matrix}0&0&0\\\end{matrix}\right]
-$$
-
-$$
-z=\left[\begin{matrix}2.79713&0.79137&-12.8202\\\end{matrix}\right]
-$$
-
-Let’s assume that the kind of artificial neuron we have is the original perceptron (that is, our activation function is the Heaviside function). Recall that:
-
-$$
-a_j =
-\begin{cases}
- 1 &\text{if } z_j > 0 \\
-0 &\text{if } z_j \leq 0
-\end{cases}
-$$
-
-Now we pass $$\boldsymbol{z}$$ through a Heaviside function to obtain our activation value:
-
-$$
-\boldsymbol{a}=\left[\begin{matrix}1&1&0\\\end{matrix}\right]
-$$
-
-Remember we already have the ground truth ($$\boldsymbol{y}$$), so we can actually check and see how our (untrained) neuron did.
-
-$$
-\boldsymbol{y}=\ \left[\begin{matrix}0&1&0\\\end{matrix}\right]
-$$
-
-We can easily notice that $$\boldsymbol{a}$$, $$\boldsymbol{y}$$ and $$\boldsymbol{z}$$ will always have the same shape, which is a $$1$$-by-$$m$$ vector; and if only one datapoint, will be a vector of only one entry (which is equivalent to a scalar).
-
-And it did okay. It got the first datapoint wrong (it predicted high energy instead of the correct label of low energy) but got the other two right. That’s 66.7% accuracy. We likely won’t be this lucky if we use more datapoints.
-
-To improve the performance of the artificial neuron, we need to train it. That simply means that we need to find the right values for the parameters $ w $ and $ b $ such that when we feed our neuron any datapoint from the dataset, it will estimate the correct energy level.
-
-This is the general idea of how the perceptron, or any other kind of artificial neuron, works. That is, we should be able to compute a set of parameters ($$w_0,\ w_1,\ w_2,\ \ldots,\ w_n$$) such that the perceptron is able to produce the correct output when given an input.
-
-For instance, when fed the images of cats and dogs, a unit (artificial neuron) with good parameters will correctly classify them. The pixels of the image will be the input, $$x_1,x_2,\ \ldots,\ x_n$$, and the unit will do its math and output 0 or 1 (representing the two possible labels). Simple!
-
-This is the whole point of a neural network (a.k.a. network of artificial neurons). And that process of finding a good collection of parameters for a neuron (or a network of neurons as we will see later) is what we call “learning” or “training”, which is the same thing mathematicians call mathematical optimization.
-
-Unfortunately, the original perceptron did not fair very well in practice and failed to deliver on the high hopes heaped on it. I can assure you that it will not do too well with image classification of, say, cats and dogs. We need something more complex with some more nonlinearity.
-
-Note that linearity is not the biggest reason Heaviside functions went out of favour. In fact, a Heaviside function is not purely linear, but instead piecewise linear. It’s also common to see lack of differentiability at zero blamed for the disfavour, but again this is cannot be the critical reason, as there are cheap tricks around this too (e.g. the same type of schemes used to get around the undifferentiability of the rectified linear function at zero, which by the way is currently the most widely used activation function in deep learning).
-
-The main problem is that the Heaviside function jumps too rapidly, in fact instantaneously, between the two extremes of its range. That is, when traversing the domain of the Heaviside function, starting from negative to positive infinity, we will keep outputting zero (the lowest value in its range), until suddenly at the input of zero, its output snaps to 1 (the maximum value in its range) and then continues outputting that for the rest of infinity. This causes a lot of instability. When doing mathematical optimization, we typically prefer small changes to also produce small changes.
-
-### **Activation functions**
-
-It is possible to use other kinds of functions as an activation function, and this is indeed what researchers did when the original perceptron failed to deliver. One such replacement was the sigmoid function, which resembles a smoothened Heaviside function.
-
-{% include image.html url="/assets/images/artificial_neuron/heaviside_logistic.png" description="Plots of the Heaviside and logistic activation functions." %}
-
-Note that the term “sigmoid function” refers to a family of s-shaped functions, of which the very popular logistic function is one of them. As such, it is common to see logistic and sigmoid used interchangeably, even though they are strictly not synonyms.
-
-The logistic function performs better than the Heaviside function. In fact, machine learning using an artificial neuron that uses the logistic activation function is one and the same as logistic regression. Ha! You’ve probably run into that one before. Don’t feel left out if you haven’t though, because you’re just about to.
-
-This is the equation for logistic regression:
-
-$$
-\boldsymbol{\hat{y}}=\frac{1}{1+e^{-\boldsymbol{z}}}
-$$
-
-$$
-\boldsymbol{z}\ =\ \boldsymbol{wX}\ +\ \boldsymbol{b}
-$$
-
-{% include indent_paragraph.html content=
-"Where $ \hat{y} $ is the prediction or estimation."
-%}
-
-And this is the equation for an artificial neuron with a logistic (sigmoid) activation function:
-
-$$
-\boldsymbol{a}=\frac{1}{1+e^{-\boldsymbol{z}}}
-$$
-
-$$
-\boldsymbol{z}\ =\ \boldsymbol{w}X\ +\ \boldsymbol{b}
-$$
-
-As you can see, they are one and the same!
-
-Also note that the perceptron, along with every other kind of artificial neuron, is an estimator just like other machine learning models (linear regression, etc.).
-
-Besides the sigmoid and Heaviside functions, there are a plethora of other functions that have found great usefulness as activation functions. **You can find a list of many other activation functions in [this Wikipedia article](https://en.wikipedia.org/w/index.php?title=Activation_function&oldid=939349877#Comparison_of_activation_functions)**. You should take note of the rectified linear function; any neuron using it is known as a rectified linear unit (ReLU). It's the most popular activation function in deep learning.
-
-One more important mention is that the process of going from input data ($$\boldsymbol{X}$$) all the way to activation (essentially, the execution of an activation function) is called **forward pass** (or forward propagation in the context of neural networks), and this is the process we demonstrated above using the toy dataset. This distinguishes from the sequel process, known as **backward pass**, where we use the error between the activation ($$\boldsymbol{a}$$) and the ground truth ($$\boldsymbol{y}$$) to tune our parameters in such a way that the error is reduced to as low as possible.
-
-To tie things back to our toy dataset. If we used a logistic activation function instead of a Heaviside function, and trained our neuron for 2000 iterations of training, we obtain some values for the parameters that gives us the correct result 91% of the time. (We will later go over exactly what happens during “training”).
-
-The parameters after training are:
-
-$$
-\boldsymbol{w}=\left[\begin{matrix}0.33456&0.0206573\\\end{matrix}\right]
-$$
-
-$$
-b=-2.09148
-$$
-
-So, the optimized (trained) equation for our artificial neuron is:
-
-$$
-\boldsymbol{z}\ =\ \left[\begin{matrix}0.33456&0.0206573\\\end{matrix}\right]\boldsymbol{X}\ +\left[\begin{matrix}-2.09148&-2.09148&-2.09148\\\end{matrix}\right]
-$$
-
-$$
-\boldsymbol{a}=\frac{1}{1+e^{-\boldsymbol{z}}}
-$$
-
-{% include indent_paragraph.html content=
-"Where $ \boldsymbol{X} $ is an $ n $-by-$ m $ matrix that contains a batch of our dataset, and $ m $ is the number of datapoints in our batch, while $ n $ is the number of features in our dataset."
-%}
-
-The above is the logistic artificial neuron that has learned the relationship hidden in our toy dataset, and you can randomly pick some datapoints in our dataset and verify the equation yourself. Roughly 9 out of 10 times, it should produce an activation that matches the ground truth ($$\boldsymbol{y}$$).
-
-Note that the values for the parameters are not unique. A different set of values can still give us a comparable performance. We only discovered one of many possible sets of values that can give us good performance.
-
-### **Loss function**
-In the section on estimators, I mentioned that it is imperative to expect an estimator (which is what an artificial neuron is) to have some level of error in its prediction, and our objective will be to minimize this error.
-
-We described this error as:
-
-$$\varepsilon =y-\hat{y}=f_{actual} \left( X \right) -f_{estim} \left( X \right) $$
-
-The above is actually one of the many ways to describe the error, and not rigorous enough. For example, it is missing an absolute value operator, else the sign of the error will change just based on how the operands of the subtraction are arranged:
-
-$$
-y-\hat{y}\neq\hat{y}-y
-$$
-
-For instance, we know the difference between the [natural numbers](https://en.wikipedia.org/wiki/Natural_number) 5 and 3 is 2, but depending on how you rearrange the subtraction between them, we could end up with -2 instead, and we don’t want that to be happening, so we apply an absolute value operation and restate the error as:
-
-$$
-\varepsilon=|y-\hat{y}|
-$$
-
-Now if we have a dataset made of more than one datapoint, we will have many errors, one for each datapoint. We need a way to aggregate all those individual errors into one big error value that we call the loss (or cost).
-
-We achieve this by simply averaging all those errors to produce a quantity we call the mean absolute error:
-
-$$
-Mean\ Absolute\ Error=Cost=\frac{1}{m} \cdot  \sum _{j=0}^{m} \vert y_{j}-\hat{y}_{j} \vert =\frac{1}{m} \cdot  \sum _{j=0}^{m} \varepsilon _{j}
-$$
-
-{% include indent_paragraph.html content=
-"Where m is the number of datapoints in the batch of data. Note that $ \hat{y}_{j} $ is same as activation $ a_j $, and it is denoted here as such to show that it serves as an estimate for the ground truth $ y_i $."
-%}
-
-The above equation happens to be just one of the many types of loss functions (a.k.a. cost function) in broad use today. They all have one thing in common: **They produce a single scalar value (the loss or cost) that captures how well our network has learned the relationship between the features and the target for a given batch of a dataset**.
-
-<table>
-<td>
-<details>
-<summary>
-<b>Cost function vs loss function vs objective function</b>
-</summary>
-<p>
-Some reserve the term loss function for when dealing with one datapoint and use cost function for the version that handles a batch of multiple datapoints.
-<br><br>
-An objective function is simply the function that gets optimized in order to solve an optimization problem. In deep learning the loss or cost function plays that role, therefore making objective function another name for loss or cost function.</p>
-</details>
-</td>
-</table>
-
-We will introduce two other loss functions that are very widely used.
-
-Mean squared error loss function, which is typically used for regression tasks:
-
-$$
-Mean\ Squared\ Error:\ J=\frac{1}{m}\cdot\sum_{j}^{m}\left(y_j-a_j\right)^2
-$$
-
-You must have seen the above equation before if you’ve learned linear regression in any math course.
-
-Logistic loss function (also known as cross entropy loss or negative log-likelihoods), which is typically used for classification tasks:
-
-$$
-Cross\ entropy\ loss:\ \ J = -\frac{1}{m}\cdot\sum_{j}^{m}{y_j\cdot\log{(a_j)}+(1-y_j)\cdot\log{({1-a}_j)}}=\frac{1}{m}\cdot\sum_{j=0}^{m}\varepsilon_j
-$$
-
-Note that the logarithm in the cross entropy loss is with base $$e$$ (Euler's number). In other words, it is a natural logarithm, which is sometimes abbreviated as $$\ln$$ instead of $$\log$$. Also note that we are implicitly assuming that our ground truth is binary (i.e. only two classes and therefore binary classification).
-
-Notice that all these loss functions have one thing in common, they are all functions of activation, which also makes them function of the parameters:
-
-$$
-Cost:\ \ J=f\left(a_j\right)=f(W,b)\
-$$
-
-For instance, cross entropy loss function for a single datapoint can be recharacterized as follows:
-
-$$
-Cross\ entropy\ loss=\ -\left(y\cdot\log{a})+(1-y)\cdot\log(1-a)\right)
-$$
-$$
-=-\left(data+\left(1-\frac{1}{1+e^{-z}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)\
-$$
-$$
-=-\left(data\cdot\log{\left(\frac{1}{1+e^{-z}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)
-$$
-$$
-=-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot x_i}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot x_i}}}\right)}\right)
-$$
-$$
-=-\left(data+\left(1-\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)}\right)\
-$$
-$$
-=-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot d a t a}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot data}}}\right)}\right)\ 
-$$
-
-In other words, the loss function can be described purely as a function of the parameters ($$W$$,$$b$$) and the data ($$X$$, $$y$$). And since data is known, the only unknowns on the right-hand side of the equation are the parameters.
-
-Let’s recap before we begin the last dash:
-
-{% include indent_paragraph.html content=
-"Recall that an artificial neuron can be succinctly described as a function that takes in $ X $ and uses its parameters $ W $ to do some computations to spit out an activation value that we expect to be close to the actual correct value (the ground truth). This also means that we expect some level of error between the activation value and the ground truth, and the loss function gives us a measure of this error in the form of single scalar value.
-<br><br>
-We want the activation to be as close as possible to the ground truth by getting the loss to be as small as possible. In order to do that, we want to find a set of values for $ W $ such that the loss is always as low as possible.
-<br><br>
-What remains to be seen is how we pull this off."
-%}
 
 ### **Gradient Descent Algorithm**
 We have a loss function that is a function of the weights and biases, and we need a way to find the set of weights and biases that minimizes the loss. This is a clearcut optimization problem.
@@ -979,9 +286,9 @@ $$
 Where $ \frac{\partial J}{\partial w} $ is $ 1 $-by-$ n $, $ \frac{\partial J}{\partial z} $ is $ 1 $-by-$ m $, $ \frac{\partial J}{\partial\boldsymbol{a}} $ is a $ 1 $-by-$ m $ vector,  $ \frac{\partial\boldsymbol{a}}{\partial z} $ is an $ m $-by-$ m $ matrix. Note that division between vectors or matrices, e.g. $ \frac{\boldsymbol{y}}{\boldsymbol{a}} $, are always elementwise."
 %}
 
-Notice that everything needed for computing the vital cost gradient $$\frac{\partial J}{\partial w}$$ has either already been computed during forward propagation or is from data. We are simply reusing values already computed prior.
+Notice that everything needed for computing the vital cost gradient $$\frac{\partial J}{\partial w}$$ has either already been computed during forward propagation or is from the data. We are simply reusing values already computed prior.
 
-The above equation can now be easily implemented in code in a vectorized fashion. For example, the gradient $ \frac{\partial\boldsymbol{a}}{\partial z} $ will be computed in code by first computing its diagonal as a vector:
+The above equation can now be easily implemented in code in a vectorized fashion. Implementing the code for computing the gradient $$\frac{\partial\boldsymbol{a}}{\partial \boldsymbol{z}}$$ in a vectorized fashion is a little tricky. To compute it, we first compute its diagonal as a row vector:
 
 $$
 diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}=(\boldsymbol{a}\odot\left(1-\boldsymbol{a}\right))
@@ -994,12 +301,70 @@ $$
 {% include indent_paragraph.html content=
 "Where $ \boldsymbol{a} $ is the $ 1 $-by-$ m $ vector that contains the activations. The symbol $ \odot $ represents elementwise multiplication (a.k.a. Hadamard product). 
 <br><br>
-The $ diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z} $ is the $ 1 $-by-$ m $ vector that you will obtain if you pulled out the diagonal of the matrix $ \frac{\partial\boldsymbol{a}}{\partial z} $ and put it into a row vector."
+The $ diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial \boldsymbol{z}} $ is the $ 1 $-by-$ m $ vector that you will obtain if you pulled out the diagonal of the matrix $ \frac{\partial\boldsymbol{a}}{\partial \boldsymbol{z}} $ and put it into a row vector."
 %}
 
-Then we will implement some code that can then take the $$diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}$$, which is a $$1$$-by-$$m$$ vector, and inflate it into the diagonal matrix $$\frac{\partial\boldsymbol{a}}{\partial z}$$ by padding it with zeros. If coding in Python and using the NumPy library for our vectorized computations, then the method [`numpy.diagflat`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.diagflat.html) does exactly that.
 
-One good news is that we can take the equation $$\frac{\partial J}{\partial w}=\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}X^T$$ to an alternative form that would allow us to skip the step of inflating the $$diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}$$ and therefore save us a little processing time.
+We also observe that the $$diagonal\ vector\ of\frac{\partial\boldsymbol{a}}{\partial z}$$ (the vector that you get if you pulled out the diagonal of the matrix $$\frac{\partial\boldsymbol{a}}{\partial z}$$ and put it into a row vector) is simply the elementwise derivative of the vector $$\boldsymbol{z}$$:
+
+$$
+diagonal\ vector\ of\frac{\partial\boldsymbol{a}}{\partial\boldsymbol{z}}=\left[\begin{matrix}a_1\cdot\left(1-a_1\ \right)&a_2\cdot\left(1-a_2\ \right)&\cdots&a_m\cdot\left(1-a_m\ \right)\\\end{matrix}\right]
+$$
+
+$$
+=\ \left[\begin{matrix}f'(z_1)&f'(z_2)&\cdots&f'(z_m)\\\end{matrix}\right]=f'(\boldsymbol{z})
+$$
+
+So, computing the $$diagonal\ vector\ of\frac{\partial\boldsymbol{a}}{\partial\boldsymbol{z}}$$ is simply same as computing $$f'(\boldsymbol{z})$$, and this applies to any activation function $$f$$ and its derivative $$f'$$. And this is easily implemented in code.
+
+
+
+<table>
+<td>
+<details>
+<summary>
+<b>Why the $ diagonal\ vector\ of\frac{\partial\boldsymbol{a}}{\partial\boldsymbol{z}} $ is always equal to $ f'(\boldsymbol{z}) $ for any activation function:
+</b>
+</summary>
+<p>
+The reason why the expression, $ diagonal\ vector\ of\frac{\partial\boldsymbol{a}}{\partial\boldsymbol{z}}=f\prime(\boldsymbol{z}) $, is valid for the logistic activation function is precisely because of this result (already shown before):
+
+$$
+\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{e^{\boldsymbol{z}_\boldsymbol{k}}}{e^{\boldsymbol{z}_\boldsymbol{k}}+1}\right)}{\partial z_j}=0
+$$
+
+{% include indent_paragraph.html content="
+For $ k\neq j $. Where both $ j $ and $ k $ track the same quantity, which is datapoints."
+%}
+
+The above equation tell us that the only time an element of the matrix $ \frac{\partial\boldsymbol{a}}{\partial\boldsymbol{z}} $ has a chance of being non-zero is when $ k=j $, which is the diagonal.
+<br><br>
+The great thing is that the above equation also holds true for any activation function because the reason it results in zero for the logistic activation function has nothing to do with the activation function but simply because under the condition of $ k\neq j $, the following is also true: $ z_k\neq z_j $.
+<br><br>
+Therefore, in general the following expression will hold true for any activation function $ f $:
+
+$$
+\frac{\partial a_k}{\partial z_j}=\frac{\partial f(z_k)}{\partial z_j}=0
+$$
+
+Which also means for any activation function $ f $, the following is also true:
+
+$$
+diagonal\ vector\ of\frac{\partial\boldsymbol{a}}{\partial\boldsymbol{z}}=f\prime(\boldsymbol{z})
+$$
+</p>
+</details>
+</td>
+</table>
+
+
+
+
+
+
+Once we’ve computed the $$diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}$$, which is a $$1$$-by-$$m$$ vector, we will implement some code that can inflate the diagonal matrix $$\frac{\partial\boldsymbol{a}}{\partial z}$$ by padding it with zeros. If coding in Python and using the NumPy library for our vectorized computations, then the method [`numpy.diagflat`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.diagflat.html) does exactly that.
+
+One good news is that we can take the equation $$\frac{\partial J}{\partial w}=\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}X^T$$ to an alternative form that would allow us to skip the step of inflating the $$diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}$$ and therefore saves us a little processing time.
 
 There is a well-known relationship between the multiplication of a vector with a diagonal matrix, and elementwise multiplication (a.k.a. Hadamard product), which is denoted as $$\odot$$. The relationship plays out like this. 
 
@@ -1014,29 +379,36 @@ $$
 We apply this relationship to our gradients and get:
 
 $$
-\frac{\partial J}{\partial \boldsymbol{z}}=\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}=\frac{\partial J}{\partial \boldsymbol{a}}\odot\left(diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}\right)=-\frac{1}{m}\cdot\left(\frac{ \boldsymbol{y}}{ \boldsymbol{a}}-\frac{1- \boldsymbol{y}}{1- \boldsymbol{a}}\right)\ \odot(a\odot\left(1-a\right))
+\frac{\partial J}{\partial \boldsymbol{z}}=\frac{\partial J}{\partial\boldsymbol{a}}\frac{\partial\boldsymbol{a}}{\partial z}=\frac{\partial J}{\partial \boldsymbol{a}}\odot\left(diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}\right)
 $$
 
-In fact, we can casually equate $$\frac{\partial\boldsymbol{a}}{\partial z}$$ to its diagonal vector (the $$diagonal\ vector\ of\ \frac{\partial\boldsymbol{a}}{\partial z}$$) since it is just the diagonal that contains any useful information. Therefore, we end up with:
+In fact, we can casually equate $$\frac{\partial\boldsymbol{a}}{\partial z}$$ to $$f'(\boldsymbol{z})$$, which is same as its diagonal vector. The math works out in a very nice way in that it gives the impression that we are extracting only useful information from the matrix (which is the diagonal of the matrix). 
+
+Therefore, we end up perfoming the following assignment operation:
 
 $$
-\frac{\partial\boldsymbol{a}}{\partial z}:=(\boldsymbol{a}\odot\left(1-\boldsymbol{a}\right))
+\frac{\partial\boldsymbol{a}}{\partial z}:=f'(\boldsymbol{z})=(\boldsymbol{a}\odot\left(1-\boldsymbol{a}\right))
 $$
 
 {% include indent_paragraph.html content=
-"Note that `:=` means that this is an assignment statement, not an equation."
+"Note that the symbol := means that this is an assignment statement, not an equation. That is, we are setting the term on the LHS to represent the terms on the RHS."
 %}
 
 Therefore, our final equation for computing the cost gradient $$\frac{\partial J}{\partial w}$$ can be written as:
 
 $$
-\frac{\partial J}{\partial w}=\frac{\partial J}{\partial\boldsymbol{z}}\frac{\partial z}{\partial w}=\ \frac{\partial J}{\partial\boldsymbol{z}}X^T=\frac{\partial J}{\partial\boldsymbol{a}}\odot\frac{\partial\boldsymbol{a}}{\partial z}X^T=-\frac{1}{m}\bullet\left(\frac{\boldsymbol{y}}{\boldsymbol{a}}-\frac{1-\boldsymbol{y}}{1-\boldsymbol{a}}\right)\ \odot(a\odot\left(1-a\right))X^T
+\frac{\partial J}{\partial w}=\frac{\partial J}{\partial\boldsymbol{z}}\frac{\partial z}{\partial w}=\ \frac{\partial J}{\partial\boldsymbol{z}}X^T=\frac{\partial J}{\partial\boldsymbol{a}}\odot\frac{\partial\boldsymbol{a}}{\partial z}X^T=\frac{\partial J}{\partial\boldsymbol{a}}\odot f'(\boldsymbol{z})X^T
+$$
+
+$$
+=-\frac{1}{m}\bullet\left(\frac{\boldsymbol{y}}{\boldsymbol{a}}-\frac{1-\boldsymbol{y}}{1-\boldsymbol{a}}\right)\ \odot(a\odot\left(1-a\right))X^T
 $$
 
 {% include indent_paragraph.html content=
-"Where $ \frac{\partial\boldsymbol{a}}{\partial z} $ is a $ 1 $-by-$ m $ vector defined as: $ \frac{\partial\boldsymbol{a}}{\partial z}(\boldsymbol{a}\odot\left(1-\boldsymbol{a}\right)) $.
+"
+Where $ \frac{\partial\boldsymbol{a}}{\partial\boldsymbol{z}} $ here is just the diagonal of the actual $ \frac{\partial\boldsymbol{a}}{\partial\boldsymbol{z}} $ and has a shape of $ 1 $-by-$ m $ and is equal to $ f'(\boldsymbol{z}) $.
 <br><br>
-Note that we applied a property of how Hadamard product interacts with matrix multiplication:$ \left(\frac{\partial J}{\partial\boldsymbol{a}}\odot\frac{\partial\boldsymbol{a}}{\partial z}\right)X^T=\frac{\partial J}{\partial\boldsymbol{a}}\odot\frac{\partial\boldsymbol{a}}{\partial z}X^T $."
+Note that we applied a property of how Hadamard product interacts with matrix multiplication: $ \left(v \odot u\right)M = v\odot uM = \left(u \odot v\right)M=u\odot vM $. Where $ v $ and $ u $ are vectors of same length, and $ M $ is a matrix for which the matrix multiplication shown are valid."
 %}
 
 Now for $$\frac{\partial J}{\partial b}$$, we can borrow a lot of what we did for $$\frac{\partial J}{\partial w}$$ here as well.
@@ -1060,12 +432,12 @@ $$
 Let’s work on it but keeping things in compact format:
 
 $$
-\frac{\partial\boldsymbol{z}}{\partial b}=\frac{\partial(\boldsymbol{wX}\ +\ \boldsymbol{b})}{\partial b}=\frac{\partial(\boldsymbol{wX})}{\partial b}+\frac{\partial\boldsymbol{b}}{\partial b}=0+\frac{\partial\boldsymbol{b}}{\partial b}=\frac{\partial\boldsymbol{b}}{\partial b}=1
+\frac{\partial\boldsymbol{z}}{\partial b}=\frac{\partial(\boldsymbol{wX}\ +\ \boldsymbol{b})}{\partial b}=\frac{\partial(\boldsymbol{wX})}{\partial b}+\frac{\partial\boldsymbol{b}}{\partial b}=0+\frac{\partial\boldsymbol{b}}{\partial b}=\frac{\partial\boldsymbol{b}}{\partial b}
 $$
 
 Let’s examine $$\frac{\partial\boldsymbol{b}}{\partial b}$$. It’s an m-by-1 vector that is equal to $$\frac{\partial\boldsymbol{z}}{\partial b}$$, which also means it has same shape as $$\frac{\partial\boldsymbol{z}}{\partial b}$$. You also observe that it has the shape of $$z^T$$. 
 
-When you transpose a vector or matrix, you also transpose their shape, which fortunately is simply done by reversing the order of the shape, so when a 1-by-m vector is transposed, its new shape is m-by-1. So, $$\frac{\partial\boldsymbol{b}}{\partial b}$$ looks like this:
+When you transpose a vector or matrix, you also transpose their shape, which fortunately is simply done by reversing the order of the shape, so when a 1-by-$$m$$ vector is transposed, its new shape is $$m$$-by-1. So, $$\frac{\partial\boldsymbol{b}}{\partial b}$$ looks like this:
 
 $$
 \frac{\partial\boldsymbol{b}}{\partial b}=\left[\begin{matrix}\frac{\partial b}{\partial b}\\\frac{\partial b}{\partial b}\\\vdots\\\frac{\partial b}{\partial b}\\\end{matrix}\right]=\left[\begin{matrix}1\\1\\\vdots\\1\\\end{matrix}\right]\
@@ -1087,7 +459,7 @@ $$
 "Where $ \frac{\partial J}{\partial\boldsymbol{z}} $ is the gradient already computed in the steps for computing $ \frac{\partial J}{\partial\boldsymbol{w}} $, and $ \frac{\partial z}{\partial b} $ is an $ m $-by-$ 1 $ vector of ones (i.e. has same shape as $ z^T $)."
 %}
 
-The above is easily implemented in code as a vectorized operation by simply vectorizing the creation of the vector of ones (i.e. $$\frac{\partial z}{\partial b}$$). But there is another way we can also characterize the above equation for $$\frac{\partial J}{\partial b}$$.
+Therefore the Jacobian $$\frac{\partial z}{\partial b}$$ is easily implemented in code by simply creating a vector of ones whose shape is same as $ z^T $. But there is another way we can recharacterize the above equation for $$\frac{\partial J}{\partial b}$$ such that we avoid creating any new vectors.
 
 As mentioned earlier, matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction. 
 
@@ -1097,10 +469,12 @@ From the perspective of tensor contraction, the vector-matrix multiplication of 
 
 $$u_q=\sum_{p}{v_p\cdot M_{p,q}}$$
 
-Where the subscript $$p$$ tracks the only non-unit axis of the vector $$v$$, and the subscript $$q$$ tracks second axis of the matrix $$M$$.
+{% include indent_paragraph.html content=
+"Where the subscript $ p $ tracks the only non-unit axis of the vector $ v $, and the subscript $ q $ tracks second axis of the matrix $ M $."
+%}
 
 
-Here is an example to illustrate the above. Say that $$v$$ and $$M$$ are:
+It shows exactly the elementwise version of matrix multiplication. Here is an example to illustrate the above. Say that $$v$$ and $$M$$ are:
 
 $$
 v=\ \left[\begin{matrix}1&2\\\end{matrix}\right]
@@ -1142,9 +516,15 @@ $$
 
 To summarize, the vector multiplication $$vM$$ is a contraction along the axis tracked by subscript $$p$$.
 
-We can use the tensor contraction format to more properly delineate $$\frac{\partial J}{\partial\boldsymbol{b}}$$ without cutting corners.
+We can use the tensor contraction format to recharacterize our solution for $ \frac{\partial J}{\partial b} $. 
 
-In tensor contraction format, $ \frac{\partial J}{\partial b} $ is:
+In tensor contraction format, this:
+
+$$
+\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\boldsymbol{z}}\ \frac{\partial\boldsymbol{z}}{\partial b}
+$$
+
+Can be written as this:
 
 $$
 \frac{\partial J}{\partial b}=\sum_{j=1}^{m}{\left(\frac{\partial J}{\partial\boldsymbol{z}}\right)_j\cdot\left(\frac{\partial\boldsymbol{b}}{\partial\boldsymbol{b}}\right)_j}
@@ -1156,7 +536,7 @@ $$
 \frac{\partial J}{\partial b}=\sum_{j=1}^{m}\left(\frac{\partial J}{\partial\boldsymbol{z}}\right)_j
 $$
 
-In essence, we summed across the second axis of $ \frac{\partial J}{\partial z} $ which reduced it to a $1$-by-$1$ vector, which we then equated to $ \frac{\partial J}{\partial b} $.
+In essence, we just summed across the second axis of $ \frac{\partial J}{\partial z} $ which reduced it to a $1$-by-$1$ vector, which we then equated to $ \frac{\partial J}{\partial b} $.
 
 We now have all our cost gradients fully delineated.
 

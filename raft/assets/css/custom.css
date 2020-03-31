@@ -1,0 +1,5 @@
+@import "{{ site.theme }}";
+.post-logline {
+    font-size: smaller;
+    color: grey;
+}
