@@ -9,11 +9,7 @@ comments: true
 ---
 {% include scripts.html %}
 
-<table>
-<td>
-<i>We will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth!</i>
-</td>
-</table>
+{% include blogseries_mantra_catching_ai.html %}
 
 * TOC
 {:toc}
@@ -22,7 +18,7 @@ comments: true
 
 This is part 2 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to biuld a standard feedforward neural network from scratch. In this part, I will go over the biological inspiration for the artificial neuron and its mathematical underpinnings.
 
-{% include blogseries_index_catching_ai_with_its_pants_down.html %}
+{% include blogseries_index_catching_ai.html %}
 
 ## **The brain as a function**
 The computational theory of mind (CTM) says that we can interpret human cognitive processes as computational functions. That is, the human mind behaves just like a computer. Note that while this theory is considered a good model for human cognition (it was the unchallenged standard in the 1960s and 1970s and still widely subscribed to), no one has been able to show how consciousness can emerge from a system modelled on the basis of this theory, but that’s another topic for another time. For a short primer on the theory, see [this article](https://plato.stanford.edu/entries/computational-mind/) from the Stanford Encyclopedia of Philosophy.

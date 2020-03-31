@@ -9,11 +9,8 @@ comments: true
 ---
 {% include scripts.html %}
 
-<table>
-<td>
-<i>We will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth!</i>
-</td>
-</table>
+{% include blogseries_mantra_catching_ai.html %}
+
 
 * TOC
 {:toc}
@@ -30,7 +27,7 @@ all the code presented in this blog series can be found at [this GitHub repo](ht
 
 This writeup aims to be very detailed, simple and granular, such that by the end, you hopefully should have enough knowledge to investigate and code more advanced architectures from scratch if you chose to do so. You should expect a lot of math, but don't let that scare you away, as I'll tried my best to explain things as simply as possible.
 
-{% include blogseries_index_catching_ai_with_its_pants_down.html %}
+{% include blogseries_index_catching_ai.html %}
 
 ## **Motivation**
 My feeling is if you want to understand a really complicated device like a brain, you should build one. I mean, you can look at cars, and you could think you could understand cars. When you try to build a car, you suddenly discover then there's this stuff that has to go under the hood, otherwise it doesn't work.
