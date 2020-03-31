@@ -20,7 +20,7 @@ comments: true
 
 ## **Preface**
 
-This is the part 2 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to biuld a standard feedforward neural network from scratch.
+This is part 2 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to biuld a standard feedforward neural network from scratch.
 
 {% include blogseries_index_catching_ai_with_its_pants_down.html %}
 
