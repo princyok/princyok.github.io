@@ -20,7 +20,7 @@ comments: true
 
 ## **Preface**
 
-This is part 2 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to biuld a standard feedforward neural network from scratch.
+This is part 2 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to biuld a standard feedforward neural network from scratch. In this part, I will go over the biological inspiration for the artificial neuron and its mathematical underpinnings.
 
 {% include blogseries_index_catching_ai_with_its_pants_down.html %}
 
@@ -625,13 +625,3 @@ $$
 $$
 
 In other words, the loss function can be described purely as a function of the parameters ($$\vec{w}$$, $$b$$) and the data ($$\mathbf{X}$$, $$\vec{y}$$). And since data is known, the only unknowns on the right-hand side of the equation are the parameters.
-
-Let’s recap before we begin the last dash:
-
-{% include indent_paragraph.html content=
-"Recall that an artificial neuron can be succinctly described as a function that takes in $ \mathbf{X} $ and uses its parameters $ \vec{w} $ to do some computations to spit out an activation value that we expect to be close to the actual correct value (the ground truth), $ \vec{y} $. This also means that we expect some level of error between the activation value and the ground truth, and the loss function gives us a measure of this error in the form of single scalar value, the loss (or cost).
-<br><br>
-We want the activation to be as close as possible to the ground truth by getting the loss to be as small as possible. In order to do that, we want to find a set of values for $ \vec{w} $ such that the loss is always as low as possible.
-<br><br>
-What remains to be seen is how we pull this off."
-%}
