@@ -16,7 +16,7 @@ plugins:
   - jekyll-scholar
 markdown: kramdown
 
-permalink: none
+permalink: /:title.html
 
 defaults:
   -
