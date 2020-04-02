@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Catching AI with its pants down"
-logline: "Detailed writeup exploring the inner workings of neural nets and how to biuld a standard feedforward neural net from scratch."
-date:   "2020-03-13"
+title:  "Catching AI with its pants down: Implement an artificial neuron from scratch."
+logline: "Going from equations to code implementation in Python."
+date:   "2020-04-01"
 categories: machine-learning
 permalink:
 comments: true

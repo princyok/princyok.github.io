@@ -133,7 +133,7 @@ The shapes show us that matrix multiplication present in the chain rule expansio
 
 From the above equation for $$z$$, we can immediately compute the Jacobian $$\frac{\partial \vec{z}}{\partial \vec{w}}$$.
 
-We can observe that the Jacobian $$\frac{\partial \vec{z}}{\partial \vec{w}}$$ is an $$m$$-by-$$n$$ matrix. But at this stage, our Jacobian hasn’t given us anything useful because we still need the solution for each element of the matrix. 
+We can observe that the Jacobian $$\frac{\partial \vec{z}}{\partial \vec{w}}$$ is an $$m$$-by-$$n$$ matrix. But at this stage, our Jacobian hasn’t given us anything useful because we still need the solution for each element of the matrix.
 
 We’ll solve an arbitrary element of the Jacobian and extend the pattern to the rest. Let’s begin.
 
@@ -313,7 +313,7 @@ $$
 $$
 
 {% include indent_paragraph.html content=
-"Where $ \vec{a} $ is the $ 1 $-by-$ m $ vector that contains the activations. The symbol $ \odot $ represents elementwise multiplication (a.k.a. Hadamard product). 
+"Where $ \vec{a} $ is the $ 1 $-by-$ m $ vector that contains the activations. The symbol $ \odot $ represents elementwise multiplication (a.k.a. Hadamard product).
 <br><br>
 The $ diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}} $ is the $ 1 $-by-$ m $ vector that you will obtain if you pulled out the diagonal of the matrix $ \frac{\partial\vec{a}}{\partial \vec{z}} $ and put it into a row vector."
 %}
@@ -380,7 +380,7 @@ Once we’ve computed the $$diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partia
 
 One good news is that we can take the equation $$\frac{\partial J}{\partial \vec{w}}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}\mathbf{X}^T$$ to an alternative form that would allow us to skip the step of inflating the $$diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}$$ and therefore saves us a little processing time.
 
-There is a well-known relationship between the multiplication of a vector with a diagonal matrix, and elementwise multiplication (a.k.a. Hadamard product), which is denoted as $$\odot$$. The relationship plays out like this. 
+There is a well-known relationship between the multiplication of a vector with a diagonal matrix, and elementwise multiplication (a.k.a. Hadamard product), which is denoted as $$\odot$$. The relationship plays out like this.
 
 Say we have a row vector $$v$$ and a diagonal matrix $$D$$, and when we flatten the $$D$$ into a row vector $$d$$ (that is, we pull out the diagonal from $$D$$ and put it into a row vector), whose elements is just the diagonal of $$D$$, then we can write:
 
@@ -396,7 +396,7 @@ $$
 \frac{\partial J}{\partial \vec{z}}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}=\frac{\partial J}{\partial \vec{a}}\odot\left(diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}\right)
 $$
 
-In fact, we can casually equate $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ to $$f'(\vec{z})$$, which is same as its diagonal vector. The math works out in a very nice way in that it gives the impression that we are extracting only useful information from the matrix (which is the diagonal of the matrix). 
+In fact, we can casually equate $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ to $$f'(\vec{z})$$, which is same as its diagonal vector. The math works out in a very nice way in that it gives the impression that we are extracting only the useful information from the matrix (which is the diagonal of the matrix). 
 
 Therefore, we end up perfoming the following assignment operation:
 
@@ -435,12 +435,12 @@ We know that $$\frac{\partial J}{\partial b}$$ has to be a scalar (or $$1$$-by-$
 
 We have to recall that the only reason that $$\vec{b}$$ is a $$1$$-by-$$m$$ vector in the equations for forward propagation is because it gets stretched (broadcasted) into a $$1$$-by-$$m$$ vector to match the shape of $$\vec{z}$$, so that the equations are valid. Fundamentally, it is a scalar and so is $$\frac{\partial J}{\partial b}$$.
 
-Although the further breakdown of $$\frac{\partial J}{\partial\vec{z}}$$ into $$\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}$$ is shown above, we won’t need to use that since we already fully delineated $$\frac{\partial J}{\partial\vec{z}}$$ earlier. So, we just tackle $$\frac{\partial J}{\partial\vec{z}}\frac{\partial\vec{z}}{\partial b}$$. 
+Although the further breakdown of $$\frac{\partial J}{\partial\vec{z}}$$ into $$\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}$$ is shown above, we won’t need to use that since we already fully delineated $$\frac{\partial J}{\partial\vec{z}}$$ earlier. So, we just tackle $$\frac{\partial J}{\partial\vec{z}}\frac{\partial\vec{z}}{\partial b}$$.
 
 Actually, just need $$\frac{\partial\vec{z}}{\partial b}$$ since we already have $$\frac{\partial J}{\partial\vec{z}}$$. The matrix representation of $$\frac{\partial\vec{z}}{\partial b}$$ is:
 
 $$
-\frac{\partial\vec{z}}{\partial b}=\left[\begin{matrix}\frac{\partial z_1}{\partial b}\\\frac{\partial z_2}{\partial b}\\\vdots\\\frac{\partial z_m}{\partial b}\\\end{matrix}\right]\ 
+\frac{\partial\vec{z}}{\partial b}=\left[\begin{matrix}\frac{\partial z_1}{\partial b}\\\frac{\partial z_2}{\partial b}\\\vdots\\\frac{\partial z_m}{\partial b}\\\end{matrix}\right]\
 $$
 
 Let’s work on it but keeping things in compact format:
@@ -449,7 +449,7 @@ $$
 \frac{\partial\vec{z}}{\partial b}=\frac{\partial(\vec{w}\mathbf{X} +\ \vec{b})}{\partial b}=\frac{\partial(\vec{w}\mathbf{X})}{\partial b}+\frac{\partial\vec{b}}{\partial b}=0+\frac{\partial\vec{b}}{\partial b}=\frac{\partial\vec{b}}{\partial b}
 $$
 
-Let’s examine $$\frac{\partial\vec{b}}{\partial b}$$. It’s an m-by-1 vector that is equal to $$\frac{\partial\vec{z}}{\partial b}$$, which also means it has same shape as $$\frac{\partial\vec{z}}{\partial b}$$. You also observe that it has the shape of $$\vec{z}^T$$. 
+Let’s examine $$\frac{\partial\vec{b}}{\partial b}$$. It’s an m-by-1 vector that is equal to $$\frac{\partial\vec{z}}{\partial b}$$, which also means it has same shape as $$\frac{\partial\vec{z}}{\partial b}$$. You also observe that it has the shape of $$\vec{z}^T$$.
 
 When you transpose a vector or matrix, you also transpose their shape, which fortunately is simply done by reversing the order of the shape, so when a 1-by-$$m$$ vector is transposed, its new shape is $$m$$-by-1. And note that the content of $$\vec{b}$$ is just $$b$$ repeating $$m$$ times. So, $$\frac{\partial\vec{b}}{\partial b}$$ looks like this:
 
@@ -475,7 +475,7 @@ $$
 
 Therefore the Jacobian $$\frac{\partial \vec{z}}{\partial b}$$ is easily implemented in code by simply creating a vector of ones whose shape is same as $ \vec{z}^T $. But there is another way we can recharacterize the above equation for $$\frac{\partial J}{\partial b}$$ such that we avoid creating any new vectors.
 
-As [mentioned in part 2](/machine-learning/understand-an-artificial-neuron-from-scratch.html), matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction. 
+As [mentioned in part 2](/machine-learning/understand-an-artificial-neuron-from-scratch.html), matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction.
 
 Here is a quick overview of tensor contraction.
 
@@ -530,7 +530,7 @@ $$
 
 To summarize, the vector multiplication $$vM$$ is a contraction along the axis tracked by subscript $$p$$.
 
-We can use the tensor contraction format to recharacterize our solution for $ \frac{\partial J}{\partial b} $. 
+We can use the tensor contraction format to recharacterize our solution for $ \frac{\partial J}{\partial b} $.
 
 In tensor contraction format, this equation:
 
