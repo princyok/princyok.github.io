@@ -14,7 +14,7 @@ comments: true
 * TOC
 {:toc}
 
-## **Preface**
+## **Prologue**
 
 This is part 2 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to biuld a standard feedforward neural network from scratch. In this part, I will go over the biological inspiration for the artificial neuron and its mathematical underpinnings.
 
@@ -39,11 +39,11 @@ So clearly, in order to start modelling the brain, we have to first understand t
 
 Neurons in the brain usually work in groups known as neural circuits (or biological neural networks), where they provide some biological function. A neuron has 3 main parts: the dendrites, soma (cell body) and axon.
 
-The dendrite of one neuron is connected to the axon terminal of another neuron, and so on, resulting in a network of connected neurons. The connection between two neurons is known as the synapse, and there is no actual physical contact, as the neurons don’t actually touch each other. 
+The dendrite of one neuron is connected to the axon terminal of another neuron, and so on, resulting in a network of connected neurons. The connection between two neurons is known as the synapse, and there is no actual physical contact, as the neurons don’t actually touch each other.
 
 Instead, a neuron will release chemicals (neurotransmitters) that carry the electrical signal to the dendrite of the next neuron. The strength of the transmission is known as the synaptic strength. The more often signals are transmitted across a synapse, the stronger the synaptic strength becomes. This rule, commonly known as Hebb’s rule (introduced in 1949 by Donald Hebb), is colloquially stated as, “neurons that fire together wire together.”
 
-Neurons receive signal via their dendrites and outputs signal via their axon terminals. And each neuron can be connected to thousands of other neurons. When a neuron receives signals from other neurons, it combines all the input signals and generates a voltage (known as graded potential) on the membrane of the soma that is proportional, in size and duration, to the sum of the input signals. 
+Neurons receive signal via their dendrites and outputs signal via their axon terminals. And each neuron can be connected to thousands of other neurons. When a neuron receives signals from other neurons, it combines all the input signals and generates a voltage (known as graded potential) on the membrane of the soma that is proportional, in size and duration, to the sum of the input signals.
 
 The graded potential gets smaller as it travels through the soma to reach the axon. If the graded potential that reaches the trigger zone (near the axon hillock) is higher than a threshold value unique to the neuron, the neuron fires a huge electric signal, called the action potential, that travels down the axon and through the synapse to become the input signal for the neurons downstream.
 
@@ -65,9 +65,9 @@ The full toy dataset can be found [here](https://github.com/princyok/deep_learni
 ##  **Artificial neuron**
 In the 1950s, the psychologist Frank Rosenblatt introduced a very simple mathematical abstraction of the biological neuron. He developed a model that mimicked the following behavior: signals that are received from dendrites are sent down the axon once the strength of the input signal crosses a certain threshold. The outputted signal can then serve as an input to another neuron. Rosenblatt [named](https://www.sciencedirect.com/science/article/pii/B0080430767005726) this mathematical model the perceptron.
 
-Rosenblatt’s original perceptron was a simple [Heaviside function](https://en.wikipedia.org/wiki/Heaviside_step_function) that outputs zero if the input signal is equal to or less than 0 and outputs 1 if the input is greater than zero. Therefore, zero was the threshold above which an input makes the neuron to fire. The original perceptron is an example of an artificial neuron, and we will see other examples.
+Rosenblatt’s original perceptron was a simple [Heaviside function](https://en.wikipedia.org/wiki/Heaviside_step_function) that outputs zero if the input signal is equal to or less than 0, and outputs 1 if the input is greater than zero. Therefore, zero was the threshold above which an input makes the neuron to fire. The original perceptron is an example of an artificial neuron, and we will see other examples.
 
-An artificial neuron is simply a mathematical function that serves as the elementary unit of a neural network. It is also known as a node or a unit, with the latter name being very common in machine learning publications. I may jump between these names a lot, and it’s not bad if you get used to that, as all of these names are common.
+An artificial neuron is simply a mathematical function that serves as the elementary unit of a neural network. It is also known as a node or a unit, with the latter name being very common in machine learning publications. I may jump between these names, and it’s not bad if you get used to that, as all of these names are common.
 
 This mathematical function has a collection of inputs, $$x_1,x_2,\ \ldots,\ x_n$$, and a single output, $$a$$, commonly known as the activation value (or post-activation value), or often without the term “value” (i.e. simply activation).
 
@@ -215,7 +215,7 @@ $$
 
 {% include indent_paragraph.html content=
 "
-Note that the lack of any symbols between $ \vec{w} $ and $ \vec{x} $ signifies vector-vector multiplication, which is same as dot product of vectors. You will see the same lack of symbols for vector- matrix multiplication and matrix-matrix multiplication, because they are all kinds of matrix multiplication. The dot symbol between any two scalars means regular multiplication of scalars, and it means dot product for vectors. You will see more of such throughout this blog series."
+Note that the lack of any symbols between $ \vec{w} $ and $ \vec{x} $ signifies vector-vector multiplication, which is same as dot product of vectors. It's also common for vector-matrix multiplication and matrix-matrix multiplication to be presented the same way, because they are all kinds of matrix multiplication. The dot symbol ($ \cdot $) between any two scalars means regular multiplication of scalars, and it means dot product for vectors."
 %}
 
 
@@ -225,22 +225,23 @@ A useful idea for converting an equation or a system of them into a matrix or ve
 2.	Dot product is simply elementwise multiplication followed by summation of the products.
 3.	Vector-matrix multiplication directly reduces to the dot product between the row or column vectors of a matrix and a vector. This makes vector-matrix multiplication, which is a subset of matrix multiplication, one example of tensor contraction. (We will revisit this later).
 
-So, when you see a pair of scalars getting multiplied and then the products from all such pairs are added, you should immediately suspect that such an equation may be easily substituted with a "tensorized" version.
+So, when you see a pair of scalars getting multiplied and then the products from all such pairs are added (the formal name for this is linear combination), you should immediately suspect that such an equation may be easily substituted with a "tensorized" version.
+
 <table>
 <td>
 <details>
 <summary>
 <b>
-What is a tensor? 
+What is a tensor?
 </b>
 </summary>
 <p>
 
-You probably already think of a vector as an array with one dimension (or axis). This makes it a first-order tensor, and a matrix is a second-order tensor as it has two axes. Similar objects with more than two axes are higher order tensors. 
+You probably already think of a vector as an array with one dimension (or axis). This makes it a first-order tensor, and a matrix is a second-order tensor as it has two axes. Similar objects with more than two axes are higher order tensors.
 <br><br>
 In summary, a tensor is the generalization of vectors, matrices and higher order tensors. That is, a multidimensional array.
 <br><br>
-But do note that in math, there is a lot more to tensors than just being a multidimensional array, just as there much more to matrices than just being a 2D array. But this article is not concerned with that.
+But do note that in math, there is a lot more to tensor than just being a multidimensional array, just as there is much more to matrix than just being a 2D array. But this article is not concerned with that.
 
 </p>
 </details>
@@ -343,15 +344,15 @@ $$
 \vec{w}=\left[\begin{matrix}w_1\\w_2\\\vdots\\w_n\\\end{matrix}\right]^T
 $$
 
-The variable $$b$$ is a $$1$$-by-$$m$$ vector. Fundamentally, however, the bias is a scalar (or a $$1$$-by-$$1$$ vector) regardless of the number datapoints in the batch. 
+The variable $$b$$ is a $$1$$-by-$$m$$ vector. Fundamentally, however, the bias is a scalar (or a $$1$$-by-$$1$$ vector) regardless of the number datapoints in the batch.
 
 There is only one bias for a neuron, and it's simply the weight for the bias node, just like each of the other weights. It only gets stretched into a $$1$$-by-$$m$$ vector to match the shape of $$z$$, so that the matrix equation is valid. The stretching involves repeating the elements to fill up the stretched-out vector. When coding in Python and using the NumPy library for your computations, it's good to know that this stretching (also called [broadcasting](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy)) is already baked into the library.
 
-Therefore the full answer for the shape of $$b$$ is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish). 
+Therefore the full answer for the shape of $$b$$ is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish).
 
 We must keep in mind that $$b$$ is a parameter of the estimator, and it would be very counterproductive to define it in a way that binds it to the number of examples (datapoints) in a batch. This is why its fundamental form is a scalar.
 
-Here are some problems we would have if we defined $$b$$ to be fundamentally a $$1$$-by-$$m$$ vector: 
+Here are some problems we would have if we defined $$b$$ to be fundamentally a $$1$$-by-$$m$$ vector:
 
 {% include indent_paragraph.html content=
 "The neuron becomes restricted to a fixed batch size. That is, the batch size we use to train the neuron becomes a fixture of the neuron, to the point that we can’t use the neuron to carry out predictions or estimations for a different batch size.
@@ -473,7 +474,7 @@ $$
 $$
 
 $$
-\vec{z}\ =\ \vec{w}\mathbf{X}\ +\ b 
+\vec{z}\ =\ \vec{w}\mathbf{X}\ +\ b
 $$
 
 {% include indent_paragraph.html content=
@@ -617,7 +618,7 @@ $$
 =-\left(data+\left(1-\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)}\right)\
 $$
 $$
-=-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot d a t a}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot data}}}\right)}\right)\ 
+=-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot d a t a}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot data}}}\right)}\right)\
 $$
 
 In other words, the loss function can be described purely as a function of the parameters ($$\vec{w}$$, $$b$$) and the data ($$\mathbf{X}$$, $$\vec{y}$$). And since data is known, the only unknowns on the right-hand side of the equation are the parameters.

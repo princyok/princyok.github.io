@@ -1,19 +1,15 @@
 ---
 layout: post
 title:  "Catching AI with its pants down: Implement an artificial neuron from scratch."
-logline: "Going from equations to code implementation in Python."
-date:   "2020-04-01"
+logline: "Going from equations to implementation in Python."
+date:   "2020-04-04"
 categories: machine-learning
 permalink:
 comments: true
 ---
 {% include scripts.html %}
 
-<table>
-<td>
-<i>We will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth!</i>
-</td>
-</table>
+{% include blogseries_mantra_catching_ai.html %}
 
 * TOC
 {:toc}

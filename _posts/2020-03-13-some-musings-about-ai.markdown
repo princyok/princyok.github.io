@@ -20,9 +20,9 @@ The goal of this writeup is to present modern artificial intelligence (AI), whic
 
 To keep this very accessible, all the mathematics will be simplified to a level that anyone with a high-school or first-year-university level of math knowledge and that can code (especially if Python) should be able to follow. Together we will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth. When I say AI here, I'm being a little silly with buzzspeak and actually mean deep neural networks.
 
-The original plan was to explain everything in one giant article, but that quickly proved unwieldy. So, I decided to break things up into multiple articles. This first article covers the prelude (basically some casual ramblings about AI) and subsequent articles focus on introducing an artificial neuron, the derivation of the equations needed to build one from scratch and the code implementation of those equation, and then repeat all that for a network of artificial neurons (a.k.a. neural networks). 
+The original plan was to explain everything in one giant article, but that quickly proved unwieldy. So, I decided to break things up into multiple articles. This first article covers the prelude (basically some casual ramblings about AI) and subsequent articles focus on introducing an artificial neuron, the derivation of the equations needed to build one from scratch and the code implementation of those equation, and then repeat all that for a network of artificial neurons (a.k.a. neural networks).
 
-However, 
+However,
 all the code presented in this blog series can be found at [this GitHub repo](https://github.com/princyok/deep_learning_without_ml_libraries), and includes code for artificial neuron and deep neural networks from scratch. Even the codes for the latter articles are already available there.
 
 This writeup aims to be very detailed, simple and granular, such that by the end, you hopefully should have enough knowledge to investigate and code more advanced architectures from scratch if you chose to do so. You should expect a lot of math, but don't let that scare you away, as I'll tried my best to explain things as simply as possible.
@@ -106,9 +106,9 @@ You may run into other sources that consider it a hybrid of both supervised and 
 Also be careful, because reinforcement learning is not a definitive name for the hybrids of the two. There are other subsets of machine learning that are truer hybrids of supervised and unsupervised learning but do not fall under reinforcement learning. For instance, generative adversarial neural networks (the family of machine learning models behind the [deepfake technology](https://www.youtube.com/watch?v=cQ54GDm1eL0)).
 
 ## **Estimators**
-When you see an apple, you are able to recognize that the fruit is an apple. When the accelerator (gas pedal) of a car is pressed down, the velocity of the car changes. When you see a ticktacktoe board where the game is ongoing, a decision on what is the best next move emerges. 
+When you see an apple, you are able to recognize that the fruit is an apple. When the accelerator (gas pedal) of a car is pressed down, the velocity of the car changes. When you see a ticktacktoe board where the game is ongoing, a decision on what is the best next move emerges.
 
-All of these have one thing in common: there is a process that takes an input and spits out an output. The visuals of an apple is the input and the recognition of the name is the output. Pressing down of the accelerator is an input and the rate of change of velocity is the output. 
+All of these have one thing in common: there is a process that takes an input and spits out an output. The visuals of an apple is the input and the recognition of the name is the output. Pressing down of the accelerator is an input and the rate of change of velocity is the output.
 All of these processes can be thought of as functions. A function is the mapping of a set of inputs to a set of outputs in such a way that no two or more inputs will result in the same output. Almost any process you can be thought of as a function. The hard part is fully characterizing the function that underlies a process.
 
 An estimator is a function that tries to estimate the behavior of another function whose details are not fully unknown.

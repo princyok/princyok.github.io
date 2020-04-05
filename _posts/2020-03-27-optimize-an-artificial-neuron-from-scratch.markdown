@@ -15,7 +15,7 @@ comments: true
 * TOC
 {:toc}
 
-## **Preface**
+## **Prologue**
 
 This is part 3 of the blog series, *Catching AI with its pants down*. In this part, I will dive into the mathematical details of training (optimizing) an artificial neuron via gradient descent. This will be a math-heavy article, so get your pen and scratch papers ready. But I made sure to simplify things.
 
@@ -89,9 +89,9 @@ Heads up: For this part, which is the real meat of the training process, I advis
 
 Let’s focus on just $$\frac{\partial J}{\partial \vec{w}}$$ for now. To compute the cost gradient $$\frac{\partial J}{\partial \vec{w}}$$ we simply use the chain rule.
 
-$$\frac{\partial J}{\partial \vec{w}}=\ \frac{\partial J}{\partial \vec{a}}\frac{\partial \vec{a}}{\partial \vec{z}}\frac{\partial \vec{z}}{\partial \vec{w}}$$
-
-The above chain rule equation is a core step of backpropagation (abbrev. backprop) for a neural network. This is why you may have heard of backprop being describe as just “good 'ol chain rule”, but that is a disservice to the beauty of this mathematical process, because there is one more important aspect to it, which is the reusing of values already computed or available during forward propagation, saving you some computation (while using up more computer memory).
+$$
+\frac{\partial J}{\partial \vec{w}}=\ \frac{\partial J}{\partial \vec{a}}\frac{\partial \vec{a}}{\partial \vec{z}}\frac{\partial \vec{z}}{\partial \vec{w}}
+$$
 
 The gradient $$\frac{\partial J}{\partial \vec{a}}$$ (can also be called a Jacobian, because it is) depends on the choice of the cost function because we can’t do anything if we haven’t picked what function to use for $$J$$. Also, $$\frac{\partial \vec{a}}{\partial \vec{z}}$$ depends on the choice of activation function, although we can solve it for an arbitrary function.
 
@@ -396,7 +396,7 @@ $$
 \frac{\partial J}{\partial \vec{z}}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}=\frac{\partial J}{\partial \vec{a}}\odot\left(diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}\right)
 $$
 
-In fact, we can casually equate $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ to $$f'(\vec{z})$$, which is same as its diagonal vector. The math works out in a very nice way in that it gives the impression that we are extracting only the useful information from the matrix (which is the diagonal of the matrix). 
+In fact, we can casually equate $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ to $$f'(\vec{z})$$, which is same as its diagonal vector. The math works out in a very nice way in that it gives the impression that we are extracting only the useful information from the matrix (which is the diagonal of the matrix).
 
 Therefore, we end up perfoming the following assignment operation:
 
@@ -477,9 +477,11 @@ Therefore the Jacobian $$\frac{\partial \vec{z}}{\partial b}$$ is easily impleme
 
 As [mentioned in part 2](/machine-learning/understand-an-artificial-neuron-from-scratch.html), matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction.
 
-Here is a quick overview of tensor contraction.
+Below is a quick overview of tensor contraction.
 
-From the perspective of tensor contraction, the vector-matrix multiplication of a row vector $$\vec{v}$$ and a matrix $$\mathbf{M}$$ to produce a row vector $$\vec{u}$$ is:
+Before continuing, note that there is a whole world of concepts associated with tensors and their contraction that is far beyond the scope of this blog series. We will go over just what we need. You can liken the overview presented here to talking about simple linear regression when an overview of machine learning is promised. Let's continue!
+
+From the perspective of tensor contraction, using an elementwise notation, the vector-matrix multiplication of a row vector $$\vec{v}$$ and a matrix $$\mathbf{M}$$ to produce a row vector $$\vec{u}$$ is:
 
 $$u_q=\sum_{p}{v_p\cdot m_{p,q}}$$
 
