@@ -79,7 +79,7 @@ The inputs that are fed into a unit are used in two key operations in order to g
 
 1. Summation: The inputs ($ x_i $) are multiplied with the weights ($$w_i$$), and the products are summed together. This summation is sometimes called the preactivation value, or without the term “value”.
 
-2. Activation function: the resulting sum (i.e. the preactivation) is passed through a mathematical function.
+2. Activation function (a.k.a. transfer function): the resulting sum (i.e. the preactivation) is passed through a mathematical function.
 
 {% include image.html url="/assets/images/artificial_neuron/artificial_neuron_interior.png" description="Diagram of an artificial neuron showing what happens inside it. This is the less common representation, as it is thought of as showing too many details you are expected to already know." %}
 
@@ -459,7 +459,7 @@ The main problem is that the Heaviside function jumps too rapidly, in fact insta
 
 ## **Activation functions**
 
-It is possible to use other kinds of functions as an activation function, and this is indeed what researchers did when the original perceptron failed to deliver. One such replacement was the sigmoid function, which resembles a smoothened Heaviside function.
+It is possible to use other kinds of functions as an activation function (a.k.a. transfer function), and this is indeed what researchers did when the original perceptron failed to deliver. One such replacement was the sigmoid function, which resembles a smoothened Heaviside function.
 
 {% include image.html url="/assets/images/artificial_neuron/heaviside_logistic.png" description="Plots of the Heaviside and logistic activation functions." %}
 
