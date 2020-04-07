@@ -32,7 +32,7 @@ What remains to be seen is how we pull this off."
 %}
 
 ## **Gradient Descent Algorithm**
-As we saw in part 2, we have a loss function that is a function of the weights and biases, and we need a way to find the set of weights and biases that minimizes the loss. This is a clearcut optimization problem.
+As we [saw in part 2](/understand-an-artificial-neuron-from-scratch.html#loss-function){:target="_blank"}, we have a loss function that is a function of the weights and biases, and we need a way to find the set of weights and biases that minimizes the loss. This is a clearcut optimization problem.
 
 There are many ways to solve this optimization problem, but we will go with the one that scales excellently with deep neural networks, since that is the eventual goal of this writeup. And that brings us to the gradient descent algorithm.
 
@@ -104,7 +104,7 @@ This is also always true in standard feedforward neural networks (a.k.a. multila
 
 Before we move any further, it’s important you understand what Jacobians are. In a nutshell, the Jacobian of a vector-valued function (a function that returns a vector), which is what we are working with here, is a matrix that contains all of the function’s first order partial derivatives. It is the way to properly characterize the partial derivatives of a vector function with respect to all its input variables.
 
-If you were not already familiar with Jacobians or still unclear of what it is, I found [this video](https://www.youtube.com/watch?v=bohL918kXQk) that should help (or just search for “Jacobian matrix” on YouTube and you’ll see many great introductory videos).
+If you were not already familiar with Jacobians or still unclear of what it is, I found [this video](https://www.youtube.com/watch?v=bohL918kXQk){:target="_blank"} that should help (or just search for “Jacobian matrix” on YouTube and you’ll see many great introductory videos).
 
 
 Our Jacobians in matrix representation are as follows:
@@ -203,7 +203,7 @@ $$
 \frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{1}{1+e^{-z_k}}\cdot\frac{e_k^z}{e_k^z}\right)}{\partial z_j}=\frac{\partial\left(\frac{e_k^z}{e_k^z+1}\right)}{\partial z_j}
 $$
 
-The reason for this is to make the use of the [quotient rule of differentiation](https://en.wikipedia.org/wiki/Quotient_rule) for solving the derivative easier to work with.
+The reason for this is to make the use of the [quotient rule of differentiation](https://en.wikipedia.org/wiki/Quotient_rule){:target="_blank"} for solving the derivative easier to work with.
 
 We have to consider two possible cases. One is where $$k$$ and $$j$$ are equal, e.g. $$\frac{\partial a_2}{\partial z_2}$$, and the other is when they are not, e.g. $$\frac{\partial a_1}{\partial z_2}$$.
 
@@ -372,11 +372,7 @@ $$
 </table>
 
 
-
-
-
-
-Once we’ve computed the $$diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}$$, which is a $$1$$-by-$$m$$ vector, we will implement some code that can inflate the diagonal matrix $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ by padding it with zeros. If coding in Python and using the NumPy library for our vectorized computations, then the method [`numpy.diagflat`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.diagflat.html) does exactly that.
+Once we’ve computed the $$diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}$$, which is a $$1$$-by-$$m$$ vector, we will implement some code that can inflate the diagonal matrix $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ by padding it with zeros. If coding in Python and using the NumPy library for our vectorized computations, then the method [`numpy.diagflat`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.diagflat.html){:target="_blank"} does exactly that.
 
 One good news is that we can take the equation $$\frac{\partial J}{\partial \vec{w}}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}\mathbf{X}^T$$ to an alternative form that would allow us to skip the step of inflating the $$diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}$$ and therefore saves us a little processing time.
 
@@ -475,7 +471,7 @@ $$
 
 Therefore the Jacobian $$\frac{\partial \vec{z}}{\partial b}$$ is easily implemented in code by simply creating a vector of ones whose shape is same as $ \vec{z}^T $. But there is another way we can recharacterize the above equation for $$\frac{\partial J}{\partial b}$$ such that we avoid creating any new vectors.
 
-As [mentioned in part 2](/machine-learning/understand-an-artificial-neuron-from-scratch.html), matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction.
+As [mentioned in part 2](/understand-an-artificial-neuron-from-scratch.html#artificial-neuron){:target="_blank"}, matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction.
 
 Below is a quick overview of tensor contraction.
 

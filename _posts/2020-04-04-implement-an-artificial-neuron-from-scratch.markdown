@@ -22,7 +22,7 @@ This is part 4 of the blog series, *Catching AI with its pants down*. In this pa
 
 ## **Code Implementation: an artificial neuron**
 
-All the codes will be in Python, using its object-oriented paradigm wherever possible (but I won’t bother with getters and setters, for the most part). We will use primarily the [NumPy library](https://numpy.org/){:target="_blank"} because its operations are very efficient for linear algebra computations involving arrays.
+All the codes will be in Python, using its object-oriented paradigm wherever possible (but I won’t bother with [getters and setters](https://en.wikipedia.org/wiki/Mutator_method){:target="_blank"} for the most part). We will use primarily the [NumPy library](https://numpy.org/){:target="_blank"} because its operations are very efficient for linear algebra computations involving arrays.
 
 This implementation does not take advantage of parallel computing, so your GPU won’t make things any faster. But it takes advantage of NumPy’s superb optimization for computations with multidimensional arrays. Therefore, python loops are avoided as much as possible in the code, which is why we went through all that work to have everything as tensors.
 
@@ -223,8 +223,8 @@ The training process is as follows:
 1.	Randomly initialize our parameters
 2.	Run one iteration of training, which involves:
   *	Sample a batch from our dataset.
-  *	Then run forward pass (i.e. move the data forward through the neuron)
-  *	Then run backward pass to calculate our cost gradients
+  *	Then run forward pass (i.e. move the data forward through the neuron).
+  *	Then run backward pass to calculate our cost gradients.
   *	Then run gradient descent (which is technically part of backward pass), which uses the cost gradients to update the parameters.
 3. Repeat step 2 until we reach the specified number of iterations.
 
@@ -304,9 +304,9 @@ def evaluate(self, X, Y, metric="accuracy"):
     return score
 ```
 
-I decided to get a little cheeky and throw ValueError when an invalid string is passed to metric, a formal parameter of the method evaluate.
+I decided to get a little cheeky and throw `ValueError` when an invalid string is passed to `metric`, a formal parameter of the method evaluate.
 
-I also decided to print a warning message if all my activations are [NaN](https://docs.scipy.org/doc/numpy-1.13.0/user/misc.html){:target="_blank"}. From my experience, these can occur when the computations cause an arithmetic overflow or underflow.
+I also decided to print a warning message if all my activations are [NaNs](https://docs.scipy.org/doc/numpy-1.13.0/user/misc.html){:target="_blank"} (i.e. null values). From my experience, these can occur when the computations cause an arithmetic overflow or underflow.
 
 ## **All the codes**
 

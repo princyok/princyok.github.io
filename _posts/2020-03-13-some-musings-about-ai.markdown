@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Catching AI with its pants down: Some Musings About AI"
-logline: "Introducing a blog series that explores the inner workings of neural nets and how to biuld a standard feedforward neural net from scratch. This first entry goes over the bare basics of machine learning."
+logline: "Introducing a blog series that explores the inner workings of neural nets and how to build a standard feedforward neural net from scratch. This first entry goes over the bare basics of machine learning."
 date:   "2020-03-13"
 categories: machine-learning
 permalink:
@@ -20,12 +20,12 @@ The goal of this writeup is to present modern artificial intelligence (AI), whic
 
 To keep this very accessible, all the mathematics will be simplified to a level that anyone with a high-school or first-year-university level of math knowledge and that can code (especially if Python) should be able to follow. Together we will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth. When I say AI here, I'm being a little silly with buzzspeak and actually mean deep neural networks.
 
-The original plan was to explain everything in one giant article, but that quickly proved unwieldy. So, I decided to break things up into multiple articles. This first article covers the prelude (basically some casual ramblings about AI) and subsequent articles focus on introducing an artificial neuron, the derivation of the equations needed to build one from scratch and the code implementation of those equation, and then repeat all that for a network of artificial neurons (a.k.a. neural networks).
-
 However,
-all the code presented in this blog series can be found at [this GitHub repo](https://github.com/princyok/deep_learning_without_ml_libraries), and includes code for artificial neuron and deep neural networks from scratch. Even the codes for the latter articles are already available there.
+all the code presented in this blog series can be found at [**this GitHub repo**](https://github.com/princyok/deep_learning_without_ml_libraries){:target="_blank"}, and includes code for artificial neuron and deep neural networks from scratch. Even the codes for the latter articles are already available there.
 
 This writeup aims to be very detailed, simple and granular, such that by the end, you hopefully should have enough knowledge to investigate and code more advanced architectures from scratch if you chose to do so. You should expect a lot of math, but don't let that scare you away, as I'll tried my best to explain things as simply as possible.
+
+The original plan was to explain everything in one giant article, but that quickly proved unwieldy. So, I decided to break things up into multiple articles. This first article covers the prelude (basically some casual ramblings about AI) and subsequent articles focus on introducing an artificial neuron, the derivation of the equations needed to build one from scratch and the code implementation of those equations, and then repeat all that for a network of artificial neurons (a.k.a. neural networks).
 
 {% include blogseries_index_catching_ai.html %}
 
@@ -54,7 +54,7 @@ There are many other surveys out there that give results in the 2030s and 2040s.
 
 For instance, I too get that gut feeling that space propulsions that can reach low-end relativistic speeds should be just 20 to 40 years away; how else will the Breakthrough Starshot (founded by  Zuckerberg, Milner and the late Hawking) get a spacecraft to Proxima Centauri b. Same for fault-tolerant quantum computers, fusion power with gain factor far greater than 1, etc. They are all just 20 to 40 years away, because these are all things I really want to see happen.
 
-Also, it seems that [AI entrepreneurs tend to be much more optimistic about how close we are to AGI than AI researchers](https://blog.aimultiple.com/artificial-general-intelligence-singularity-timing/) are. Someone should do a bigger survey for that, ha!
+Also, it seems that [AI entrepreneurs tend to be much more optimistic about how close we are to AGI than AI researchers](https://blog.aimultiple.com/artificial-general-intelligence-singularity-timing/){:target="_blank"} are. Someone should do a bigger survey for that, ha!
 
 ## **Artificial Narrow Intelligence**
 The type of AI we interact with today and hear of nonstop in the media is artificial narrow intelligence (ANI), also known as weak AI. It differs from AGI in that the AI is designed to deal with a specific task or a specific group of closely related tasks. Some popular examples are AlphaGo, Google Assistant, Alexa, etc.
@@ -63,12 +63,12 @@ A lot of the hype that has sprung up around ANI in the last decade was driven by
 
 A supervised learning task is one were the mathematical model (what we would call the AI if we’re still doing buzzspeak) is trained to associate inputs with their correct outputs, so that it can later produce a correct output when fed an input it never saw during training. An example is when Google Lens recognizes the kind of shoe you are pointing the camera at, or when IBM’s Watson transcribes your vocal speech to text. Google Lens can recognize objects in images because the neural network powering it has been trained with images where the objects in them have been correctly labelled, so that when it later sees a new image it has never seen before, it can still recognize patterns that it already learned during training.
 
-In reinforcement learning, you have an agent that tries to maximize future cumulative reward by exploring and exploiting the environment. That’s what [AlphaGo](https://www.youtube.com/watch?v=WXuK6gekU1Y) is in a nutshell. It takes in the current board configuration as input data and spits out the next move to play that will maximize the chances of winning the match.
+In reinforcement learning, you have an agent that tries to maximize future cumulative reward by exploring and exploiting the environment. That’s what DeepMind's [AlphaGo](https://www.youtube.com/watch?v=WXuK6gekU1Y){:target="_blank"} is in a nutshell. It takes in the current board configuration as input data and spits out the next move to play that will maximize the chances of winning the match.
 
 The important point is that deep neural networks have been a key transformative force in the development of powerful ANI solutions in recent times.
 
 ## **Machine learning**
-The rise of the deep learning hype has been a huge boon for its parent field of machine learning. Machine learning is simply the study of building computers systems that can “learn” from examples (i.e. data). The reason for the quotes around “learn” is that the term is just a machine learning lingo for [mathematical optimization](https://en.wikipedia.org/wiki/Mathematical_optimization) (and we will talk more about this later). We will also use the term “training” a lot, and it also refers to the same mathematical optimization.
+The rise of the deep learning hype has been a huge boon for its parent field of machine learning. Machine learning is simply the study of building computers systems that can “learn” from examples (i.e. data). The reason for the quotes around “learn” is that the term is just a machine learning lingo for [mathematical optimization](https://en.wikipedia.org/wiki/Mathematical_optimization){:target="_blank"} (and we will talk more about this later). We will also use the term “training” a lot, and it also refers to the same mathematical optimization.
 
 {% include image.html url="/assets/images/artificial_neuron/training_vs_test_cat_dog_illustration.png" description="In machine learning, the model learns the associations presented in the training set; that is, images with certain kinds of patterns, which we humans effortlessly recognize as characteristics of a cat or dog, map to a certain label (cat or dog). It uses the knowledge learned to correctly label the images in the test set, which are images it never saw during training. This is specifically supervised learning, a category of machine learning where the computer program is provided with correctly labelled examples to learn from." %}
 
@@ -103,7 +103,7 @@ Another subset of machine learning that some consider a category of its own alon
 
 You may run into other sources that consider it a hybrid of both supervised and unsupervised learning. This is debatable because there is no label or correction involved in the training process, but there is a reward system that guides the learning process.
 
-Also be careful, because reinforcement learning is not a definitive name for the hybrids of the two. There are other subsets of machine learning that are truer hybrids of supervised and unsupervised learning but do not fall under reinforcement learning. For instance, generative adversarial neural networks (the family of machine learning models behind the [deepfake technology](https://www.youtube.com/watch?v=cQ54GDm1eL0)).
+Also be careful, because reinforcement learning is not a definitive name for the hybrids of the two. There are other subsets of machine learning that are truer hybrids of supervised and unsupervised learning but do not fall under reinforcement learning. For instance, generative adversarial neural networks (the family of machine learning models behind the [deepfake technology](https://www.youtube.com/watch?v=cQ54GDm1eL0){:target="_blank"}).
 
 ## **Estimators**
 When you see an apple, you are able to recognize that the fruit is an apple. When the accelerator (gas pedal) of a car is pressed down, the velocity of the car changes. When you see a ticktacktoe board where the game is ongoing, a decision on what is the best next move emerges.

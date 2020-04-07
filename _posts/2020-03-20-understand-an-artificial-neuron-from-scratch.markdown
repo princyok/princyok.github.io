@@ -21,13 +21,13 @@ This is part 2 of this blog series, *Catching AI with its pants down*, which aim
 {% include blogseries_index_catching_ai.html %}
 
 ## **The brain as a function**
-The computational theory of mind (CTM) says that we can interpret human cognitive processes as computational functions. That is, the human mind behaves just like a computer. Note that while this theory is considered a good model for human cognition (it was the unchallenged standard in the 1960s and 1970s and still widely subscribed to), no one has been able to show how consciousness can emerge from a system modelled on the basis of this theory, but that’s another topic for another time. For a short primer on the theory, see [this article](https://plato.stanford.edu/entries/computational-mind/) from the Stanford Encyclopedia of Philosophy.
+The computational theory of mind (CTM) says that we can interpret human cognitive processes as computational functions. That is, the human mind behaves just like a computer. Note that while this theory is considered a good model for human cognition (it was the unchallenged standard in the 1960s and 1970s and still widely subscribed to), no one has been able to show how consciousness can emerge from a system modelled on the basis of this theory, but that’s another topic for another time. For a short primer on the theory, see [this article](https://plato.stanford.edu/entries/computational-mind/){:target="_blank"} from the Stanford Encyclopedia of Philosophy.
 
 According to CTM, if we have a mathematical model of all the computations that goes on in the brain, we should, one day, be able to replicate the capabilities of the brain with computers.
 
 But how does the brain do what it does?
 
-In a nutshell, the brain is made up of two main kinds of cells: glial cells and neurons (a.k.a. nerve cells). There are about [86 billion neurons](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2776484/) and even more glial cells in the nervous system (brain, spinal cord and nerves) of an adult human. The primary function of glial cells is to provide physical protection and other kinds of support to neurons, so we are not very interested in glial cells here. It’s the neuron we came for.
+In a nutshell, the brain is made up of two main kinds of cells: glial cells and neurons (a.k.a. nerve cells). There are about [86 billion neurons](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2776484/){:target="_blank"} and even more glial cells in the nervous system (brain, spinal cord and nerves) of an adult human. The primary function of glial cells is to provide physical protection and other kinds of support to neurons, so we are not very interested in glial cells here. It’s the neuron we came for.
 
 The primary function of biological neurons is to process and transmit signals, and there are three main types, sensory neurons (concentrated in your sensory organs like eyes, ears, skin, etc.), motor neurons (carry signals between the brain and spinal cord, and from both to the muscles), and interneurons (found only in the brain and spinal cord, and they process information).
 
@@ -60,12 +60,12 @@ Below is an excerpt of the dataset:
 
 The dataset has two features or inputs, i.e. `velocity` and `mass`, and a single output, which is `energy level` and it is binary. The last two columns are exactly the same, just that the third is the numerical version of the last and is what we actually use because we need to crunch numbers. In classification, the labels are converted to numbers for the learning process.
 
-The full toy dataset can be found [here](https://github.com/princyok/deep_learning_without_ml_libraries/blob/master/datasets/toy_dataset1/toy_dataset_velocity_ke.csv).
+The full toy dataset can be found [**here**](https://github.com/princyok/deep_learning_without_ml_libraries/blob/master/datasets/toy_dataset1/toy_dataset_velocity_ke.csv){:target="_blank"}.
 
 ##  **Artificial neuron**
-In the 1950s, the psychologist Frank Rosenblatt introduced a very simple mathematical abstraction of the biological neuron. He developed a model that mimicked the following behavior: signals that are received from dendrites are sent down the axon once the strength of the input signal crosses a certain threshold. The outputted signal can then serve as an input to another neuron. Rosenblatt [named](https://www.sciencedirect.com/science/article/pii/B0080430767005726) this mathematical model the perceptron.
+In the 1950s, the psychologist Frank Rosenblatt introduced a very simple mathematical abstraction of the biological neuron. He developed a model that mimicked the following behavior: signals that are received from dendrites are sent down the axon once the strength of the input signal crosses a certain threshold. The outputted signal can then serve as an input to another neuron. Rosenblatt [named](https://www.sciencedirect.com/science/article/pii/B0080430767005726){:target="_blank"} this mathematical model the perceptron.
 
-Rosenblatt’s original perceptron was a simple [Heaviside function](https://en.wikipedia.org/wiki/Heaviside_step_function) that outputs zero if the input signal is equal to or less than 0, and outputs 1 if the input is greater than zero. Therefore, zero was the threshold above which an input makes the neuron to fire. The original perceptron is an example of an artificial neuron, and we will see other examples.
+Rosenblatt’s original perceptron was a simple [Heaviside function](https://en.wikipedia.org/wiki/Heaviside_step_function){:target="_blank"} that outputs zero if the input signal is equal to or less than 0, and outputs 1 if the input is greater than zero. Therefore, zero was the threshold above which an input makes the neuron to fire. The original perceptron is an example of an artificial neuron, and we will see other examples.
 
 An artificial neuron is simply a mathematical function that serves as the elementary unit of a neural network. It is also known as a node or a unit, with the latter name being very common in machine learning publications. I may jump between these names, and it’s not bad if you get used to that, as all of these names are common.
 
@@ -108,7 +108,7 @@ $$
 
 Now check back with the diagram of an artificial neuron and see if you can make the connection between the equations above and the diagram. Don't move on unless you already have this down.
 
-It’s important to start putting these equations in the context of data. Using our toy dataset (showcased in part 1), the application of this equation can be demonstrated by taking any datapoint and subbing the values into the above equation. For instance, if we sub in the 0<sup>th</sup> datapoint (6.5233, 1.5484, 0), we get:
+It’s important to start putting these equations in the context of data. Using our toy dataset ([introduced in part 1](/understand-an-artificial-neuron-from-scratch.html#toy-dataset-for-this-blog-series){:target="_blank"}), the application of this equation can be demonstrated by taking any datapoint and subbing the values into the above equation. For instance, if we sub in the 0<sup>th</sup> datapoint (6.5233, 1.5484, 0), we get:
 
 $$
 z=w_1\ \cdot 6.5233+w_2\ \cdot1.5484+w_0
@@ -348,7 +348,7 @@ The variable $$b$$ is a $$1$$-by-$$m$$ vector. Fundamentally, however, the bias 
 
 There is only one bias for a neuron, and it's simply the weight for the bias node, just like each of the other weights. It only gets stretched into a $$1$$-by-$$m$$ vector to match the shape of $$z$$, so that the matrix equation is valid. The stretching involves repeating the elements to fill up the stretched-out vector. When coding in Python and using the NumPy library for your computations, it's good to know that this stretching (also called [broadcasting](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy)) is already baked into the library.
 
-Therefore the full answer for the shape of $$b$$ is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish).
+Therefore the full answer for the shape of $$b$$ is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish [part 4](/implement-an-artificial-neuron-from-scratch.html){:target="_blank").
 
 We must keep in mind that $$b$$ is a parameter of the estimator, and it would be very counterproductive to define it in a way that binds it to the number of examples (datapoints) in a batch. This is why its fundamental form is a scalar.
 
@@ -530,7 +530,7 @@ The above is the logistic artificial neuron that has learned the relationship hi
 Note that the values for the parameters are not unique. A different set of values can still give us a comparable performance. We only discovered one of many possible sets of values that can give us good performance.
 
 ## **Loss function**
-In the section on estimators, I mentioned that it is imperative to expect an estimator (which is what an artificial neuron is) to have some level of error in its prediction, and our objective will be to minimize this error.
+In the [section on estimators](/some-musings-about-ai.html#estimators){:target="_blank"} from part 1 of this blog series, I mentioned that it is imperative to expect an estimator (which is what an artificial neuron is) to have some level of error in its prediction, and our objective will be to minimize this error.
 
 We described this error as:
 
