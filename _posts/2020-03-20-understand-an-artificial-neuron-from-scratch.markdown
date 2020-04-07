@@ -21,7 +21,11 @@ This is part 2 of this blog series, *Catching AI with its pants down*, which aim
 {% include blogseries_index_catching_ai.html %}
 
 ## **The brain as a function**
-The computational theory of mind (CTM) says that we can interpret human cognitive processes as computational functions. That is, the human mind behaves just like a computer. Note that while this theory is considered a good model for human cognition (it was the unchallenged standard in the 1960s and 1970s and still widely subscribed to), no one has been able to show how consciousness can emerge from a system modelled on the basis of this theory, but that’s another topic for another time. For a short primer on the theory, see [this article](https://plato.stanford.edu/entries/computational-mind/){:target="_blank"} from the Stanford Encyclopedia of Philosophy.
+The computational theory of mind (CTM) says that we can interpret human cognitive processes as computational functions. That is, the human mind behaves just like a computer. 
+
+Note that while CTM is considered a decent model for human cognition (it was the unchallenged standard in the 1960s and 1970s and still widely subscribed to), no one has been able to show how consciousness can emerge from a system modelled on the basis of this theory, but that’s another topic for another time. 
+
+For a short primer on CTM, see [this article](https://plato.stanford.edu/entries/computational-mind/){:target="_blank"} from the Stanford Encyclopedia of Philosophy.
 
 According to CTM, if we have a mathematical model of all the computations that goes on in the brain, we should, one day, be able to replicate the capabilities of the brain with computers.
 
@@ -47,7 +51,7 @@ Neurons receive signal via their dendrites and outputs signal via their axon ter
 
 The graded potential gets smaller as it travels through the soma to reach the axon. If the graded potential that reaches the trigger zone (near the axon hillock) is higher than a threshold value unique to the neuron, the neuron fires a huge electric signal, called the action potential, that travels down the axon and through the synapse to become the input signal for the neurons downstream.
 
-#### **Toy dataset for this blog series**
+### **Toy dataset for this blog series**
 Before we advance any further to artificial neurons, let’s introduce a toy dataset that will accompany subsequent discussions and be used to provide vivid illustration.
 
 You can think of the data as being generated from an experiment where a device launches balls of various masses unto a board that can roll backward, and when it does roll back all the way to touch the sensor, that shot is recorded as high energy, otherwise it is classified as low energy.
@@ -346,9 +350,9 @@ $$
 
 The variable $$b$$ is a $$1$$-by-$$m$$ vector. Fundamentally, however, the bias is a scalar (or a $$1$$-by-$$1$$ vector) regardless of the number datapoints in the batch.
 
-There is only one bias for a neuron, and it's simply the weight for the bias node, just like each of the other weights. It only gets stretched into a $$1$$-by-$$m$$ vector to match the shape of $$z$$, so that the matrix equation is valid. The stretching involves repeating the elements to fill up the stretched-out vector. When coding in Python and using the NumPy library for your computations, it's good to know that this stretching (also called [broadcasting](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy)) is already baked into the library.
+There is only one bias for a neuron, and it's simply the weight for the bias node, just like each of the other weights. It only gets stretched into a $$1$$-by-$$m$$ vector to match the shape of $$z$$, so that the matrix equation is valid. The stretching involves repeating the elements to fill up the stretched-out vector. When coding in Python and using the NumPy library for your computations, it's good to know that this stretching (also called [broadcasting](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy){:target="_blank"})) is already baked into the library.
 
-Therefore the full answer for the shape of $$b$$ is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish [part 4](/implement-an-artificial-neuron-from-scratch.html){:target="_blank").
+Therefore the full answer for the shape of $$b$$ is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish [part 4](/implement-an-artificial-neuron-from-scratch.html){:target="_blank"}).
 
 We must keep in mind that $$b$$ is a parameter of the estimator, and it would be very counterproductive to define it in a way that binds it to the number of examples (datapoints) in a batch. This is why its fundamental form is a scalar.
 
@@ -478,7 +482,7 @@ $$
 $$
 
 {% include indent_paragraph.html content=
-"Where $ \boldsymbol{\hat{y}} $ is the prediction or estimation (just another name for activation). It is a 1-by-$ m $ vector, and it's not the unit vector for $ \vec{y} $."
+"Where $ \boldsymbol{\hat{y}} $ is the prediction or estimation (just another name for activation). It is a 1-by-$ m $ vector. It's not the unit vector for $ \vec{y} $."
 %}
 
 And this is the equation for an artificial neuron with a logistic (sigmoid) activation function:
@@ -495,7 +499,7 @@ As you can see, they are one and the same!
 
 Also note that the perceptron, along with every other kind of artificial neuron, is an estimator just like other machine learning models (linear regression, etc.).
 
-Besides the sigmoid and Heaviside functions, there are a plethora of other functions that have found great usefulness as activation functions. **You can find a list of many other activation functions in [this Wikipedia article](https://en.wikipedia.org/w/index.php?title=Activation_function&oldid=939349877#Comparison_of_activation_functions)**. You should take note of the rectified linear function; any neuron using it is known as a rectified linear unit (ReLU). It's the most popular activation function in deep learning.
+Besides the sigmoid and Heaviside functions, there are a plethora of other functions that have found great usefulness as activation functions. **You can find a list of many other activation functions in [this Wikipedia article](https://en.wikipedia.org/w/index.php?title=Activation_function&oldid=939349877#Comparison_of_activation_functions){:target="_blank"}**. You should take note of the rectified linear function; any neuron using it is known as a rectified linear unit (ReLU). It's the most popular activation function in deep learning.
 
 One more important mention is that the process of going from input data ($$\mathbf{X}$$) all the way to activation (essentially, the execution of an activation function) is called **forward pass** (or forward propagation in the context of neural networks), and this is the process we demonstrated above using the toy dataset. This distinguishes from the sequel process, known as **backward pass**, where we use the error between the activation ($$\vec{a}$$) and the ground truth ($$\vec{y}$$) to tune our parameters in such a way that the error decreases.
 
@@ -542,7 +546,7 @@ $$
 y-\hat{y}\neq\hat{y}-y
 $$
 
-For instance, we know the difference between the [natural numbers](https://en.wikipedia.org/wiki/Natural_number) 5 and 3 is 2, but depending on how you rearrange the subtraction between them, we could end up with -2 instead, and we don’t want that to be happening, so we apply an absolute value operation and restate the error as:
+For instance, we know the difference between the [natural numbers](https://en.wikipedia.org/wiki/Natural_number){:target="_blank"}) 5 and 3 is 2, but depending on how you rearrange the subtraction between them, we could end up with -2 instead, and we don’t want that to be happening, so we apply an absolute value operation and restate the error as:
 
 $$
 \varepsilon=|y-\hat{y}|

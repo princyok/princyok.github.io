@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Catching AI with its pants down: Implement an artificial neuron from scratch."
+title:  "Catching AI with its pants down: Implement an Artificial Neuron from Scratch."
 logline: "Going from equations to implementation in Python."
 date:   "2020-04-04"
 categories: machine-learning
@@ -55,7 +55,7 @@ class Neuron:
         self.dJdB=None
 {% endhighlight %}
 
-We don’t really need to access the entire data (X and Y) during its instantiation. We could have chosen to initialize `self.X` and `self.Y` later. We only just needed the shape of X, because we use it to get the number of features in our data. However, I chose to have both X and Y initialized at instantiation for the sake of it, so this is certainly an opportunity for some refactoring to improve the code.
+We don’t really need to access the entire data (`X` and `Y`) during its instantiation. We could have chosen to initialize `self.X` and `self.Y` later. We only just needed the shape of `X`, because we use it to get the number of features in our data which we use when we initialize our parameters. However, I chose to have both `self.X` and `self.Y` initialized at instantiation for the sake of it, so this is certainly an opportunity for some refactoring to improve the code.
 
 ### **Parameter initialization**
 
@@ -74,7 +74,7 @@ def _initialize_parameters(self, random_seed=11):
 ### **Forward pass**
 Forward pass can be broken into two steps: First is the linear combination of the parameters and datapoint values to get the preactivation. Next is the passing of the preactivation through an activation function to get the activation.
 
-The equations for forward are:
+The equations for forward pass are:
 
 $$
 \vec{z}=\vec{w}\mathbf{X}+b
@@ -90,7 +90,7 @@ def _forward(self):
     self.a=self._logistic(self.z)
 ```
 
-Notice that that I used `X_batch` instead of `X`, because we perform our calculations on batches of samples from the dataset.
+Notice that that I used `self.X_batch` instead of `self.X`, because we perform our calculations on batches of samples from the dataset. We will initialize `self.X_batch` during training (i.e. inside the `train` method).
 
 #### **Activation function**
 
