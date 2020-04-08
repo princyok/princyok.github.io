@@ -91,7 +91,7 @@ For instance, in an image classification task, the pixels of the image is the in
 
 A datapoint also goes by many names in the ML community. Names like “example”, “instance”, “record”, “observation”, etc., are all monikers for “datapoint”. I may use examples and records as alternatives to datapoint every now and then in this blog series, but I will mostly stick to using datapoint.
 
-### **Supervised learning: Regression vs Classification**
+#### **Supervised learning: Regression vs Classification**
 
 The two broad categories of supervised learning are classification and regression. In classification, the target variable has discrete values, e.g. cat and dog labels. There can’t be a value between cat and dog. It’s either a cat or a dog. Other examples would be a variable that holds labels for whether an email is spam or not spam, or labels for hair color, etc.
 
@@ -104,8 +104,8 @@ You may run into other sources that consider it a hybrid of both supervised and 
 
 Also be careful, because reinforcement learning is not a definitive name for the hybrids of the two. There are other subsets of machine learning that are truer hybrids of supervised and unsupervised learning but do not fall under reinforcement learning. For instance, generative adversarial neural networks (the family of machine learning models behind the [deepfake technology](https://www.youtube.com/watch?v=cQ54GDm1eL0){:target="_blank"}).
 
-### ** Deep Learning**
-Deep learning is simply machine learning that focuses heavily on deep neural networks, which is a network of artificial neurons stacked into several layers. Deep neural networks can be used for supervised, unsupervised and reinforcement learning. As such, deep learning can intersect with all three major categories of machine learning.
+### **Deep Learning**
+Deep learning is simply machine learning that focuses on deep neural networks, which is a network of artificial neurons stacked into several layers. Deep neural networks can be used for supervised, unsupervised and reinforcement learning. As such, deep learning can intersect with all three major categories of machine learning.
 
 However, much of the advances we've seen with deep learning in the last two decades has been for supervised learning and reinforcement learning. But there is a lot of ongoing work to make deep learning work great for unsupervised learning as it has for the other two. 
 
