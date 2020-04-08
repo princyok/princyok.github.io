@@ -91,7 +91,6 @@ For instance, in an image classification task, the pixels of the image is the in
 
 A datapoint also goes by many names in the ML community. Names like “example”, “instance”, “record”, “observation”, etc., are all monikers for “datapoint”. I may use examples and records as alternatives to datapoint every now and then in this blog series, but I will mostly stick to using datapoint.
 
-
 ### **Supervised learning: Regression vs Classification**
 
 The two broad categories of supervised learning are classification and regression. In classification, the target variable has discrete values, e.g. cat and dog labels. There can’t be a value between cat and dog. It’s either a cat or a dog. Other examples would be a variable that holds labels for whether an email is spam or not spam, or labels for hair color, etc.
@@ -101,15 +100,20 @@ In regression, the target variable has continuous values, e.g. account balances.
 ### **Reinforcement learning**
 Another subset of machine learning that some consider a category of its own alongside supervised learning and unsupervised learning is reinforcement learning. It’s about building programs that take actions that affect an environment in such a way that the cumulative future reward is maximized; in other words, programs that love to win!
 
-You may run into other sources that consider it a hybrid of both supervised and unsupervised learning. This is debatable because there is no label or correction involved in the training process, but there is a reward system that guides the learning process.
+You may run into other sources that consider it a hybrid of both supervised and unsupervised learning (i.e. semi-supervised learning). This is debatable because there is no label or correction involved in the training process, but there is a reward system that guides the learning process.
 
 Also be careful, because reinforcement learning is not a definitive name for the hybrids of the two. There are other subsets of machine learning that are truer hybrids of supervised and unsupervised learning but do not fall under reinforcement learning. For instance, generative adversarial neural networks (the family of machine learning models behind the [deepfake technology](https://www.youtube.com/watch?v=cQ54GDm1eL0){:target="_blank"}).
+
+### ** Deep Learning**
+Deep learning is simply machine learning that focuses heavily on deep neural networks, which is a network of artificial neurons stacked into several layers. Deep neural networks can be used for supervised, unsupervised and reinforcement learning. As such, deep learning can intersect with all three major categories of machine learning.
+
+However, much of the advances we've seen with deep learning in the last two decades has been for supervised learning and reinforcement learning. But there is a lot of ongoing work to make deep learning work great for unsupervised learning as it has for the other two. 
 
 ## **Estimators**
 When you see an apple, you are able to recognize that the fruit is an apple. When the accelerator (gas pedal) of a car is pressed down, the velocity of the car changes. When you see a ticktacktoe board where the game is ongoing, a decision on what is the best next move emerges.
 
 All of these have one thing in common: there is a process that takes an input and spits out an output. The visuals of an apple is the input and the recognition of the name is the output. Pressing down of the accelerator is an input and the rate of change of velocity is the output.
-All of these processes can be thought of as functions. A function is the mapping of a set of inputs to a set of outputs in such a way that no two or more inputs will result in the same output. Almost any process you can be thought of as a function. The hard part is fully characterizing the function that underlies a process.
+All of these processes can be thought of as functions. A function is the mapping of a set of inputs to a set of outputs in such a way that no two or more inputs will result in the same output. Almost any process can be thought of as a function. The hard part is fully characterizing the function that underlies a process.
 
 An estimator is a function that tries to estimate the behavior of another function whose details are not fully unknown.
 
