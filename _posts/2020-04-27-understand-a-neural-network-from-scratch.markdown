@@ -16,7 +16,7 @@ comments: true
 
 ## **Prologue**
 
-This is part 5 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to biuld a standard feedforward neural network from scratch. In this part, I will go over the mathematical underpinnings of a standard feedfoward neural network.
+This is part 5 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to build a standard feedforward neural network from scratch. In this part, I will go over the mathematical underpinnings of a standard feedfoward neural network.
 
 {% include blogseries_index_catching_ai.html %}
 
