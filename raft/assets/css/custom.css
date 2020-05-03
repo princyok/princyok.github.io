@@ -1,0 +1,18 @@
+@import "{{ site.theme }}";
+
+.post-logline {
+    font-size: smaller;
+    color: grey;
+}
+
+figcaption {
+  font-size: $small-font-size;
+    border: 1px dotted grey;
+    text-align: center;
+}
+
+figure > img {
+  display: inline-block;
+  border: 1px dotted grey;
+
+  }

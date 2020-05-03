@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Catching AI with its pants down: Implement an Artificial Neuron from Scratch."
+title:  "Catching AI with its pants down: Implement an Artificial Neuron from Scratch"
 logline: "Going from equations to implementation in Python."
 date:   "2020-04-04"
 categories: machine-learning

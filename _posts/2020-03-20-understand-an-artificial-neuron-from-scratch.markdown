@@ -27,9 +27,9 @@ Note that while CTM is considered a decent model for human cognition (it was the
 
 For a short primer on CTM, see [this article](https://plato.stanford.edu/entries/computational-mind/){:target="_blank"} from the Stanford Encyclopedia of Philosophy.
 
-According to CTM, if we have a mathematical model of all the computations that goes on in the brain, we should, one day, be able to replicate the capabilities of the brain with computers.
+According to CTM, if we have a mathematical model of all the computations that goes on in the brain, we should, one day, be able to replicate the capabilities of the brain with computers. But how does the brain do what it does?
 
-But how does the brain do what it does?
+### **Biological neuron**
 
 In a nutshell, the brain is made up of two main kinds of cells: glial cells and neurons (a.k.a. nerve cells). There are about [86 billion neurons](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2776484/){:target="_blank"} and even more glial cells in the nervous system (brain, spinal cord and nerves) of an adult human. The primary function of glial cells is to provide physical protection and other kinds of support to neurons, so we are not very interested in glial cells here. It’s the neuron we came for.
 
@@ -51,7 +51,7 @@ Neurons receive signal via their dendrites and outputs signal via their axon ter
 
 The graded potential gets smaller as it travels through the soma to reach the axon. If the graded potential that reaches the trigger zone (near the axon hillock) is higher than a threshold value unique to the neuron, the neuron fires a huge electric signal, called the action potential, that travels down the axon and through the synapse to become the input signal for the neurons downstream.
 
-### **Toy dataset for this blog series**
+## **Toy dataset for this blog series**
 Before we advance any further to artificial neurons, let’s introduce a toy dataset that will accompany subsequent discussions and be used to provide vivid illustration.
 
 You can think of the data as being generated from an experiment where a device launches balls of various masses unto a board that can roll backward, and when it does roll back all the way to touch the sensor, that shot is recorded as high energy, otherwise it is classified as low energy.
@@ -67,7 +67,7 @@ The dataset has two features or inputs, i.e. `velocity` and `mass`, and a single
 The full toy dataset can be found [**here**](https://github.com/princyok/deep_learning_without_ml_libraries/blob/master/datasets/toy_dataset1/toy_dataset_velocity_ke.csv){:target="_blank"}.
 
 ##  **Artificial neuron**
-In the 1950s, the psychologist Frank Rosenblatt introduced a very simple mathematical abstraction of the biological neuron. He developed a model that mimicked the following behavior: signals that are received from dendrites are sent down the axon once the strength of the input signal crosses a certain threshold. The outputted signal can then serve as an input to another neuron. Rosenblatt [named](https://www.sciencedirect.com/science/article/pii/B0080430767005726){:target="_blank"} this mathematical model the perceptron.
+In the 1950s, the psychologist Frank Rosenblatt introduced a very simple mathematical abstraction of the biological neuron. He developed a model that mimicked the following behavior: signals that are received from dendrites are sent down the axon once the strength of the input signal crosses a certain threshold. The outputted signal can then serve as an input to another neuron. Rosenblatt [named](https://www.sciencedirect.com/science/article/pii/B0080430767005726){:target="_blank"} this mathematical model the **perceptron**.
 
 Rosenblatt’s original perceptron was a simple [Heaviside function](https://en.wikipedia.org/wiki/Heaviside_step_function){:target="_blank"} that outputs zero if the input signal is equal to or less than 0, and outputs 1 if the input is greater than zero. Therefore, zero was the threshold above which an input makes the neuron to fire. The original perceptron is an example of an artificial neuron, and we will see other examples.
 
@@ -89,7 +89,7 @@ The inputs that are fed into a unit are used in two key operations in order to g
 
 The activation value can be thought of as a loose adaptation of the biological action potential, and the weights imitate synaptic strength.
 
-The inputs to the neuron, $$x_i$$, can themselves be activation values from other neurons. However, at this stage, where we are focusing on the model for only one artificial neuron, we will set the inputs to be the data, which loosely represents the stimuli received by the sensory organs in the analogy.
+The inputs to the neuron, $$x_i$$, can themselves be activation values from other neurons. However, at this stage, where we are focusing on the model for only one artificial neuron, we will set the inputs to be the data, which loosely represents the stimuli received by the sensory organs in the biological analogy.
 
 The algebraic representation of an artificial neuron is:
 
@@ -110,9 +110,9 @@ $$
 "Where $ n $ is the number of features in our dataset, which means $ i $ tracks the features (i.e. it is the variable for the serial number of the features)."
 %}
 
-Now check back with the diagram of an artificial neuron and see if you can make the connection between the equations above and the diagram. Don't move on unless you already have this down.
+Now check back with the diagram of an artificial neuron and see if you can make the connection between the equations and the diagram. Don't move on unless you already have this down.
 
-It’s important to start putting these equations in the context of data. Using our toy dataset ([introduced in part 1](/understand-an-artificial-neuron-from-scratch.html#toy-dataset-for-this-blog-series){:target="_blank"}), the application of this equation can be demonstrated by taking any datapoint and subbing the values into the above equation. For instance, if we sub in the 0<sup>th</sup> datapoint (6.5233, 1.5484, 0), we get:
+It’s important to start putting these equations in the context of data. Using our toy dataset (introduced above), the application of this equation can be demonstrated by taking any datapoint and subbing the values into the above equation. For instance, if we sub in the 0<sup>th</sup> datapoint (6.5233, 1.5484, 0), we get:
 
 $$
 z=w_1\ \cdot 6.5233+w_2\ \cdot1.5484+w_0
@@ -499,7 +499,7 @@ As you can see, they are one and the same!
 
 Also note that the perceptron, along with every other kind of artificial neuron, is an estimator just like other machine learning models (linear regression, etc.).
 
-Besides the sigmoid and Heaviside functions, there are a plethora of other functions that have found great usefulness as activation functions. **You can find a list of many other activation functions in [this Wikipedia article](https://en.wikipedia.org/w/index.php?title=Activation_function&oldid=939349877#Comparison_of_activation_functions){:target="_blank"}**. You should take note of the rectified linear function; any neuron using it is known as a rectified linear unit (ReLU). It's the most popular activation function in deep learning.
+Besides the sigmoid and Heaviside functions, there are a plethora of other functions that have found great usefulness as activation functions. **You can find a list of many other activation functions in [this Wikipedia article](https://en.wikipedia.org/w/index.php?title=Activation_function&oldid=939349877#Comparison_of_activation_functions){:target="_blank"}**. You should take note of the rectified linear function; any neuron using it is known as a rectified linear unit (ReLU). It's the most popular activation function in deep learning as of 2020, and will likely remain so in the foreseeable future.
 
 One more important mention is that the process of going from input data ($$\mathbf{X}$$) all the way to activation (essentially, the execution of an activation function) is called **forward pass** (or forward propagation in the context of neural networks), and this is the process we demonstrated above using the toy dataset. This distinguishes from the sequel process, known as **backward pass**, where we use the error between the activation ($$\vec{a}$$) and the ground truth ($$\vec{y}$$) to tune our parameters in such a way that the error decreases.
 
@@ -557,14 +557,14 @@ Now if we have a dataset made of more than one datapoint, we will have many erro
 We achieve this by simply averaging all those errors to produce a quantity we call the mean absolute error:
 
 $$
-Mean\ Absolute\ Error=Cost=\frac{1}{m} \cdot \sum _{j=0}^{m} \vert y_{j}-\hat{y}_{j} \vert =\frac{1}{m} \cdot  \sum _{j=0}^{m} \varepsilon _{j}
+Mean\ absolute\ error=Cost=\frac{1}{m} \cdot \sum _{j=0}^{m} \vert y_{j}-\hat{y}_{j} \vert =\frac{1}{m} \cdot  \sum _{j=0}^{m} \varepsilon _{j}
 $$
 
 {% include indent_paragraph.html content=
 "Where $ m $ is the number of datapoints in the batch of data. Note that $ \hat{y}_{j} $ is same as activation $ a_j $, and it is denoted here as such to show that it serves as an estimate for the ground truth $ y_j $."
 %}
 
-The above equation happens to be just one of the many types of loss functions (a.k.a. cost function) in broad use today. They all have one thing in common: **They produce a single scalar value (the loss or cost) that captures how well our network has learned the relationship between the features and the target for a given batch of a dataset**.
+The above equation happens to be just one of the many types of loss functions (a.k.a. cost function) in broad use today. They all have one thing in common: They produce **a single scalar value (the loss or cost)** that captures how well our network has learned the relationship between the features and the target for a given batch of a dataset.
 
 <table>
 <td>
@@ -585,7 +585,7 @@ We will introduce two other loss functions that are very widely used.
 Mean squared error loss function, which is typically used for regression tasks:
 
 $$
-Mean\ Squared\ Error:\ J=\frac{1}{m}\cdot\sum_{j}^{m}\left(y_j-a_j\right)^2
+Mean\ squared\ error:\ J=\frac{1}{m}\cdot\sum_{j}^{m}\left(y_j-a_j\right)^2
 $$
 
 You might have seen the above equation before if you’ve learned about linear regression.
@@ -598,7 +598,7 @@ $$
 
 Note that the logarithm in the cross entropy loss is with base $$e$$ (Euler's number). In other words, it is a natural logarithm, which is sometimes abbreviated as $$\ln$$ instead of $$\log$$. Also note that we are implicitly assuming that our ground truth is binary (i.e. only two classes and therefore binary classification).
 
-Notice that all these loss functions have one thing in common, they are all functions of activation, which also makes them function of the parameters:
+Notice that all these loss functions have one thing in common, they are all functions of activation, which also makes them functions of the parameters:
 
 $$
 Cost:\ \ J=f\left(\vec{a}\right)=f(\vec{w},b)\
@@ -609,18 +609,23 @@ For instance, cross entropy loss function for a single datapoint can be recharac
 $$
 Cross\ entropy\ loss=\ -\left(y\cdot\log{a})+(1-y)\cdot\log(1-a)\right)
 $$
+
 $$
 =-\left(data+\left(1-\frac{1}{1+e^{-z}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)\
 $$
+
 $$
 =-\left(data\cdot\log{\left(\frac{1}{1+e^{-z}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)
 $$
+
 $$
 =-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot x_i}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot x_i}}}\right)}\right)
 $$
+
 $$
 =-\left(data+\left(1-\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)}\right)\
 $$
+
 $$
 =-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot d a t a}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot data}}}\right)}\right)\
 $$

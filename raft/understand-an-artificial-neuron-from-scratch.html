@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Catching AI with its pants down: Understand an Artificial Neuron from Scratch | Prince’s scribbles</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Catching AI with its pants down: Understand an Artificial Neuron from Scratch" />
+<meta name="author" content="Prince Okoli" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="My repository of some things that I’ve been thinking about." />
+<meta property="og:description" content="My repository of some things that I’ve been thinking about." />
+<link rel="canonical" href="http://localhost:4000/understand-an-artificial-neuron-from-scratch.html" />
+<meta property="og:url" content="http://localhost:4000/understand-an-artificial-neuron-from-scratch.html" />
+<meta property="og:site_name" content="Prince’s scribbles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-20T00:00:00-06:00" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","headline":"Catching AI with its pants down: Understand an Artificial Neuron from Scratch","url":"http://localhost:4000/understand-an-artificial-neuron-from-scratch.html","dateModified":"2020-03-20T00:00:00-06:00","datePublished":"2020-03-20T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/understand-an-artificial-neuron-from-scratch.html"},"author":{"@type":"Person","name":"Prince Okoli"},"description":"My repository of some things that I’ve been thinking about.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Prince's scribbles" /></head>
+<link rel="stylesheet" href="assets/css/custom.css">
+  <body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Prince&#39;s scribbles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Catching AI with its pants down: Understand an Artificial Neuron from Scratch</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-03-20T00:00:00-06:00" itemprop="datePublished">Mar 20, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            processEscapes: true
+          }
+        });
+</script>
+
+<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+<table>
+<td>
+<i>We will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth!</i>
+</td>
+</table>
+
+<ul id="markdown-toc">
+  <li><a href="#prologue" id="markdown-toc-prologue"><strong>Prologue</strong></a></li>
+  <li><a href="#the-brain-as-a-function" id="markdown-toc-the-brain-as-a-function"><strong>The brain as a function</strong></a>    <ul>
+      <li><a href="#biological-neuron" id="markdown-toc-biological-neuron"><strong>Biological neuron</strong></a></li>
+    </ul>
+  </li>
+  <li><a href="#toy-dataset-for-this-blog-series" id="markdown-toc-toy-dataset-for-this-blog-series"><strong>Toy dataset for this blog series</strong></a></li>
+  <li><a href="#artificial-neuron" id="markdown-toc-artificial-neuron"><strong>Artificial neuron</strong></a></li>
+  <li><a href="#activation-functions" id="markdown-toc-activation-functions"><strong>Activation functions</strong></a></li>
+  <li><a href="#loss-function" id="markdown-toc-loss-function"><strong>Loss function</strong></a></li>
+</ul>
+
+<h2 id="prologue"><strong>Prologue</strong></h2>
+
+<p>This is part 2 of this blog series, <em>Catching AI with its pants down</em>, which aims to explore the inner workings of neural networks and show how to biuld a standard feedforward neural network from scratch. In this part, I will go over the biological inspiration for the artificial neuron and its mathematical underpinnings.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parts</th>
+      <th>Catching AI with its pants down</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pant 1</td>
+      <td><a href="/some-musings-about-ai.html"><strong>Some Musings About AI</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 2</td>
+      <td><a href="/understand-an-artificial-neuron-from-scratch.html"><strong>Understand an Artificial Neuron from Scratch</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 3</td>
+      <td><a href="/optimize-an-artificial-neuron-from-scratch.html"><strong>Optimize an Artificial Neuron from Scratch</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 4</td>
+      <td><a href="/implement-an-artificial-neuron-from-scratch.html"><strong>Implement an artificial neuron from scratch</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 5</td>
+      <td>Understand a neural network from scratch (coming soon)</td>
+    </tr>
+    <tr>
+      <td>Pant 6</td>
+      <td>Optimize a neural network from scratch (coming soon)</td>
+    </tr>
+    <tr>
+      <td>Pant 7</td>
+      <td>Implement a neural network from scratch (coming soon)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="the-brain-as-a-function"><strong>The brain as a function</strong></h2>
+<p>The computational theory of mind (CTM) says that we can interpret human cognitive processes as computational functions. That is, the human mind behaves just like a computer.</p>
+
+<p>Note that while CTM is considered a decent model for human cognition (it was the unchallenged standard in the 1960s and 1970s and still widely subscribed to), no one has been able to show how consciousness can emerge from a system modelled on the basis of this theory, but that’s another topic for another time.</p>
+
+<p>For a short primer on CTM, see <a href="https://plato.stanford.edu/entries/computational-mind/" target="_blank">this article</a> from the Stanford Encyclopedia of Philosophy.</p>
+
+<p>According to CTM, if we have a mathematical model of all the computations that goes on in the brain, we should, one day, be able to replicate the capabilities of the brain with computers. But how does the brain do what it does?</p>
+
+<h3 id="biological-neuron"><strong>Biological neuron</strong></h3>
+
+<p>In a nutshell, the brain is made up of two main kinds of cells: glial cells and neurons (a.k.a. nerve cells). There are about <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2776484/" target="_blank">86 billion neurons</a> and even more glial cells in the nervous system (brain, spinal cord and nerves) of an adult human. The primary function of glial cells is to provide physical protection and other kinds of support to neurons, so we are not very interested in glial cells here. It’s the neuron we came for.</p>
+
+<p>The primary function of biological neurons is to process and transmit signals, and there are three main types, sensory neurons (concentrated in your sensory organs like eyes, ears, skin, etc.), motor neurons (carry signals between the brain and spinal cord, and from both to the muscles), and interneurons (found only in the brain and spinal cord, and they process information).</p>
+
+<p>For instance, when you grab a very hot cup, sensory neurons in the nerves of your fingers send a signal to interneurons in your spinal cord. Some interneurons pass the signal on to motor neurons in your hand, which causes you to drop the cup, while other interneurons send a signal to those in your brain, and you experience pain.</p>
+
+<p>So clearly, in order to start modelling the brain, we have to first understand the neuron and try to model it mathematically.</p>
+
+<figure class="image" align="middle">
+  <img src="/assets/images/artificial_neuron/biological_neuron.png" alt="A biological neuron is the building block of the nervous system, which includes the brain. Source: &lt;a href='https://cdn.kastatic.org/ka-perseus-images/3567fc3560de474001ec0dafb068170d30b0c751.png'&gt;Khan Academy&lt;/a&gt;." center-image="middle" />
+  <figcaption><i>A biological neuron is the building block of the nervous system, which includes the brain. Source: <a href="https://cdn.kastatic.org/ka-perseus-images/3567fc3560de474001ec0dafb068170d30b0c751.png">Khan Academy</a>.</i></figcaption>
+</figure>
+
+<p>Neurons in the brain usually work in groups known as neural circuits (or biological neural networks), where they provide some biological function. A neuron has 3 main parts: the dendrites, soma (cell body) and axon.</p>
+
+<p>The dendrite of one neuron is connected to the axon terminal of another neuron, and so on, resulting in a network of connected neurons. The connection between two neurons is known as the synapse, and there is no actual physical contact, as the neurons don’t actually touch each other.</p>
+
+<p>Instead, a neuron will release chemicals (neurotransmitters) that carry the electrical signal to the dendrite of the next neuron. The strength of the transmission is known as the synaptic strength. The more often signals are transmitted across a synapse, the stronger the synaptic strength becomes. This rule, commonly known as Hebb’s rule (introduced in 1949 by Donald Hebb), is colloquially stated as, “neurons that fire together wire together.”</p>
+
+<p>Neurons receive signal via their dendrites and outputs signal via their axon terminals. And each neuron can be connected to thousands of other neurons. When a neuron receives signals from other neurons, it combines all the input signals and generates a voltage (known as graded potential) on the membrane of the soma that is proportional, in size and duration, to the sum of the input signals.</p>
+
+<p>The graded potential gets smaller as it travels through the soma to reach the axon. If the graded potential that reaches the trigger zone (near the axon hillock) is higher than a threshold value unique to the neuron, the neuron fires a huge electric signal, called the action potential, that travels down the axon and through the synapse to become the input signal for the neurons downstream.</p>
+
+<h2 id="toy-dataset-for-this-blog-series"><strong>Toy dataset for this blog series</strong></h2>
+<p>Before we advance any further to artificial neurons, let’s introduce a toy dataset that will accompany subsequent discussions and be used to provide vivid illustration.</p>
+
+<p>You can think of the data as being generated from an experiment where a device launches balls of various masses unto a board that can roll backward, and when it does roll back all the way to touch the sensor, that shot is recorded as high energy, otherwise it is classified as low energy.</p>
+
+<figure class="image" align="middle">
+  <img src="/assets/images/artificial_neuron/toy_experiment_schematic.png" alt="A schematic of the toy experiment." center-image="middle" />
+  <figcaption><i>A schematic of the toy experiment.</i></figcaption>
+</figure>
+
+<p>Below is an excerpt of the dataset:</p>
+
+<figure class="image" align="middle">
+  <img src="/assets/images/artificial_neuron/toy_dataset_excerpt.png" alt="A few records (datapoints) from the toy dataset, showing all the features and targets (the column headings)." center-image="middle" />
+  <figcaption><i>A few records (datapoints) from the toy dataset, showing all the features and targets (the column headings).</i></figcaption>
+</figure>
+
+<p>The dataset has two features or inputs, i.e. <code class="highlighter-rouge">velocity</code> and <code class="highlighter-rouge">mass</code>, and a single output, which is <code class="highlighter-rouge">energy level</code> and it is binary. The last two columns are exactly the same, just that the third is the numerical version of the last and is what we actually use because we need to crunch numbers. In classification, the labels are converted to numbers for the learning process.</p>
+
+<p>The full toy dataset can be found <a href="https://github.com/princyok/deep_learning_without_ml_libraries/blob/master/datasets/toy_dataset1/toy_dataset_velocity_ke.csv" target="_blank"><strong>here</strong></a>.</p>
+
+<h2 id="artificial-neuron"><strong>Artificial neuron</strong></h2>
+<p>In the 1950s, the psychologist Frank Rosenblatt introduced a very simple mathematical abstraction of the biological neuron. He developed a model that mimicked the following behavior: signals that are received from dendrites are sent down the axon once the strength of the input signal crosses a certain threshold. The outputted signal can then serve as an input to another neuron. Rosenblatt <a href="https://www.sciencedirect.com/science/article/pii/B0080430767005726" target="_blank">named</a> this mathematical model the <strong>perceptron</strong>.</p>
+
+<p>Rosenblatt’s original perceptron was a simple <a href="https://en.wikipedia.org/wiki/Heaviside_step_function" target="_blank">Heaviside function</a> that outputs zero if the input signal is equal to or less than 0, and outputs 1 if the input is greater than zero. Therefore, zero was the threshold above which an input makes the neuron to fire. The original perceptron is an example of an artificial neuron, and we will see other examples.</p>
+
+<p>An artificial neuron is simply a mathematical function that serves as the elementary unit of a neural network. It is also known as a node or a unit, with the latter name being very common in machine learning publications. I may jump between these names, and it’s not bad if you get used to that, as all of these names are common.</p>
+
+<p>This mathematical function has a collection of inputs, <script type="math/tex">x_1,x_2,\ \ldots,\ x_n</script>, and a single output, <script type="math/tex">a</script>, commonly known as the activation value (or post-activation value), or often without the term “value” (i.e. simply activation).</p>
+
+<figure class="image" align="middle">
+  <img src="/assets/images/artificial_neuron/artificial_neuron.png" alt="Diagram of an artificial neuron." center-image="middle" />
+  <figcaption><i>Diagram of an artificial neuron.</i></figcaption>
+</figure>
+
+<p>But what then happens inside a unit (an artificial neuron)?</p>
+
+<p>The inputs that are fed into a unit are used in two key operations in order to generate the activation:</p>
+
+<ol>
+  <li>
+    <p>Summation: The inputs ($ x_i $) are multiplied with the weights (<script type="math/tex">w_i</script>), and the products are summed together. This summation is sometimes called the preactivation value, or without the term “value”.</p>
+  </li>
+  <li>
+    <p>Activation function (a.k.a. transfer function): the resulting sum (i.e. the preactivation) is passed through a mathematical function.</p>
+  </li>
+</ol>
+
+<figure class="image" align="middle">
+  <img src="/assets/images/artificial_neuron/artificial_neuron_interior.png" alt="Diagram of an artificial neuron showing what happens inside it. This is the less common representation, as it is thought of as showing too many details you are expected to already know." center-image="middle" />
+  <figcaption><i>Diagram of an artificial neuron showing what happens inside it. This is the less common representation, as it is thought of as showing too many details you are expected to already know.</i></figcaption>
+</figure>
+
+<p>The activation value can be thought of as a loose adaptation of the biological action potential, and the weights imitate synaptic strength.</p>
+
+<p>The inputs to the neuron, <script type="math/tex">x_i</script>, can themselves be activation values from other neurons. However, at this stage, where we are focusing on the model for only one artificial neuron, we will set the inputs to be the data, which loosely represents the stimuli received by the sensory organs in the biological analogy.</p>
+
+<p>The algebraic representation of an artificial neuron is:</p>
+
+<script type="math/tex; mode=display">a=f\left(z\right)</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ a $ is the activation, $ z $ is the preactivation, and $ f $ is the activation function (in the case of the original perceptron, this is the Heaviside function).
+    </p>
+</div>
+
+<p>The preactivation $ z $ is computed as:</p>
+
+<script type="math/tex; mode=display">z=w_1\ \cdot x_1+w_2\ \cdot x_2+\ldots+w_n\ \cdot x_n+w_0=\sum_{i=0}^{n}{w_i\ \cdot x_i}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ n $ is the number of features in our dataset, which means $ i $ tracks the features (i.e. it is the variable for the serial number of the features).
+    </p>
+</div>
+
+<p>Now check back with the diagram of an artificial neuron and see if you can make the connection between the equations and the diagram. Don’t move on unless you already have this down.</p>
+
+<p>It’s important to start putting these equations in the context of data. Using our toy dataset (introduced above), the application of this equation can be demonstrated by taking any datapoint and subbing the values into the above equation. For instance, if we sub in the 0<sup>th</sup> datapoint (6.5233, 1.5484, 0), we get:</p>
+
+<script type="math/tex; mode=display">z=w_1\ \cdot 6.5233+w_2\ \cdot1.5484+w_0</script>
+
+<p>We will keep the weights as variables for now because we don’t know the appropriate weights for this dataset (that’s a problem we leave for when we train the artificial neuron).
+The complete algebraic representation of the original perceptron, which has the Heaviside function as its activation function, is:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+a =
+\begin{cases}
+ 1 &\text{if } z > 0 \\
+0 &\text{if } z \leq 0
+\end{cases} %]]></script>
+
+<p>If you took a moment to really look at the equation for preactivation, you will notice something is off, compared to the artificial neuron diagram. Where did <script type="math/tex">w_0</script> come from? And what about <script type="math/tex">x_0</script>? The answer is the “bias term”. That’s the name for <script type="math/tex">w_0 \cdot x_0</script>. It allows our function to shift, and its presence is purely a mathematical necessity.</p>
+
+<p>The variable <script type="math/tex">w_0</script> is known as the bias, and <script type="math/tex">x_0</script> (commonly referred to as the bias node) is a constant that is always equal to one and has nothing to do with the data, unlike <script type="math/tex">x_1</script> to <script type="math/tex">x_n</script> that comes from the data (e.g. the pixels of the images in the case of an image classification task). That’s how <script type="math/tex">w_0 \cdot x_0</script> reduces to just <script type="math/tex">w_0</script>.</p>
+
+<p>Moreover, we will henceforth refer to <script type="math/tex">w_0</script> as <script type="math/tex">b</script>, and this is the letter often used in literature to represent the bias. The weights (<script type="math/tex">w_1,\ w_2,\ \ldots,\ w_n</script>) and bias (<script type="math/tex">w_0</script> or <script type="math/tex">b</script>) collectively are known as the parameters of the artificial neuron.</p>
+
+<table>
+<td>
+<details>
+<summary>
+<b>
+The need for the bias term:
+</b>
+</summary>
+<p>
+As already mentioned, the bias term allows our function to shift. Its presence is purely a mathematical necessity.
+<br /><br />
+The equation for z is a linear equation:
+
+$$
+z=w_1\ \cdot x_1+w_2\ \cdot x_2+\ldots+w_n\ \cdot x_n+w_0
+$$
+
+If we limit the number of features (input variables) to only one, we get the equation of a line:
+
+$$
+z=w_1\ \cdot x_1+w_0
+$$
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ w_1 $ is the slope of the line, and $ w_0 $ is the vertical axis intercept.
+    </p>
+</div>
+
+
+Everything looks good. If we are given exactly two datapoints, we will be able to perfectly fit a line through them, and we will be able to calculate the slope and intercept of that line, thereby fully solving the equation of that line. That process of solving the equation to fit the data made of two points is “learning”. In fact, feel free to call it machine learning.
+<br /><br />
+But what if we omitted the vertical axis intercept? Well, we may never be able to perfectly fit a line through those two datapoints. Actually, we will never be able to perfectly fit a straight line through both points if it happens that the line that perfectly fits on them does not go through the origin (which is intercept of zero).
+<br /><br />
+<figure class="image" align="middle">
+  <img src="/assets/images/artificial_neuron/line_varying_slopes.png" alt="Plot of lines of various slopes (m) all passing through the origin (c=0) and compared against two datapoints that cannot be perfectly fitted by a line whose y-intercept is 0, because a vertical shift is necessary." center-image="middle" />
+  <figcaption><i>Plot of lines of various slopes (m) all passing through the origin (c=0) and compared against two datapoints that cannot be perfectly fitted by a line whose y-intercept is 0, because a vertical shift is necessary.</i></figcaption>
+</figure>
+
+
+But by having the intercept term, we can shift the line vertically.
+<br /><br />
+In general, it goes like this: If we have a function $ f(x) $, then $ f\left(x\right)+c $ applies a vertical shift of $ c $ on the function. Whereas, $ f(x+c) $ applies a horizontal shift of $ c $. This should be enough refresher of this high school topic, and it is also the reason why we need the bias term.
+<br /><br />
+But the presence of the bias term in our artificial neuron equation means that the true diagram should look like this:
+<br /><br />
+<figure class="image" align="middle">
+  <img src="/assets/images/artificial_neuron/artificial_neuron_bias_node.png" alt="Diagram of an artificial neuron showing the bias node." center-image="middle" />
+  <figcaption><i>Diagram of an artificial neuron showing the bias node.</i></figcaption>
+</figure>
+
+
+But we don’t show the bias nodes because it is generally assumed that everyone should know that it is always there. This is important because it is common for the bias term to be completely omitted in many ML publications, because they know that you should know that it is there!
+</p>
+</details>
+</td>
+</table>
+
+<p>We observe that the equation for an artificial neuron can be condensed into this:</p>
+
+<script type="math/tex; mode=display">a=f(x;w,b)</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ x=(x_1,\ x_2,\ldots,\ x_n) $ and $ w=(w_1,\ w_2,\ldots,w_n) $
+    </p>
+</div>
+
+<p>The equation is read as $ a $ is a function of $ x $ parameterized by $ w $ and $ b $. And in fact, we’ve just introduced vectors. One geometrical interpretation of a vector in a given space (could be 2D, 3D space, etc.) is that it is a point with a “sense” of direction, or just an arrow pointing from the origin to a point.</p>
+
+<p>So effectively we have this:</p>
+
+<script type="math/tex; mode=display">a=f(\vec{x};\vec{w},b)</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where
+$
+\vec{x}=\left[\begin{matrix}x_1\\x_2\\\vdots\\x_n\\\end{matrix}\right]
+$
+and
+$
+\vec{w}=\left[\begin{matrix}w_1\\w_2\\\vdots\\w_n\\\end{matrix}\right]^T
+$.
+    </p>
+</div>
+
+<p>If you are doubting, then check if this equation is correct (spoiler alert: it is correct!):</p>
+
+<script type="math/tex; mode=display">\vec{w}\ \cdot\vec{x}=\vec{w}\vec{x}=\sum_{i=1}^{n}{w_i\ \cdot x_i}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        
+Note that the lack of any symbols between $ \vec{w} $ and $ \vec{x} $ signifies vector-vector multiplication, which is same as dot product of vectors. It's also common for vector-matrix multiplication and matrix-matrix multiplication to be presented the same way, because they are all kinds of matrix multiplication. The dot symbol ($ \cdot $) between any two scalars means regular multiplication of scalars, and it means dot product for vectors.
+    </p>
+</div>
+
+<p>A useful idea for converting an equation or a system of them into a matrix or vector equation is to recognize that:</p>
+
+<ol>
+  <li>Vector-vector multiplication is same as the dot product of two vectors.</li>
+  <li>Dot product is simply elementwise multiplication followed by summation of the products.</li>
+  <li>Vector-matrix multiplication directly reduces to the dot product between the row or column vectors of a matrix and a vector. This makes vector-matrix multiplication, which is a subset of matrix multiplication, one example of tensor contraction. (We will revisit this later).</li>
+</ol>
+
+<p>So, when you see a pair of scalars getting multiplied and then the products from all such pairs are added (the formal name for this is linear combination), you should immediately suspect that such an equation may be easily substituted with a “tensorized” version.</p>
+
+<table>
+<td>
+<details>
+<summary>
+<b>
+What is a tensor?
+</b>
+</summary>
+<p>
+
+You probably already think of a vector as an array with one dimension (or axis). This makes it a first-order tensor, and a matrix is a second-order tensor as it has two axes. Similar objects with more than two axes are higher order tensors.
+<br /><br />
+In summary, a tensor is the generalization of vectors, matrices and higher order tensors. That is, a multidimensional array.
+<br /><br />
+But do note that in math, there is a lot more to tensor than just being a multidimensional array, just as there is much more to matrix than just being a 2D array. But this article is not concerned with that.
+
+</p>
+</details>
+</td>
+</table>
+
+<p>The equations we’ve seen above are under the premise that we will be handling only one datapoint at a time. But we need to be able to handle more than one datapoint simultanously (we also need this when we start looking into neural networks because operations on matrices are easily parallelized). For this reason, we will do one more important thing to the equations we’ve seen above, which is to take them to matrix form.</p>
+
+<p>Improvement in parallelized computing is a huge reason deep learning returned to the spotlight in the last decade. Parallelization is also the reason GPUs have become a champion for machine learning, because they have thousands of cores unlike CPUs which typically have cores that number in the single digits.</p>
+
+<p>Going back to our toy dataset, if we wanted to compute preactivations for the first three datapoints at once, we get these three equations (and please always keep in mind that <script type="math/tex">w_0=b</script>):</p>
+
+<script type="math/tex; mode=display">z=w_1\ \cdot6.5233+w_2\ \cdot1.5484+w_0</script>
+
+<script type="math/tex; mode=display">z=w_1\ \cdot9.2112+w_2\ \cdot12.7141+w_0</script>
+
+<script type="math/tex; mode=display">z=w_1\ \cdot1.7315+w_2\ \cdot45.6200+w_0</script>
+
+<p>Clearly, we need a new subscript to keep track of multiple datapoints, because it’s misleading to keep equating every datapoint to just <script type="math/tex">z</script>. So, we do something like this:</p>
+
+<script type="math/tex; mode=display">z_j=w_1\ \cdot x_{1,j}+w_2\ \cdot x_{2,j}+\ldots+w_n\ \cdot x_{n,j}+w_0=\sum_{i=1}^{n}{w_i\ \cdot x_{i,j}+b}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where the subscript $ j $ keeps track of datapoints. Or you can think of it as, $ i $ tracks the columns and $ j $ tracks rows in our toy dataset. Note that $ w_0 $ is same as $ b $.
+    </p>
+</div>
+
+<p>So now we can write them as:</p>
+
+<script type="math/tex; mode=display">z_1=w_1\ \cdot6.5233+w_2\ \cdot1.5484+b</script>
+
+<script type="math/tex; mode=display">z_2=w_1\ \cdot9.2112+w_2\ \cdot12.7141+b</script>
+
+<script type="math/tex; mode=display">z_3=w_1\ \cdot1.7315+w_2\ \cdot45.6200+b</script>
+
+<p>Note that the numerical subscript on <script type="math/tex">z</script> above is not counterpart to that on <script type="math/tex">w</script>. The former tracks datapoints (rows in our toy dataset), and the latter tracks features (columns in our toy dataset). It’s all much clearer with algebra.</p>
+
+<p>You can already notice the system of equations. And if it had been a batch of 100 datapoints, or even the entire dataset, it starts becoming unwieldy to carry around thousands of equations. Therefore we vectorize!</p>
+
+<p>We summarize the preactivations for all the datapoints in our batch:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{z}=all\ z_j\ in\ the\ batch=[\begin{matrix}z_1&z_2&\cdots&z_m\\\end{matrix}] %]]></script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ m $ is the number of datapoints in our batch.
+    </p>
+</div>
+
+<p>What’s the batch all about? In deep learning, it’s very common to deal with very large datasets that may be too big or inefficient to load into memory all at once, so we sample out a portion of our dataset, we call it a batch, and we use it to train our model. That’s one iteration. We repeat the sampling for the second iteration, and continue for as many iterations as we choose to.</p>
+
+<p>Now we have all the ingredients to convert to matrix format. Our system of equation, will go from this:</p>
+
+<script type="math/tex; mode=display">z_1=w_1\ \cdot x_{1,1}+w_2\ \cdot x_{2,1}+\ldots+w_n\ \cdot x_{n,1}+w_0</script>
+
+<script type="math/tex; mode=display">z_2=w_1\ \cdot x_{1,2}+w_2\ \cdot x_{2,2}+\ldots+w_n\ \cdot x_{n,2}+w_0</script>
+
+<script type="math/tex; mode=display">\vdots</script>
+
+<script type="math/tex; mode=display">z_m=w_1\ \cdot x_{1,m}+w_2\ \cdot x_{2,m}+\ldots+w_n\ \cdot x_{n,m}+w_0</script>
+
+<p>To this matrix equation:</p>
+
+<script type="math/tex; mode=display">\vec{z}\ =\ \vec{w}\mathbf{X}\ + \vec{b}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Note that the lack of any symbols between $ \vec{w} $ and $ \mathbf{X} $ signifies matrix-vector multiplication, i.e. matrix multiplication between vector and matrix.
+    </p>
+</div>
+
+<p>I encourage you to rework the matrix equation back into the flat form if you’re unclear on how the two are the same. I promise, it will be a great refresher of math you probably saw in high school or first year of university.</p>
+
+<p>The variable <script type="math/tex">\vec{z}</script> is a <script type="math/tex">1</script>-by-<script type="math/tex">m</script> vector, and if only one datapoint, will be a vector of only one entry (which is equivalent to a scalar).</p>
+
+<p>The parameter <script type="math/tex">\vec{w}</script> is always going to be a <script type="math/tex">1</script>-by-<script type="math/tex">n</script> vector, regardless of the number of datapoints. Its size depends on the number of features <script type="math/tex">n</script>.</p>
+
+<script type="math/tex; mode=display">\vec{w}=\left[\begin{matrix}w_1\\w_2\\\vdots\\w_n\\\end{matrix}\right]^T</script>
+
+<p>The variable <script type="math/tex">b</script> is a <script type="math/tex">1</script>-by-<script type="math/tex">m</script> vector. Fundamentally, however, the bias is a scalar (or a <script type="math/tex">1</script>-by-<script type="math/tex">1</script> vector) regardless of the number datapoints in the batch.</p>
+
+<p>There is only one bias for a neuron, and it’s simply the weight for the bias node, just like each of the other weights. It only gets stretched into a <script type="math/tex">1</script>-by-<script type="math/tex">m</script> vector to match the shape of <script type="math/tex">z</script>, so that the matrix equation is valid. The stretching involves repeating the elements to fill up the stretched-out vector. When coding in Python and using the NumPy library for your computations, it’s good to know that this stretching (also called <a href="https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy" target="_blank">broadcasting</a>)) is already baked into the library.</p>
+
+<p>Therefore the full answer for the shape of <script type="math/tex">b</script> is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish <a href="/implement-an-artificial-neuron-from-scratch.html" target="_blank">part 4</a>).</p>
+
+<p>We must keep in mind that <script type="math/tex">b</script> is a parameter of the estimator, and it would be very counterproductive to define it in a way that binds it to the number of examples (datapoints) in a batch. This is why its fundamental form is a scalar.</p>
+
+<p>Here are some problems we would have if we defined <script type="math/tex">b</script> to be fundamentally a <script type="math/tex">1</script>-by-<script type="math/tex">m</script> vector:</p>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        The neuron becomes restricted to a fixed batch size. That is, the batch size we use to train the neuron becomes a fixture of the neuron, to the point that we can’t use the neuron to carry out predictions or estimations for a different batch size.
+<br /><br />
+Each example in the batch will have a different corresponding value for $ b $. This is not even the case for $ w $, and it is just simply improper for the parameters to change from datapoint to datapoint. If that happened, then it means the model is not identical for all datapoints. Absolutely appalling.
+    </p>
+</div>
+
+<p>When <script type="math/tex">b</script> is broadcasted into the <script type="math/tex">1</script>-by-<script type="math/tex">m</script> vector <script type="math/tex">\vec{b}</script>, it is simply the scalar value <script type="math/tex">b</script> repeating <script type="math/tex">m</script> times. It looks like this:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{b}=\left[\begin{matrix}b&b&\cdots&b\\\end{matrix}\right] %]]></script>
+
+<p>The intuition is that you are applying the same bias to all the datapoint in any given batch, the same way you are applying the same group of weights to all the datapoint.</p>
+
+<p>Because the bias is fundamentally a scalar, it is normal to write the equation as:</p>
+
+<script type="math/tex; mode=display">\vec{z}\ =\vec{w}\mathbf{X}\ +b</script>
+
+<p>The variables <script type="math/tex">\mathbf{X}</script> will depend on the shape of the input data that gets fed to the neuron. It could be a vector or matrix (and in neural networks they could even be higher order tensors). When multiple datapoints, it’s an <script type="math/tex">n</script>-by-<script type="math/tex">m</script> matrix, and when a single datapoint it’s an <script type="math/tex">n</script>-by-<script type="math/tex">1</script> vector. It looks like this:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\mathbf{X}=\left[\begin{matrix}x_{1,1}&x_{1,2}&\cdots&x_{1,m}\\x_{2,1}&x_{2,2}&\cdots&x_{2,m}\\\vdots&\vdots&\ddots&\vdots\\x_{n,1}&x_{n,2}&\cdots&x_{n,m}\\\end{matrix}\right] %]]></script>
+
+<p>Keep in mind that these statements about the shapes of these tensors are all for a single artificial neuron, as there are some changes when moving unto neural networks (a network of neurons).</p>
+
+<p>Let’s illustrate with our toy dataset how the preactivation equation works in matrix format. Let’s say we decide that our batch size will be 3, which means we will feed our neuron 3 datapoints (3 rows of our toy dataset), then our <script type="math/tex">X</script> will look like this:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\mathbf{X}=\left[\begin{matrix}6.5233&9.2112&1.7315\\1.5484&12.7141&45.6200\\\end{matrix}\right] %]]></script>
+
+<p>And the corresponding <script type="math/tex">\vec{y}</script> is this:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{y}=\ \left[\begin{matrix}0&1&0\\\end{matrix}\right] %]]></script>
+
+<p>Let’s say we randomly initialize our weight vector to this (which is actually what is done in practice, but more like “controlled” randomization):</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{w}=\left[\begin{matrix}w_1\\w_2\\\end{matrix}\right]^T=\left[\begin{matrix}0.5&-0.3\\\end{matrix}\right] %]]></script>
+
+<p>And we set our bias to zero. Note that it will be a scalar, but broadcasted during computation to match whatever shape <script type="math/tex">\boldsymbol{z}</script> has:</p>
+
+<script type="math/tex; mode=display">b=0</script>
+
+<p>Then we can compute our preactivation for this batch of 3 datapoints:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{z} =\ \left[\begin{matrix}0.5&-0.3\\\end{matrix}\right]\left[\begin{matrix}6.5233&9.2112&1.7315\\1.5484&12.7141&45.6200\\\end{matrix}\right]\ +\left[\begin{matrix}0&0&0\\\end{matrix}\right] %]]></script>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{z} =\left[\begin{matrix}2.79713&0.79137&-12.8202\\\end{matrix}\right] %]]></script>
+
+<p>Let’s assume that the kind of artificial neuron we have is the original perceptron (that is, our activation function is the Heaviside function). Recall that:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+a_j =
+\begin{cases}
+ 1 &\text{if } z_j > 0 \\
+0 &\text{if } z_j \leq 0
+\end{cases} %]]></script>
+
+<p>Now we pass <script type="math/tex">\boldsymbol{z}</script> through a Heaviside function to obtain our activation value:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{a}=\left[\begin{matrix}1&1&0\\\end{matrix}\right] %]]></script>
+
+<p>Remember we already have the ground truth (<script type="math/tex">\vec{y}</script>), so we can actually check and see how our (untrained) neuron did.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{y}=\ \left[\begin{matrix}0&1&0\\\end{matrix}\right] %]]></script>
+
+<p>And it did okay. It got the first datapoint wrong (it predicted high energy instead of the correct label of low energy) but got the other two right. That’s 66.7% accuracy. We likely won’t be this lucky if we use more datapoints.</p>
+
+<p>We can easily notice that <script type="math/tex">\vec{a}</script>, <script type="math/tex">\vec{y}</script> and <script type="math/tex">\vec{z}</script> will always have the same shape, which is a <script type="math/tex">1</script>-by-<script type="math/tex">m</script> vector; and if only one datapoint, will be a vector of only one entry (which is equivalent to a scalar).</p>
+
+<p>To improve the performance of the artificial neuron, we need to train it. That simply means that we need to find the right values for the parameters $ \vec{w} $ and $ b $ such that when we feed our neuron any datapoint from the dataset, it will estimate the correct energy level.</p>
+
+<p>This is the general idea of how the perceptron, or any other kind of artificial neuron, works. That is, we should be able to compute a set of parameters (<script type="math/tex">w_0,\ w_1,\ w_2,\ \ldots,\ w_n</script>) such that the perceptron is able to produce the correct output when given an input.</p>
+
+<p>For instance, when fed the images of cats and dogs, a unit (an artificial neuron) with good parameters will correctly classify them. The pixels of the image will be the input, <script type="math/tex">x_1,x_2,\ \ldots,\ x_n</script>, and the unit will do its math and output 0 or 1 (representing the two possible labels). Simple!</p>
+
+<p>This is the whole point of a neural network (a.k.a. network of artificial neurons). And that process of finding a good collection of parameters for a neuron (or a network of neurons as we will see later) is what we call “learning” or “training”, which is the same thing mathematicians call mathematical optimization.</p>
+
+<p>Unfortunately, the original perceptron did not fair very well in practice and failed to deliver on the high hopes heaped on it. I can assure you that it will not do too well with image classification of, say, cats and dogs. We need something more complex with some more nonlinearity.</p>
+
+<p>Note that linearity is not the biggest reason Heaviside functions went out of favour. In fact, a Heaviside function is not purely linear, but instead piecewise linear. It’s also common to see lack of differentiability at zero blamed for the disfavour, but again this is cannot be the critical reason, as there are cheap tricks around this too (e.g. the same type of schemes used to get around the undifferentiability of the rectified linear function at zero, which by the way is currently the most widely used activation function in deep learning).</p>
+
+<p>The main problem is that the Heaviside function jumps too rapidly, in fact instantaneously, between the two extremes of its range. That is, when traversing the domain of the Heaviside function, starting from positive to negative infinity, we will keep outputting one (the highest value in its range), until suddenly at the input of zero, its output snaps to 0 (the minimum value in its range) and then continues outputting that for the rest of negative infinity. This causes a lot of instability. When doing mathematical optimization, we typically prefer small changes to also produce small changes.</p>
+
+<h2 id="activation-functions"><strong>Activation functions</strong></h2>
+
+<p>It is possible to use other kinds of functions as an activation function (a.k.a. transfer function), and this is indeed what researchers did when the original perceptron failed to deliver. One such replacement was the sigmoid function, which resembles a smoothened Heaviside function.</p>
+
+<figure class="image" align="middle">
+  <img src="/assets/images/artificial_neuron/heaviside_logistic.png" alt="Plots of the Heaviside and logistic activation functions." center-image="middle" />
+  <figcaption><i>Plots of the Heaviside and logistic activation functions.</i></figcaption>
+</figure>
+
+<p>Note that the term “sigmoid function” refers to a family of s-shaped functions, of which the very popular logistic function is one of them. As such, it is common to see logistic and sigmoid used interchangeably, even though they are strictly not synonyms.</p>
+
+<p>The logistic function performs better than the Heaviside function. In fact, machine learning using an artificial neuron that uses the logistic activation function is one and the same as logistic regression. Ha! You’ve probably run into that one before. Don’t feel left out if you haven’t though, because you’re just about to.</p>
+
+<p>This is the equation for logistic regression:</p>
+
+<script type="math/tex; mode=display">\boldsymbol{\hat{y}}=\frac{1}{1+e^{-\vec{z}}}</script>
+
+<script type="math/tex; mode=display">\vec{z}\ =\ \vec{w}\mathbf{X}\ +\ b</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ \boldsymbol{\hat{y}} $ is the prediction or estimation (just another name for activation). It is a 1-by-$ m $ vector. It's not the unit vector for $ \vec{y} $.
+    </p>
+</div>
+
+<p>And this is the equation for an artificial neuron with a logistic (sigmoid) activation function:</p>
+
+<script type="math/tex; mode=display">\vec{a}=\frac{1}{1+e^{-\vec{z}}}</script>
+
+<script type="math/tex; mode=display">\vec{z}\ =\ \vec{w}\mathbf{X} + b</script>
+
+<p>As you can see, they are one and the same!</p>
+
+<p>Also note that the perceptron, along with every other kind of artificial neuron, is an estimator just like other machine learning models (linear regression, etc.).</p>
+
+<p>Besides the sigmoid and Heaviside functions, there are a plethora of other functions that have found great usefulness as activation functions. <strong>You can find a list of many other activation functions in <a href="https://en.wikipedia.org/w/index.php?title=Activation_function&amp;oldid=939349877#Comparison_of_activation_functions" target="_blank">this Wikipedia article</a></strong>. You should take note of the rectified linear function; any neuron using it is known as a rectified linear unit (ReLU). It’s the most popular activation function in deep learning as of 2020, and will likely remain so in the foreseeable future.</p>
+
+<p>One more important mention is that the process of going from input data (<script type="math/tex">\mathbf{X}</script>) all the way to activation (essentially, the execution of an activation function) is called <strong>forward pass</strong> (or forward propagation in the context of neural networks), and this is the process we demonstrated above using the toy dataset. This distinguishes from the sequel process, known as <strong>backward pass</strong>, where we use the error between the activation (<script type="math/tex">\vec{a}</script>) and the ground truth (<script type="math/tex">\vec{y}</script>) to tune our parameters in such a way that the error decreases.</p>
+
+<p>To tie things back to our toy dataset. If we used a logistic activation function instead of a Heaviside function, and trained our neuron for 2000 iterations, we obtain some values for the parameters that gives us the correct result 91% of the time. (We will later go over exactly what happens during “training”).</p>
+
+<p>The parameters after training are:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{w}=\left[\begin{matrix}0.33456&0.0206573\\\end{matrix}\right] %]]></script>
+
+<script type="math/tex; mode=display">b=-2.09148</script>
+
+<p>So, the optimized (trained) equation for our artificial neuron is:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{z}\ =\ \left[\begin{matrix}0.33456&0.0206573\\\end{matrix}\right]\mathbf{X}\ +\left[\begin{matrix}-2.09148&-2.09148&-2.09148\\\end{matrix}\right] %]]></script>
+
+<script type="math/tex; mode=display">\vec{a}=\frac{1}{1+e^{-\vec{z}}}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ \mathbf{X} $ is an $ n $-by-$ m $ matrix that contains a batch of our dataset, and $ m $ is the number of datapoints in our batch, while $ n $ is the number of features in our dataset.
+    </p>
+</div>
+
+<p>The above is the logistic artificial neuron that has learned the relationship hidden in our toy dataset, and you can randomly pick some datapoints in our dataset and verify the equation yourself. Roughly 9 out of 10 times, it should produce an activation that matches the ground truth (<script type="math/tex">\vec{y}</script>).</p>
+
+<p>Note that the values for the parameters are not unique. A different set of values can still give us a comparable performance. We only discovered one of many possible sets of values that can give us good performance.</p>
+
+<h2 id="loss-function"><strong>Loss function</strong></h2>
+<p>In the <a href="/some-musings-about-ai.html#estimators" target="_blank">section on estimators</a> from part 1 of this blog series, I mentioned that it is imperative to expect an estimator (which is what an artificial neuron is) to have some level of error in its prediction, and our objective will be to minimize this error.</p>
+
+<p>We described this error as:</p>
+
+<script type="math/tex; mode=display">\varepsilon =y-\hat{y}=f_{actual} \left( x \right) -f_{estim} \left( x \right)</script>
+
+<p>The above is actually one of the many ways to describe the error, and not rigorous enough. For example, it is missing an absolute value operator, else the sign of the error will change just based on how the operands of the subtraction are arranged:</p>
+
+<script type="math/tex; mode=display">y-\hat{y}\neq\hat{y}-y</script>
+
+<p>For instance, we know the difference between the <a href="https://en.wikipedia.org/wiki/Natural_number" target="_blank">natural numbers</a>) 5 and 3 is 2, but depending on how you rearrange the subtraction between them, we could end up with -2 instead, and we don’t want that to be happening, so we apply an absolute value operation and restate the error as:</p>
+
+<script type="math/tex; mode=display">\varepsilon=|y-\hat{y}|</script>
+
+<p>Now if we have a dataset made of more than one datapoint, we will have many errors, one for each datapoint. We need a way to aggregate all those individual errors into one big error value that we call the loss (or cost).</p>
+
+<p>We achieve this by simply averaging all those errors to produce a quantity we call the mean absolute error:</p>
+
+<script type="math/tex; mode=display">Mean\ absolute\ error=Cost=\frac{1}{m} \cdot \sum _{j=0}^{m} \vert y_{j}-\hat{y}_{j} \vert =\frac{1}{m} \cdot  \sum _{j=0}^{m} \varepsilon _{j}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ m $ is the number of datapoints in the batch of data. Note that $ \hat{y}_{j} $ is same as activation $ a_j $, and it is denoted here as such to show that it serves as an estimate for the ground truth $ y_j $.
+    </p>
+</div>
+
+<p>The above equation happens to be just one of the many types of loss functions (a.k.a. cost function) in broad use today. They all have one thing in common: They produce <strong>a single scalar value (the loss or cost)</strong> that captures how well our network has learned the relationship between the features and the target for a given batch of a dataset.</p>
+
+<table>
+<td>
+<details>
+<summary>
+<b>Cost function vs loss function vs objective function</b>
+</summary>
+<p>
+Some reserve the term loss function for when dealing with one datapoint and use cost function for the version that handles a batch of multiple datapoints.
+<br /><br />
+An objective function is simply the function that gets optimized in order to solve an optimization problem. In deep learning the loss or cost function plays that role, therefore making objective function another name for loss or cost function.</p>
+</details>
+</td>
+</table>
+
+<p>We will introduce two other loss functions that are very widely used.</p>
+
+<p>Mean squared error loss function, which is typically used for regression tasks:</p>
+
+<script type="math/tex; mode=display">Mean\ squared\ error:\ J=\frac{1}{m}\cdot\sum_{j}^{m}\left(y_j-a_j\right)^2</script>
+
+<p>You might have seen the above equation before if you’ve learned about linear regression.</p>
+
+<p>Logistic loss function (also known as cross entropy loss or negative log-likelihoods), which is typically used for classification tasks, is:</p>
+
+<script type="math/tex; mode=display">Cross\ entropy\ loss:\ \ J = -\frac{1}{m}\cdot\sum_{j}^{m}{y_j\cdot\log{(a_j)}+(1-y_j)\cdot\log{({1-a}_j)}}=\frac{1}{m}\cdot\sum_{j=0}^{m}\varepsilon_j</script>
+
+<p>Note that the logarithm in the cross entropy loss is with base <script type="math/tex">e</script> (Euler’s number). In other words, it is a natural logarithm, which is sometimes abbreviated as <script type="math/tex">\ln</script> instead of <script type="math/tex">\log</script>. Also note that we are implicitly assuming that our ground truth is binary (i.e. only two classes and therefore binary classification).</p>
+
+<p>Notice that all these loss functions have one thing in common, they are all functions of activation, which also makes them functions of the parameters:</p>
+
+<script type="math/tex; mode=display">Cost:\ \ J=f\left(\vec{a}\right)=f(\vec{w},b)\</script>
+
+<p>For instance, cross entropy loss function for a single datapoint can be recharacterized as follows:</p>
+
+<script type="math/tex; mode=display">Cross\ entropy\ loss=\ -\left(y\cdot\log{a})+(1-y)\cdot\log(1-a)\right)</script>
+
+<script type="math/tex; mode=display">=-\left(data+\left(1-\frac{1}{1+e^{-z}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)\</script>
+
+<script type="math/tex; mode=display">=-\left(data\cdot\log{\left(\frac{1}{1+e^{-z}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)</script>
+
+<script type="math/tex; mode=display">=-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot x_i}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot x_i}}}\right)}\right)</script>
+
+<script type="math/tex; mode=display">=-\left(data+\left(1-\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot\ data}}}\right)}\right)\</script>
+
+<script type="math/tex; mode=display">=-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot d a t a}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot data}}}\right)}\right)\</script>
+
+<p>In other words, the loss function can be described purely as a function of the parameters (<script type="math/tex">\vec{w}</script>, <script type="math/tex">b</script>) and the data (<script type="math/tex">\mathbf{X}</script>, <script type="math/tex">\vec{y}</script>). And since data is known, the only unknowns on the right-hand side of the equation are the parameters.</p>
+
+
+<!-- Overides the orignal include file -->
+
+<br><br>
+<div id="disqus_thread"></div>
+ <script type="text/javascript">
+     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+     var disqus_shortname = 'princy'; // required: replace example with your forum shortname
+
+     /* * * DON'T EDIT BELOW THIS LINE * * */
+     (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+ </script>
+ <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+ <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+ 
+
+
+  </div><a class="u-url" href="/understand-an-artificial-neuron-from-scratch.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading"><a href="/">Prince&#39;s scribbles</a></h2> <!-- custom code-->
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1">
+          <ul class="contact-list">
+            <li class="p-name"><!-- Prince Okoli -->
+                <p>&copy; 2020 Prince Okoli | All Rights Reserved. </p></li></ul>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/princyok"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">princyok</span></a></li><li><a href="https://www.linkedin.com/in/princeokoli"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">princeokoli</span></a></li></ul>
+</div>
+  
+        <div class="footer-col footer-col-3">
+          <p>My repository of some things that I&#39;ve been thinking about.</p>
+        </div>
+      </div>
+  
+    </div>
+  
+  </footer>
+  </body>
+
+</html>

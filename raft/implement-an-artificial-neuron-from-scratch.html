@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Catching AI with its pants down: Implement an Artificial Neuron from Scratch. | Prince’s scribbles</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Catching AI with its pants down: Implement an Artificial Neuron from Scratch." />
+<meta name="author" content="Prince Okoli" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="My repository of some things that I’ve been thinking about." />
+<meta property="og:description" content="My repository of some things that I’ve been thinking about." />
+<link rel="canonical" href="http://localhost:4000/implement-an-artificial-neuron-from-scratch.html" />
+<meta property="og:url" content="http://localhost:4000/implement-an-artificial-neuron-from-scratch.html" />
+<meta property="og:site_name" content="Prince’s scribbles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-04-04T00:00:00-06:00" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","headline":"Catching AI with its pants down: Implement an Artificial Neuron from Scratch.","url":"http://localhost:4000/implement-an-artificial-neuron-from-scratch.html","dateModified":"2020-04-04T00:00:00-06:00","datePublished":"2020-04-04T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/implement-an-artificial-neuron-from-scratch.html"},"author":{"@type":"Person","name":"Prince Okoli"},"description":"My repository of some things that I’ve been thinking about.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Prince's scribbles" /></head>
+<link rel="stylesheet" href="assets/css/custom.css">
+  <body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Prince&#39;s scribbles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Catching AI with its pants down: Implement an Artificial Neuron from Scratch.</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-04-04T00:00:00-06:00" itemprop="datePublished">Apr 4, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            processEscapes: true
+          }
+        });
+</script>
+
+<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+<table>
+<td>
+<i>We will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth!</i>
+</td>
+</table>
+
+<ul id="markdown-toc">
+  <li><a href="#prologue" id="markdown-toc-prologue"><strong>Prologue</strong></a></li>
+  <li><a href="#code-implementation-an-artificial-neuron" id="markdown-toc-code-implementation-an-artificial-neuron"><strong>Code Implementation: an artificial neuron</strong></a>    <ul>
+      <li><a href="#constructor" id="markdown-toc-constructor"><strong>Constructor</strong></a></li>
+      <li><a href="#parameter-initialization" id="markdown-toc-parameter-initialization"><strong>Parameter initialization</strong></a></li>
+      <li><a href="#forward-pass" id="markdown-toc-forward-pass"><strong>Forward pass</strong></a>        <ul>
+          <li><a href="#activation-function" id="markdown-toc-activation-function"><strong>Activation function</strong></a></li>
+        </ul>
+      </li>
+      <li><a href="#calculation-of-cost" id="markdown-toc-calculation-of-cost"><strong>Calculation of Cost</strong></a></li>
+      <li><a href="#backward-pass" id="markdown-toc-backward-pass"><strong>Backward pass</strong></a>        <ul>
+          <li><a href="#update-parameters-via-gradient-descent" id="markdown-toc-update-parameters-via-gradient-descent"><strong>Update parameters via gradient descent</strong></a></li>
+        </ul>
+      </li>
+      <li><a href="#training" id="markdown-toc-training"><strong>Training</strong></a></li>
+      <li><a href="#evaluation-of-trained-artificial-neuron" id="markdown-toc-evaluation-of-trained-artificial-neuron"><strong>Evaluation of trained artificial neuron</strong></a></li>
+    </ul>
+  </li>
+  <li><a href="#all-the-codes" id="markdown-toc-all-the-codes"><strong>All the codes</strong></a></li>
+</ul>
+
+<h2 id="prologue"><strong>Prologue</strong></h2>
+
+<p>This is part 4 of the blog series, <em>Catching AI with its pants down</em>. In this part we will implement all the equation that we derived from scratch in the previous parts.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parts</th>
+      <th>Catching AI with its pants down</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pant 1</td>
+      <td><a href="/some-musings-about-ai.html"><strong>Some Musings About AI</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 2</td>
+      <td><a href="/understand-an-artificial-neuron-from-scratch.html"><strong>Understand an Artificial Neuron from Scratch</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 3</td>
+      <td><a href="/optimize-an-artificial-neuron-from-scratch.html"><strong>Optimize an Artificial Neuron from Scratch</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 4</td>
+      <td><a href="/implement-an-artificial-neuron-from-scratch.html"><strong>Implement an artificial neuron from scratch</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 5</td>
+      <td>Understand a neural network from scratch (coming soon)</td>
+    </tr>
+    <tr>
+      <td>Pant 6</td>
+      <td>Optimize a neural network from scratch (coming soon)</td>
+    </tr>
+    <tr>
+      <td>Pant 7</td>
+      <td>Implement a neural network from scratch (coming soon)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="code-implementation-an-artificial-neuron"><strong>Code Implementation: an artificial neuron</strong></h2>
+
+<p>All the codes will be in Python, using its object-oriented paradigm wherever possible (but I won’t bother with <a href="https://en.wikipedia.org/wiki/Mutator_method" target="_blank">getters and setters</a> for the most part). We will use primarily the <a href="https://numpy.org/" target="_blank">NumPy library</a> because its operations are very efficient for linear algebra computations involving arrays.</p>
+
+<p>This implementation does not take advantage of parallel computing, so your GPU won’t make things any faster. But it takes advantage of NumPy’s superb optimization for computations with multidimensional arrays. Therefore, python loops are avoided as much as possible in the code, which is why we went through all that work to have everything as tensors.</p>
+
+<p>We will also not implement any concurrent computing (so no multithreading of any sort) other than any that may have been baked into NumPy. Most deep learning libraries include concurrent and parallel computing capabilities, and also automatic differentiation capability. Moreover, none of those are really needed for a single artificial neuron. But they are absolutely priceless when training a network of neurons (a.k.a. neural network).</p>
+
+<h4 id="constructor"><strong>Constructor</strong></h4>
+
+<p>We begin by implementing our constructor, where we initialize all our data members (also using it as an opportunity to lay them all out).</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="k">class</span> <span class="nc">Neuron</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">=</span><span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">=</span><span class="n">Y</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span><span class="o">=</span><span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dAdZ</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdA</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdZ</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdW</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdB</span><span class="o">=</span><span class="bp">None</span></code></pre></figure>
+
+<p>We don’t really need to access the entire data (<code class="highlighter-rouge">X</code> and <code class="highlighter-rouge">Y</code>) during its instantiation. We could have chosen to initialize <code class="highlighter-rouge">self.X</code> and <code class="highlighter-rouge">self.Y</code> later. We only just needed the shape of <code class="highlighter-rouge">X</code>, because we use it to get the number of features in our data which we use when we initialize our parameters. However, I chose to have both <code class="highlighter-rouge">self.X</code> and <code class="highlighter-rouge">self.Y</code> initialized at instantiation for the sake of it, so this is certainly an opportunity for some refactoring to improve the code.</p>
+
+<h3 id="parameter-initialization"><strong>Parameter initialization</strong></h3>
+
+<p>We first initialize our parameters, and we will do this randomly.</p>
+
+<p>Next, we will implement a method for parameter initialization. It’s just going to be plain random initialization.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">_initialize_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
+    <span class="n">prng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+    <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">=</span><span class="n">prng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span><span class="o">*</span><span class="mf">0.01</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h3 id="forward-pass"><strong>Forward pass</strong></h3>
+<p>Forward pass can be broken into two steps: First is the linear combination of the parameters and datapoint values to get the preactivation. Next is the passing of the preactivation through an activation function to get the activation.</p>
+
+<p>The equations for forward pass are:</p>
+
+<script type="math/tex; mode=display">\vec{z}=\vec{w}\mathbf{X}+b</script>
+
+<script type="math/tex; mode=display">\vec{a}=f\left(\vec{z}\right)</script>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logistic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Notice that that I used <code class="highlighter-rouge">self.X_batch</code> instead of <code class="highlighter-rouge">self.X</code>, because we perform our calculations on batches of samples from the dataset. We will initialize <code class="highlighter-rouge">self.X_batch</code> during training (i.e. inside the <code class="highlighter-rouge">train</code> method).</p>
+
+<h4 id="activation-function"><strong>Activation function</strong></h4>
+
+<p>Next, we implement out activation function. We will only do logistic for this model of an artificial neuron. Check out the deep neural network code for some other activation functions.</p>
+
+<script type="math/tex; mode=display">\vec{a}=f\left(\vec{z}\right)=\frac{1}{1+e^{-\vec{z}}}</script>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">_logistic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">a</span>
+</code></pre></div></div>
+<p>We will also implement the derivate of the activation function (we are using the logistic function). But note that we invoke this method only during backward pass, not forward pass. Presenting it here (and writing the code near that for the forward pass) is just a matter of personal taste.</p>
+
+<script type="math/tex; mode=display">f'\left(\vec{z}\right)=\vec{a}\odot\left(1-\vec{a}\right)</script>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">_logistic_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="n">dAdZ</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dAdZ</span>
+</code></pre></div></div>
+
+<h3 id="calculation-of-cost"><strong>Calculation of Cost</strong></h3>
+
+<p>Next, we should implement the method for computing the cost, but I didn’t do it for artificial neuron, but instead did it for the main thing, the deep neural network code, and the blog post for it is coming soon.</p>
+
+<p>Note that you don’t actually need the cost for the training process, but instead the cost gradients. The cost is just there to tell us how the training is progressing.
+This is the equation we would implement.</p>
+
+<script type="math/tex; mode=display">J=-\frac{1}{m}\bullet\sum_{j}^{m}{y_i\cdot \log{(y}_i)+(1-a_i)\bullet\log({1-a}_i)}</script>
+
+<h3 id="backward-pass"><strong>Backward pass</strong></h3>
+
+<p>Now we will optimize our parameters in such a way that our loss decreases. We start by first computing the cost gradient <script type="math/tex">\frac{\partial J}{\partial\vec{w}}</script>:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial\vec{w}}=\frac{\partial J}{\partial\vec{z}}\frac{\partial\vec{z}}{\partial\vec{w}}=\ \frac{\partial J}{\partial\vec{z}}X^T=\frac{\partial J}{\partial\vec{a}}\odot\frac{\partial\vec{a}}{\partial\vec{z}}X^T=\frac{\partial J}{\partial\vec{a}}\odot f'(\vec{z})X^T</script>
+
+<p>For a logistic loss function and a logistic activation function, we have:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial\vec{w}}=-\frac{1}{m}\bullet\left(\frac{\vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)\ \odot(\vec{a}\odot\left(1-\vec{a}\right))X^T</script>
+
+<p>We could directly implement the above equation, but I chose to implement it in stages, with each gradient computed at each stage. This will make it a little easier to swap in other activation functions and loss functions in the future (I don’t really have any intention to do so for the artificial neuron code, as I already did it in the deep neural network code).</p>
+
+<p>So, we implement the following equations step by step:</p>
+
+<script type="math/tex; mode=display">\frac{\partial\vec{a}}{\partial\vec{z}}:=f'\left(\vec{z}\right)=\vec{a}\odot\left(1-\vec{a}\right)</script>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial\vec{a}}=-\frac{1}{m}\bullet\left(\frac{\vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)</script>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial\vec{z}}=\frac{\partial J}{\partial\vec{a}}\odot\frac{\partial\vec{a}}{\partial \vec{z}}</script>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial\vec{w}}=\ \frac{\partial J}{\partial\vec{z}}X^T</script>
+
+<p>The cost gradients for the bias is:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial b}=\sum_{j=1}^{m}\left(\frac{\partial J}{\partial\vec{z}}\right)_j</script>
+
+<p>As we showed in part 3, we can also choose to use this equation instead:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\vec{z}}\ \frac{\partial\vec{z}}{\partial b}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ \frac{\partial \vec{z}}{\partial b} $ is an $ m $-by-$ 1 $ vector of ones (i.e. has same shape as $ \vec{z}^T $).
+    </p>
+</div>
+
+<p>Both equations, implemented as <code class="highlighter-rouge">self.dJdB= np.sum(self.dJdZ, axis=1)</code> and <code class="highlighter-rouge">self.dJdB= np.matmul(self.dJdZ, np.ones(self.z.T.shape))</code>, produce the same result. We will use the former.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">_backward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dAdZ</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logistic_gradient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dJdA</span> <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="p">)</span> <span class="o">*</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)))</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">dJdZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dAdZ</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dJdA</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">dJdW</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dJdZ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dJdB</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dJdZ</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></div>
+<h4 id="update-parameters-via-gradient-descent"><strong>Update parameters via gradient descent</strong></h4>
+
+<p>Next, we update <em>each</em> parameter using gradient descent:</p>
+
+<script type="math/tex; mode=display">w_{new}=w_{old}-\gamma\frac{\partial J}{\partial w_{old}}</script>
+
+<script type="math/tex; mode=display">b_{new}=b_{old}-\gamma\frac{\partial J}{\partial b_{old}}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ \gamma $ is the learning rate (a.k.a. step size). It's a hyperparameter, meaning that it is a variable you directly set and control.
+<br /><br />
+Note that $ \frac{\partial J}{\partial w_{old}} $ is simply the $ \frac{\partial J}{\partial w} $ that we just calculated, and the same is true for $ \frac{\partial J}{\partial b_{old}} $.
+    </p>
+</div>
+
+<p>With this, we’ve completed one iteration of training. We repeat this as many times as we want. Eventually, we expect to end up with an artificial neuron that has learned the underlying relationship between the features and the target.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">_update_parameters_via_gradient_descent</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dJdW</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dJdB</span>
+</code></pre></div></div>
+
+<h3 id="training"><strong>Training</strong></h3>
+
+<p>The training process is as follows:</p>
+<ol>
+  <li>Randomly initialize our parameters</li>
+  <li>Run one iteration of training, which involves:
+    <ul>
+      <li>Sample a batch from our dataset.</li>
+      <li>Then run forward pass (i.e. move the data forward through the neuron).</li>
+      <li>Then run backward pass to calculate our cost gradients.</li>
+      <li>Then run gradient descent (which is technically part of backward pass), which uses the cost gradients to update the parameters.</li>
+    </ul>
+  </li>
+  <li>Repeat step 2 until we reach the specified number of iterations.</li>
+</ol>
+
+<p>Therefore we combine the code snippets accordingly:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num_iterations</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"Training begins..."</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_parameters</span><span class="p">(</span><span class="n">random_seed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+    <span class="n">prng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_iterations</span><span class="p">):</span>
+        <span class="n">random_indices</span> <span class="o">=</span> <span class="n">prng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,),</span> <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">[:,</span><span class="n">random_indices</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[:,</span><span class="n">random_indices</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_backward</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_parameters_via_gradient_descent</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s">"Training Complete!"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>We have three hyperparameters we can use to tune the training process: number of iterations, learning rate, and batch size.</p>
+
+<h3 id="evaluation-of-trained-artificial-neuron"><strong>Evaluation of trained artificial neuron</strong></h3>
+
+<p>And finally, we implement methods for evaluating the neuron, including method for computing accuracy and precision. These are very pretty straightforward.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">_compute_accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="nb">all</span><span class="p">():</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Caution: All the activations are null values."</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="n">Y_pred</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Y_true</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span>
+
+    <span class="n">accuracy</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Y_true</span><span class="o">==</span><span class="n">Y_pred</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">accuracy</span>
+
+<span class="k">def</span> <span class="nf">_compute_precision</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="nb">all</span><span class="p">():</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Caution: All the activations are null values."</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="n">Y_true</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span>
+    <span class="n">Y_pred</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">pred_positives_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">Y_pred</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">precision</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">[</span><span class="n">pred_positives_mask</span><span class="p">]</span><span class="o">==</span><span class="n">Y_true</span><span class="p">[</span><span class="n">pred_positives_mask</span><span class="p">]))</span>
+
+<span class="n">We</span> <span class="n">bundle</span> <span class="n">the</span> <span class="n">two</span> <span class="n">methods</span> <span class="n">under</span> <span class="n">on</span> <span class="n">method</span> <span class="k">for</span> <span class="n">evaluating</span> <span class="n">the</span> <span class="n">model</span><span class="p">:</span>
+
+<span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">"accuracy"</span><span class="p">):</span>
+
+    <span class="n">_available_perfomance_metrics</span><span class="o">=</span><span class="p">[</span><span class="s">"accuracy"</span><span class="p">,</span><span class="s">"precision"</span><span class="p">]</span>
+
+    <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">m</span> <span class="o">==</span> <span class="n">metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">_available_perfomance_metrics</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="nb">ValueError</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span> <span class="o">=</span> <span class="n">X</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span> <span class="o">=</span> <span class="n">Y</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">metric</span><span class="o">==</span><span class="s">"accuracy"</span><span class="p">:</span>
+        <span class="n">score</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_accuracy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span><span class="s">"precision"</span><span class="p">:</span>
+        <span class="n">score</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_precision</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">score</span>
+</code></pre></div></div>
+
+<p>I decided to get a little cheeky and throw <code class="highlighter-rouge">ValueError</code> when an invalid string is passed to <code class="highlighter-rouge">metric</code>, a formal parameter of the method evaluate.</p>
+
+<p>I also decided to print a warning message if all my activations are <a href="https://docs.scipy.org/doc/numpy-1.13.0/user/misc.html" target="_blank">NaNs</a> (i.e. null values). From my experience, these can occur when the computations cause an arithmetic overflow or underflow.</p>
+
+<h2 id="all-the-codes"><strong>All the codes</strong></h2>
+
+<p>You can find the entire code, along with the code for deep neural network (the writeup for it is coming soon) and demonstrations using it to tackle real public research datasets, in <a href="https://github.com/princyok/deep_learning_without_ml_libraries" target="_blank"><strong>this GitHub repo</strong></a>.</p>
+
+<p>The version as of the end of March 2020 is repeated here for your convenience:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s">"warn"</span><span class="p">,</span> <span class="n">under</span><span class="o">=</span><span class="s">"warn"</span><span class="p">)</span> <span class="c1"># warn for overflows and underflows.
+</span>
+<span class="k">class</span> <span class="nc">Neuron</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">=</span><span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">=</span><span class="n">Y</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span><span class="o">=</span><span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dAdZ</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdA</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdZ</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdW</span><span class="o">=</span><span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdB</span><span class="o">=</span><span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">_logistic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">a</span>
+
+    <span class="k">def</span> <span class="nf">_logistic_gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="n">dAdZ</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dAdZ</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logistic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_backward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dAdZ</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_logistic_gradient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdA</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdZ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dAdZ</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dJdA</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdW</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dJdZ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dJdB</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dJdZ</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_parameters_via_gradient_descent</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dJdW</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dJdB</span>
+
+    <span class="k">def</span> <span class="nf">_initialize_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
+        <span class="n">prng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+        <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="o">=</span><span class="n">prng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span><span class="o">*</span><span class="mf">0.01</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_compute_accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="nb">all</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">"Caution: All the activations are null values."</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="n">Y_pred</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">Y_true</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span>
+
+        <span class="n">accuracy</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Y_true</span><span class="o">==</span><span class="n">Y_pred</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">accuracy</span>
+
+    <span class="k">def</span> <span class="nf">_compute_precision</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="nb">all</span><span class="p">():</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">"Caution: All the activations are null values."</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="n">Y_true</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span>
+        <span class="n">Y_pred</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">pred_positives_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">Y_pred</span><span class="o">==</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">precision</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Y_pred</span><span class="p">[</span><span class="n">pred_positives_mask</span><span class="p">]</span><span class="o">==</span><span class="n">Y_true</span><span class="p">[</span><span class="n">pred_positives_mask</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">precision</span>
+
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num_iterations</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">random_seed</span><span class="o">=</span><span class="mi">11</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Training begins..."</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_parameters</span><span class="p">(</span><span class="n">random_seed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+        <span class="n">prng</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">random_seed</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_iterations</span><span class="p">):</span>
+            <span class="n">random_indices</span> <span class="o">=</span> <span class="n">prng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,),</span> <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">[:,</span><span class="n">random_indices</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[:,</span><span class="n">random_indices</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_backward</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_parameters_via_gradient_descent</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+
+        <span class="k">print</span><span class="p">(</span><span class="s">"Training Complete!"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">"accuracy"</span><span class="p">):</span>
+
+        <span class="n">_available_perfomance_metrics</span><span class="o">=</span><span class="p">[</span><span class="s">"accuracy"</span><span class="p">,</span><span class="s">"precision"</span><span class="p">]</span>
+
+        <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">m</span> <span class="o">==</span> <span class="n">metric</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">_available_perfomance_metrics</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="nb">ValueError</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X_batch</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Y_batch</span> <span class="o">=</span> <span class="n">Y</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">metric</span><span class="o">==</span><span class="s">"accuracy"</span><span class="p">:</span>
+            <span class="n">score</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_accuracy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span><span class="s">"precision"</span><span class="p">:</span>
+            <span class="n">score</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_precision</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">score</span>
+</code></pre></div></div>
+
+<p>See you in the next article!</p>
+
+
+<!-- Overides the orignal include file -->
+
+<br><br>
+<div id="disqus_thread"></div>
+ <script type="text/javascript">
+     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+     var disqus_shortname = 'princy'; // required: replace example with your forum shortname
+
+     /* * * DON'T EDIT BELOW THIS LINE * * */
+     (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+ </script>
+ <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+ <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+ 
+
+
+  </div><a class="u-url" href="/implement-an-artificial-neuron-from-scratch.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading"><a href="/">Prince&#39;s scribbles</a></h2> <!-- custom code-->
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1">
+          <ul class="contact-list">
+            <li class="p-name"><!-- Prince Okoli -->
+                <p>&copy; 2020 Prince Okoli | All Rights Reserved. </p></li></ul>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/princyok"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">princyok</span></a></li><li><a href="https://www.linkedin.com/in/princeokoli"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">princeokoli</span></a></li></ul>
+</div>
+  
+        <div class="footer-col footer-col-3">
+          <p>My repository of some things that I&#39;ve been thinking about.</p>
+        </div>
+      </div>
+  
+    </div>
+  
+  </footer>
+  </body>
+
+</html>

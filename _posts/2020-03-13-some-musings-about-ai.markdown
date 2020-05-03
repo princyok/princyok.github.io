@@ -25,7 +25,7 @@ all the code presented in this blog series can be found at [**this GitHub repo**
 
 This writeup aims to be very detailed, simple and granular, such that by the end, you hopefully should have enough knowledge to investigate and code more advanced architectures from scratch if you chose to do so. You should expect a lot of math, but don't let that scare you away, as I'll tried my best to explain things as simply as possible.
 
-The original plan was to explain everything in one giant article, but that quickly proved unwieldy. So, I decided to break things up into multiple articles. This first article covers the prelude (basically some casual ramblings about AI) and subsequent articles focus on introducing an artificial neuron, the derivation of the equations needed to build one from scratch and the code implementation of those equations, and then repeat all that for a network of artificial neurons (a.k.a. neural networks).
+The original plan was to explain everything in one giant article, but that quickly proved unwieldy. So, I decided to break things up into multiple articles. This first article is basically some casual ramblings about AI with a brief overview of machine learning, and subsequent articles focus on introducing an artificial neuron, the derivation of the equations needed to build one from scratch and the code implementation of those equations, and then repeat all that for a network of artificial neurons (a.k.a. neural networks).
 
 {% include blogseries_index_catching_ai.html %}
 
@@ -61,7 +61,7 @@ The type of AI we interact with today and hear of nonstop in the media is artifi
 
 A lot of the hype that has sprung up around ANI in the last decade was driven by the progress made with applying deep neural networks (a.k.a. deep learning) to supervised learning tasks (we will talk more about these below) and more recently to reinforcement learning tasks.
 
-A supervised learning task is one were the mathematical model (what we would call the AI if we’re still doing buzzspeak) is trained to associate inputs with their correct outputs, so that it can later produce a correct output when fed an input it never saw during training. An example is when Google Lens recognizes the kind of shoe you are pointing the camera at, or when IBM’s Watson transcribes your vocal speech to text. Google Lens can recognize objects in images because the neural network powering it has been trained with images where the objects in them have been correctly labelled, so that when it later sees a new image it has never seen before, it can still recognize patterns that it already learned during training.
+A supervised learning task is one were the mathematical model (what we would call the AI if we’re still doing buzzspeak) is trained to associate inputs with their correct outputs, so that it can later produce a correct output when fed an input it never saw during training. An example is when [Google Lens](https://lens.google.com/){:target='blank'} recognizes the kind of shoe you are pointing the camera at, or when IBM Watson transcribes your vocal speech to text. Google Lens can recognize objects in images because the neural network powering it has been trained with images where the objects in them have been correctly labelled, so that when it later sees a new image it has never seen before, it can still recognize patterns that it already learned during training.
 
 In reinforcement learning, you have an agent that tries to maximize future cumulative reward by exploring and exploiting the environment. That’s what DeepMind's [AlphaGo](https://www.youtube.com/watch?v=WXuK6gekU1Y){:target="_blank"} is in a nutshell. It takes in the current board configuration as input data and spits out the next move to play that will maximize the chances of winning the match.
 
@@ -83,7 +83,7 @@ description=
 ### **Supervised vs. Unsupervised Learning**
 The two main broad categories of machine learning are supervised learning and unsupervised learning. The main distinction between the two is that in the former the program is provided with a target variable (or labelled data in the in the context of classification) and in the latter, no variable is designated as the target variable.
 
-But don’t let the “supervision” in the name fool you, because, as of 2019, working on real-world unsupervised tasks requires more “supervision” (in the form of domain-specific tweaks) than supervised tasks (which can still benefit from domain-specific tweaks). But there is a general sense of expectation that unsupervised learning will start rivalling the success of supervised learning in terms of practical effectiveness (and also hype) within the next few years.
+But don’t let the “supervision” in the name fool you, because, as of 2020, working on real-world unsupervised tasks requires more “supervision” (in the form of domain-specific tweaks) than supervised tasks (which can still benefit from domain-specific tweaks). But there is a general sense of expectation that unsupervised learning will start rivalling the success of supervised learning in terms of practical effectiveness (and also hype) within the next few years.
 
 In supervised learning, the dataset will have two part. One is the **target** variable ($$y$$) that holds the values to be predicted, and the other is the rest of the data ($$x$$), which are also called the input variables, independent variables, predictors, or **features**. The target variable $$y$$ is also called the output variable, response, or dependent variable, ground truth. It’s quite useful to be able to recognize all these alternative names.
 
@@ -155,4 +155,4 @@ $$
 
 We will revisit the error when we go over the loss function for an artificial neuron.
 
-If you’ve heard of naïve Bayes, logistic regression, linear regression, or k-nearest neighbours, then you’ve heard of other examples of machine learning estimators. But those are not the focus of this blog series (although logistic regression is kind of), nor do you need to know how work those to follow along in this series.
+If you’ve heard of naïve Bayes, logistic regression, linear regression, or k-nearest neighbours, then you’ve heard of other examples of machine learning estimators. But those are not the focus of this blog series (although logistic regression is kind of), nor do you need to know how those work to follow along in this series.

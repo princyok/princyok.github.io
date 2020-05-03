@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Catching AI with its pants down: Optimize an Artificial Neuron from Scratch | Prince’s scribbles</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Catching AI with its pants down: Optimize an Artificial Neuron from Scratch" />
+<meta name="author" content="Prince Okoli" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="My repository of some things that I’ve been thinking about." />
+<meta property="og:description" content="My repository of some things that I’ve been thinking about." />
+<link rel="canonical" href="http://localhost:4000/optimize-an-artificial-neuron-from-scratch.html" />
+<meta property="og:url" content="http://localhost:4000/optimize-an-artificial-neuron-from-scratch.html" />
+<meta property="og:site_name" content="Prince’s scribbles" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-27T00:00:00-06:00" />
+<script type="application/ld+json">
+{"@type":"BlogPosting","headline":"Catching AI with its pants down: Optimize an Artificial Neuron from Scratch","url":"http://localhost:4000/optimize-an-artificial-neuron-from-scratch.html","dateModified":"2020-03-27T00:00:00-06:00","datePublished":"2020-03-27T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/optimize-an-artificial-neuron-from-scratch.html"},"author":{"@type":"Person","name":"Prince Okoli"},"description":"My repository of some things that I’ve been thinking about.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Prince's scribbles" /></head>
+<link rel="stylesheet" href="assets/css/custom.css">
+  <body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Prince&#39;s scribbles</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Catching AI with its pants down: Optimize an Artificial Neuron from Scratch</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-03-27T00:00:00-06:00" itemprop="datePublished">Mar 27, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            processEscapes: true
+          }
+        });
+</script>
+
+<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+<table>
+<td>
+<i>We will strip the mighty, massively hyped, highly dignified AI of its cloths, and bring its innermost details down to earth!</i>
+</td>
+</table>
+
+<ul id="markdown-toc">
+  <li><a href="#prologue" id="markdown-toc-prologue"><strong>Prologue</strong></a></li>
+  <li><a href="#gradient-descent-algorithm" id="markdown-toc-gradient-descent-algorithm"><strong>Gradient Descent Algorithm</strong></a></li>
+  <li><a href="#chain-rule-for-cost-gradient" id="markdown-toc-chain-rule-for-cost-gradient"><strong>Chain rule for cost gradient</strong></a></li>
+</ul>
+
+<h2 id="prologue"><strong>Prologue</strong></h2>
+
+<p>This is part 3 of the blog series, <em>Catching AI with its pants down</em>. In this part, I will dive into the mathematical details of training (optimizing) an artificial neuron via gradient descent. This will be a math-heavy article, so get your pen and scratch papers ready. But I made sure to simplify things.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parts</th>
+      <th>Catching AI with its pants down</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pant 1</td>
+      <td><a href="/some-musings-about-ai.html"><strong>Some Musings About AI</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 2</td>
+      <td><a href="/understand-an-artificial-neuron-from-scratch.html"><strong>Understand an Artificial Neuron from Scratch</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 3</td>
+      <td><a href="/optimize-an-artificial-neuron-from-scratch.html"><strong>Optimize an Artificial Neuron from Scratch</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 4</td>
+      <td><a href="/implement-an-artificial-neuron-from-scratch.html"><strong>Implement an artificial neuron from scratch</strong></a></td>
+    </tr>
+    <tr>
+      <td>Pant 5</td>
+      <td>Understand a neural network from scratch (coming soon)</td>
+    </tr>
+    <tr>
+      <td>Pant 6</td>
+      <td>Optimize a neural network from scratch (coming soon)</td>
+    </tr>
+    <tr>
+      <td>Pant 7</td>
+      <td>Implement a neural network from scratch (coming soon)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Let’s recap before we begin the last dash:</p>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Recall that an artificial neuron can be succinctly described as a function that takes in $ \mathbf{X} $ and uses its parameters $ \vec{w} $ to do some computations to spit out an activation value that we expect to be close to the actual correct value (the ground truth), $ \vec{y} $. This also means that we expect some level of error between the activation value and the ground truth, and the loss function gives us a measure of this error in the form of single scalar value, the loss (or cost).
+<br /><br />
+We want the activation to be as close as possible to the ground truth by getting the loss to be as small as possible. In order to do that, we want to find a set of values for $ \vec{w} $ such that the loss is always as low as possible.
+<br /><br />
+What remains to be seen is how we pull this off.
+    </p>
+</div>
+
+<h2 id="gradient-descent-algorithm"><strong>Gradient Descent Algorithm</strong></h2>
+<p>As we <a href="/understand-an-artificial-neuron-from-scratch.html#loss-function" target="_blank">saw in part 2</a>, we have a loss function that is a function of the weights and biases, and we need a way to find the set of weights and biases that minimizes the loss. This is a clearcut optimization problem.</p>
+
+<p>There are many ways to solve this optimization problem, but we will go with the one that scales excellently with deep neural networks, since that is the eventual goal of this writeup. And that brings us to the gradient descent algorithm.</p>
+
+<p>We will illustrate how it works using a simple scenario where we have a dataset made of one feature and one target, and we want to use the mean square error as cost function. We specify a linear activation function (<script type="math/tex">a=f(a)</script>) for the neuron. Then the equation for our neuron will be:</p>
+
+<script type="math/tex; mode=display">a=f\left(z\right)=w_1\ \cdot x_1+w_0</script>
+
+<p>Our cost function becomes:</p>
+
+<script type="math/tex; mode=display">J=\frac{1}{m}\cdot\sum_{j=0}^{m}{({y}_j-a_j)}^2=\frac{1}{m}\cdot\sum_{j=0}^{m}{(y_j-\ w_{1,j}\ \cdot x_{1,j}+w_{0,j})}^2</script>
+
+<p>Let’s further simplify our scenario by assuming we will only run computations for only one datapoint at a time.</p>
+
+<script type="math/tex; mode=display">J={(y_j-\ w_{1,j}\ \cdot x_{1,j}+w_{0,j})}^2</script>
+
+<p>If we hold <script type="math/tex">y_j</script> and <script type="math/tex">x_{1,j}</script> constant, which is logical since they come directly from data, we observe that our cost is a function of just the parameters <script type="math/tex">w_0</script> and <script type="math/tex">w_1</script>. And we can easily plot the curve.</p>
+
+<figure class="image" align="middle">
+  <img src="/assets/images/artificial_neuron/error_vs_parameters.png" alt="Plot of cost against two parameters." center-image="middle" />
+  <figcaption><i>Plot of cost against two parameters.</i></figcaption>
+</figure>
+
+<p>From the plot we can easily see what values we can set <script type="math/tex">w_0</script> and <script type="math/tex">w_1</script> to in order to produce the most minimal cost. Any picks for <script type="math/tex">w_0</script> and <script type="math/tex">w_1</script> from the bottom of the valley will give a minimal cost.</p>
+
+<p>The gradient descent algorithm formalizes the idea we just followed. It pretty much says: Start somewhere on the cost function (in this case, the plotted surface) and only take steps in the direction of negative gradient (i.e. direction of descent). Once you hit a minimum, any step you take will always turn out to be in the direction of ascent and therefore the iteration will no longer improve the minimization of the cost.</p>
+
+<p>In mathematical terms, it is this:</p>
+
+<script type="math/tex; mode=display">w_{new}=w_{old}-\gamma\frac{\partial J}{\partial w_{old}}</script>
+
+<script type="math/tex; mode=display">b_{new}=b_{old}-\gamma\frac{\partial J}{\partial b_{old}}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ \gamma $ is the step size (a.k.a. learning rate).
+    </p>
+</div>
+
+<p>The above equations are used in updating the parameters at the end of each round or iteration of training. The equations are applied to each of the parameters in the model (the artificial neuron). For instance, for our toy dataset, there would be two weights, one for each feature (input variable) of the dataset, and one bias for the bias node. All three parameters will be updated using the equations. That marks the end of one round or iteration of training.</p>
+
+<p>Stochastic gradient descent means that randomization is introduced during the selection of the batch of datapoints to be used in the calculations of the gradient descent. Some people will distinguish further by defining mini-batch stochastic gradient descent as when a batch of datapoints is randomly selected from the dataset and used, while stochastic gradient descent refers to just using a single randomly selected datapoint for each entire round of computations.</p>
+
+<p>If we had more than two parameters, or a non-linear activation function, or some other property that makes our neuron more complicated, using a plot to find the parameters that minimize the error becomes just impractical. We must use the mathematical formulation.</p>
+
+<p>What remains to be answered is how we can efficiently compute <script type="math/tex">\frac{\partial J}{\partial w_{old}}</script> and <script type="math/tex">\frac{\partial J}{\partial b_{old}}</script>.</p>
+
+<h2 id="chain-rule-for-cost-gradient"><strong>Chain rule for cost gradient</strong></h2>
+<p>Heads up: For this part, which is the real meat of the training process, I advised that you bring out a pen and some paper to work along, especially if this is your first time working with Jacobians.</p>
+
+<p>Let’s focus on just <script type="math/tex">\frac{\partial J}{\partial \vec{w}}</script> for now. To compute the cost gradient <script type="math/tex">\frac{\partial J}{\partial \vec{w}}</script> we simply use the chain rule.</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial \vec{w}}=\ \frac{\partial J}{\partial \vec{a}}\frac{\partial \vec{a}}{\partial \vec{z}}\frac{\partial \vec{z}}{\partial \vec{w}}</script>
+
+<p>The gradient <script type="math/tex">\frac{\partial J}{\partial \vec{a}}</script> (can also be called a Jacobian, because it is) depends on the choice of the cost function because we can’t do anything if we haven’t picked what function to use for <script type="math/tex">J</script>. Also, <script type="math/tex">\frac{\partial \vec{a}}{\partial \vec{z}}</script> depends on the choice of activation function, although we can solve it for an arbitrary function.</p>
+
+<p>But for <script type="math/tex">\frac{\partial \vec{z}}{\partial \vec{w}}</script>, we know that preactivation (<script type="math/tex">\vec{z}</script>), at least for one neuron, will always be a simple linear combination of the parameters and the input data:</p>
+
+<script type="math/tex; mode=display">\vec{z}=\vec{w}\mathbf{X}+\vec{b}</script>
+
+<p>This is also always true in standard feedforward neural networks (a.k.a. multilayer perceptron), but not so for every flavour of neural networks (e.g. convolutional neural networks have a convolution operation instead of a multiplication between <script type="math/tex">\vec{w}</script> and <script type="math/tex">\mathbf{X}</script>).</p>
+
+<p>Before we move any further, it’s important you understand what Jacobians are. In a nutshell, the Jacobian of a vector-valued function (a function that returns a vector), which is what we are working with here, is a matrix that contains all of the function’s first order partial derivatives. It is the way to properly characterize the partial derivatives of a vector function with respect to all its input variables.</p>
+
+<p>If you were not already familiar with Jacobians or still unclear of what it is, I found <a href="https://www.youtube.com/watch?v=bohL918kXQk" target="_blank">this video</a> that should help (or just search for “Jacobian matrix” on YouTube and you’ll see many great introductory videos).</p>
+
+<p>Our Jacobians in matrix representation are as follows:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\frac{\partial J}{\partial \vec{w}}=\left[\begin{matrix}\frac{\partial J}{\partial w_1}&\frac{\partial J}{\partial w_2}&\cdots&\frac{\partial J}{\partial w_n}\\\end{matrix}\right] %]]></script>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\frac{\partial J}{\partial \vec{a}}=\left[\begin{matrix}\frac{\partial J}{\partial a_1}&\frac{\partial J}{\partial a_2}&\cdots&\frac{\partial J}{\partial a_m}\\\end{matrix}\right] %]]></script>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\frac{\partial \vec{a}}{\partial \vec{z}}=\left[\begin{matrix}\frac{\partial a_1}{\partial z_1}&\frac{\partial a_1}{\partial z_2}&\cdots&\frac{\partial a_1}{\partial z_m}\\\frac{\partial a_2}{\partial z_1}&\frac{\partial a_2}{\partial z_2}&\cdots&\frac{\partial a_2}{\partial z_m}\\\vdots&\vdots&\ddots&\vdots\\\frac{\partial a_m}{\partial z_1}&\frac{\partial a_m}{\partial z_2}&\cdots&\frac{\partial a_m}{\partial z_m}\\\end{matrix}\right] %]]></script>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\frac{\partial \vec{z}}{\partial \vec{w}}=\left[\begin{matrix}\frac{\partial z_1}{\partial w_1}&\frac{\partial z_1}{\partial w_2}&\cdots&\frac{\partial z_1}{\partial w_n}\\\frac{\partial z_2}{\partial w_1}&\frac{\partial z_2}{\partial w_2}&\cdots&\frac{\partial z_2}{\partial w_n}\\\vdots&\vdots&\ddots&\vdots\\\frac{\partial z_m}{\partial w_1}&\frac{\partial z_m}{\partial w_2}&\cdots&\frac{\partial z_m}{\partial w_n}\\\end{matrix}\right] %]]></script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where their shapes are: $ \frac{\partial J}{\partial \vec{w}} $ is $ 1 $-by-$ n $, $ \frac{\partial J}{\partial \vec{a}} $ is $ 1 $-by-$ m $, $ \frac{\partial \vec{a}}{\partial \vec{z}} $ is $ m $-by-$ m $, and $ \frac{\partial \vec{z}}{\partial \vec{w}} $ is $ m $-by-$ n $.
+    </p>
+</div>
+
+<p>The shapes show us that matrix multiplication present in the chain rule expansion is valid.</p>
+
+<p>From the above equation for <script type="math/tex">z</script>, we can immediately compute the Jacobian <script type="math/tex">\frac{\partial \vec{z}}{\partial \vec{w}}</script>.</p>
+
+<p>We can observe that the Jacobian <script type="math/tex">\frac{\partial \vec{z}}{\partial \vec{w}}</script> is an <script type="math/tex">m</script>-by-<script type="math/tex">n</script> matrix. But at this stage, our Jacobian hasn’t given us anything useful because we still need the solution for each element of the matrix.</p>
+
+<p>We’ll solve an arbitrary element of the Jacobian and extend the pattern to the rest. Let’s begin.</p>
+
+<p>We pick an element <script type="math/tex">\frac{\partial z_j}{\partial w_i}</script> from the matrix, and immediately we observe that we have already encountered the generalized elements <script type="math/tex">z_j</script> and <script type="math/tex">w_i</script> in the following equation:</p>
+
+<script type="math/tex; mode=display">z_j=w_1\ \cdot x_{1,j}+w_2\ \cdot x_{2,j}+\ldots+w_n\ \cdot x_{n,j}+w_0=\sum_{i=0}^{n}{w_i\ \cdot x_{i,j}}</script>
+
+<p>Therefore:</p>
+
+<script type="math/tex; mode=display">\frac{\partial z_j}{\partial w_i}=\frac{\partial\left(\sum_{i=0}^{n}{w_i\ \cdot x_{i,j}}\right)}{\partial w_i}</script>
+
+<p>The above is a partial derivative w.r.t. <script type="math/tex">w_i</script>, so we temporarily consider <script type="math/tex">x_{i,j}</script> to be a constant.</p>
+
+<script type="math/tex; mode=display">\frac{\partial z_j}{\partial w_i}=\frac{\partial\left(\sum_{i=0}^{n}{w_i\ \cdot x_{i,j}}\right)}{\partial w_i}=x_{i,j}</script>
+
+<p>(If it’s unclear how the above worked out, expand out the summation and do the derivatives term by term, and keep in mind that <script type="math/tex">x_{i,j}</script> is considered to be constant, because this is a partial differentiation w.r.t. <script type="math/tex">w_i</script>).</p>
+
+<p>We substitute the result back into the Jacobian:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\frac{\partial \vec{z}}{\partial \vec{w}}=\left[\begin{matrix}x_{1,1}&x_{2,1}&\cdots&x_{n,1}\\x_{1,2}&x_{2,2}&\cdots&x_{n,2}\\\vdots&\vdots&\ddots&\vdots\\x_{1,m}&x_{2,m}&\cdots&x_{n,m}\\\end{matrix}\right] %]]></script>
+
+<p>Recall that we originally defined <script type="math/tex">\mathbf{X}</script> as:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+X=\left[\begin{matrix}x_{1,1}&x_{1,2}&\cdots&x_{1,m}\\x_{2,1}&x_{2,2}&\cdots&x_{2,m}\\\vdots&\vdots&\ddots&\vdots\\x_{n,1}&x_{n,2}&\cdots&x_{n,m}\\\end{matrix}\right] %]]></script>
+
+<p>Therefore, we observe that <script type="math/tex">\frac{\partial \vec{z}}{\partial \vec{w}}</script> is exactly the transpose of our original definition of X:</p>
+
+<script type="math/tex; mode=display">\frac{\partial \vec{z}}{\partial \vec{w}}= \mathbf{X}^T</script>
+
+<p>One Jacobian is down. Two more to go.</p>
+
+<p>The Jacobian <script type="math/tex">\frac{\partial \vec{a}}{\partial \vec{z}}</script> depends on the choice of activation function, since it is obviously the gradient of the activation w.r.t. to preactivation (i.e. the derivative of the activation function). We cannot characterize it until we fully characterize the equation for <script type="math/tex">\vec{a}</script>.</p>
+
+<p>Let’s go with the logistic activation function:</p>
+
+<script type="math/tex; mode=display">\vec{a}=\frac{1}{1+e^{-\vec{z}}}</script>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\frac{\partial \vec{a}}{\partial \vec{z}}=\left[\begin{matrix}\frac{\partial a_1}{\partial z_1}&\frac{\partial a_1}{\partial z_2}&\cdots&\frac{\partial a_1}{\partial z_m}\\\frac{\partial a_2}{\partial z_1}&\frac{\partial a_2}{\partial z_2}&\cdots&\frac{\partial a_2}{\partial z_m}\\\vdots&\vdots&\ddots&\vdots\\\frac{\partial a_m}{\partial z_1}&\frac{\partial a_m}{\partial z_2}&\cdots&\frac{\partial a_m}{\partial z_m}\\\end{matrix}\right] %]]></script>
+
+<p>We follow the same steps as done with the first Jacobian.</p>
+
+<script type="math/tex; mode=display">\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{1}{1+e^{-z_k}}\right)}{\partial z_j}</script>
+
+<p>The reason for <script type="math/tex">k</script> is that we need a subscript that conveys the idea that <script type="math/tex">a</script> and <script type="math/tex">z</script> in <script type="math/tex">\frac{\partial \vec{a}}{\partial \vec{z}}</script> may not always have matching subscripts That is, we are considering all the elements of the Jacobian and not just the ones along the diagonal, which are the only elements that will have matching subscripts. However, both subscripts, <script type="math/tex">j</script> and <script type="math/tex">k</script>, are tracking the same quantity, which is datapoints.</p>
+
+<p>Let’s rearrange the activation function a little by multiplying both numerator and denominator by <script type="math/tex">e^z_k</script>.</p>
+
+<script type="math/tex; mode=display">\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{1}{1+e^{-z_k}}\cdot\frac{e_k^z}{e_k^z}\right)}{\partial z_j}=\frac{\partial\left(\frac{e_k^z}{e_k^z+1}\right)}{\partial z_j}</script>
+
+<p>The reason for this is to make the use of the <a href="https://en.wikipedia.org/wiki/Quotient_rule" target="_blank">quotient rule of differentiation</a> for solving the derivative easier to work with.</p>
+
+<p>We have to consider two possible cases. One is where <script type="math/tex">k</script> and <script type="math/tex">j</script> are equal, e.g. <script type="math/tex">\frac{\partial a_2}{\partial z_2}</script>, and the other is when they are not, e.g. <script type="math/tex">\frac{\partial a_1}{\partial z_2}</script>.</p>
+
+<p>For <script type="math/tex">k\neq j</script>:</p>
+
+<script type="math/tex; mode=display">\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{e^{z_k}}{e^{z_k}+1}\right)}{\partial z_j}=0</script>
+
+<p>If it’s unclear how the above worked out, then notice that when <script type="math/tex">k\neq j</script>, <script type="math/tex">z_k</script> is temporarily a constant because we are differentiating w.r.t. <script type="math/tex">z_j</script>.</p>
+
+<p>For <script type="math/tex">k=j</script>:</p>
+
+<script type="math/tex; mode=display">\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{e^{z_k}}{e^{z_k}+1}\right)}{\partial z_k}</script>
+
+<p>We apply the quotient rule of differentiation:</p>
+
+<script type="math/tex; mode=display">\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{e^{z_k}}{e^{z_{k}}+1}\right)}{\partial z_k}=\frac{e^{z_k}\left(e^{z_k}+1\right)-\left(e^{z_k}\right)^2}{\left(e^{z_k}+1\right)^2}</script>
+
+<p>We can sort of see the original activation function somewhere in there, so we rearrange the terms and see if we can get something more compact:</p>
+
+<script type="math/tex; mode=display">\frac{\partial a_k}{\partial z_j}=\frac{e^{z_k}\cdot\left(e^{z_k}+1\right)-\left(e^{z_k}\right)^2}{\left(e^{z_k}+1\right)^2}=\frac{\left(e^{z_k}\right)^2+e^{z_k}-\left(e^{z_k}\right)^2}{\left(e^{z_k}+1\right)^2}= \color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}} \cdot\left(\frac{1}{e^{z_k}+1}\right)</script>
+
+<p>Now we clearly see the original activation function in there (in <font color="magenta">magenta</font>). But the other term also looks very similar, so we rework it a little more:</p>
+
+<script type="math/tex; mode=display">\frac{\partial a_k}{\partial z_j}=\frac{e^{z_k}}{e^{z_k}+1}\cdot\left(\frac{1}{e^{z_k}+1}\right)=\color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}}\cdot\left(1-\color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}}\right)</script>
+
+<p>We can now simply substitute it in the activation (while recalling that <script type="math/tex">k\ =\ j</script>):</p>
+
+<script type="math/tex; mode=display">\frac{\partial a_k}{\partial z_j}=a_k\cdot\left(1-a_k\right)=a_j\cdot\left(1-a_j\right)</script>
+
+<p>Therefore, our Jacobian becomes:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\frac{\partial \vec{a}}{\partial \vec{z}}=\left[\begin{matrix}a_1\cdot\left(1-a_1\right)&0&\cdots&0\\0&a_2\cdot\left(1-a_2\right)&\cdots&0\\\vdots&\vdots&\ddots&\vdots\\0&0&\cdots&a_m\cdot\left(1-a_m\right)\\\end{matrix}\right] %]]></script>
+
+<p>It’s an <script type="math/tex">m</script>-by-<script type="math/tex">m</script> diagonal matrix.</p>
+
+<p>Two Jacobians are down and one more to go.</p>
+
+<p>However, I will leave the details for the last Jacobian <script type="math/tex">\frac{\partial J}{\partial \vec{a}}</script> as an exercise for you (it’s not more challenging than the other two). Here’s the setup for it.</p>
+
+<p>The cost gradient <script type="math/tex">\frac{\partial J}{\partial \vec{a}}</script> depends on the choice of the cost function since it is obviously the gradient of the cost w.r.t. activation. Since we are using a logistic activation function, we will go ahead and use the logistic loss function (a.k.a. cross entropy loss or negative log-likelihoods):</p>
+
+<script type="math/tex; mode=display">J=-\frac{1}{m}\cdot\sum_{j}^{m}{y_j\cdot l o g{(a}_j)+(1-y_j)\cdot\log({1-a}_j)}</script>
+
+<p>The result for <script type="math/tex">\frac{\partial J}{\partial \vec{a}}</script> is:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial\vec{a}}=-\frac{1}{m}\cdot\left(\frac{ \vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)</script>
+
+<p>Note that all the arithmetic operations in the above are all elementwise. The resulting cost gradient is a vector that has same shape as <script type="math/tex">a</script> and <script type="math/tex">y</script>, which is <script type="math/tex">1</script>-by-<script type="math/tex">m</script>.</p>
+
+<p>Now we recombine everything. Therefore, the equation for computing the cost gradient for an artificial neuron that uses a logistic activation function and a cross entropy loss is:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial \vec{w}}=\ \frac{\partial J}{\partial \vec{a}}\frac{\partial \vec{a}}{\partial \vec{z}}\frac{\partial \vec{z}}{\partial \vec{w}}=-\frac{1}{m}\cdot\left(\frac{\vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)\frac{\partial \vec{a}}{\partial \vec{z}}\mathbf{X}^T</script>
+
+<p>We choose to combine the first two gradients into <script type="math/tex">\frac{\partial J}{\partial \vec{z}}</script> such that <script type="math/tex">\frac{\partial J}{\partial \vec{w}}</script> is:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial \vec{w}}=\ \frac{\partial J}{\partial \vec{z}}\mathbf{X}^T</script>
+
+<p>The gradient <script type="math/tex">\frac{\partial J}{\partial\vec{z}}</script> came from this:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial\vec{z}}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}</script>
+
+<p>We already have everything for  <script type="math/tex">\frac{\partial J}{\partial \vec{z}}</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\frac{\partial J}{\partial \vec{z}}=\color{brown}{\frac{\partial J}{\partial \vec{a}}}\color{blue}{\frac{\partial \vec{a}}{\partial \vec{z}}}=\color{brown}{-\frac{1}{m}\cdot\left(\frac{ \vec{y}}{ \vec{a}}-\frac{1- \vec{y}}{1- \vec{a}}\right) }\color{blue}{\left[\begin{matrix}a_1\cdot\left(1-a_1\right)&0&\cdots&0\\0&a_2\cdot\left(1-a_2\right)&\cdots&0\\\vdots&\vdots&\ddots&\vdots\\0&0&\cdots&a_m\cdot\left(1-a_m\right)\\\end{matrix}\right]} %]]></script>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial \vec{w}}=\frac{\partial J}{\partial\vec{z}}\mathbf{X}^T=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}\mathbf{X}^T</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        
+Where $ \frac{\partial J}{\partial \vec{w}} $ is $ 1 $-by-$ n $, $ \frac{\partial J}{\partial \vec{z}} $ is $ 1 $-by-$ m $, $ \frac{\partial J}{\partial\vec{a}} $ is a $ 1 $-by-$ m $ vector,  $ \frac{\partial\vec{a}}{\partial \vec{z}} $ is an $ m $-by-$ m $ matrix. Note that division between vectors or matrices, e.g. $ \frac{\vec{y}}{\vec{a}} $, are always elementwise.
+    </p>
+</div>
+
+<p>Notice that everything needed for computing the vital cost gradient <script type="math/tex">\frac{\partial J}{\partial \vec{w}}</script> has either already been computed during forward propagation or is from the data. We are simply reusing values already computed prior.</p>
+
+<p>The above equation can now be easily implemented in code in a vectorized fashion. Implementing the code for computing the gradient <script type="math/tex">\frac{\partial\vec{a}}{\partial \vec{z}}</script> in a vectorized fashion is a little tricky. To compute it, we first compute its diagonal as a row vector:</p>
+
+<script type="math/tex; mode=display">diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}=(\vec{a}\odot\left(1-\vec{a}\right))</script>
+
+<script type="math/tex; mode=display">% <![CDATA[
+=\left[\begin{matrix}a_1\cdot(1-a_1\ )&a_2\cdot(1-a_2\ )&\cdots&a_m\cdot(1-a_m\ )\\\end{matrix}\right] %]]></script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ \vec{a} $ is the $ 1 $-by-$ m $ vector that contains the activations. The symbol $ \odot $ represents elementwise multiplication (a.k.a. Hadamard product).
+<br /><br />
+The $ diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}} $ is the $ 1 $-by-$ m $ vector that you will obtain if you pulled out the diagonal of the matrix $ \frac{\partial\vec{a}}{\partial \vec{z}} $ and put it into a row vector.
+    </p>
+</div>
+
+<p>We also observe that the <script type="math/tex">diagonal\ vector\ of\frac{\partial\vec{a}}{\partial \vec{z}}</script> (the vector that you get if you pulled out the diagonal of the matrix <script type="math/tex">\frac{\partial\vec{a}}{\partial \vec{z}}</script> and put it into a row vector) is simply the elementwise derivative of the vector <script type="math/tex">\vec{z}</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=\left[\begin{matrix}a_1\cdot\left(1-a_1\ \right)&a_2\cdot\left(1-a_2\ \right)&\cdots&a_m\cdot\left(1-a_m\ \right)\\\end{matrix}\right] %]]></script>
+
+<script type="math/tex; mode=display">% <![CDATA[
+=\ \left[\begin{matrix}f'(z_1)&f'(z_2)&\cdots&f'(z_m)\\\end{matrix}\right]=f'(\vec{z}) %]]></script>
+
+<p>So, computing the <script type="math/tex">diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}</script> is simply same as computing <script type="math/tex">f'(\vec{z})</script>, and this applies to any activation function <script type="math/tex">f</script> and its derivative <script type="math/tex">f'</script>. And this is easily implemented in code.</p>
+
+<table>
+<td>
+<details>
+<summary>
+<b>Why the $ diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}} $ is always equal to $ f'(\vec{z}) $ for any activation function:
+</b>
+</summary>
+<p>
+The reason why the expression, $ diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=f\prime(\vec{z}) $, is valid for the logistic activation function is precisely because of this result (already shown before):
+
+$$
+\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{e^{\vec{z}_\boldsymbol{k}}}{e^{\vec{z}_\boldsymbol{k}}+1}\right)}{\partial z_j}=0
+$$
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        
+For $ k\neq j $. Where both $ j $ and $ k $ track the same quantity, which is datapoints.
+    </p>
+</div>
+
+
+The above equation tell us that the only time an element of the matrix $ \frac{\partial\vec{a}}{\partial\vec{z}} $ has a chance of being non-zero is when $ k=j $, which is the diagonal.
+<br /><br />
+The great thing is that the above equation also holds true for any activation function because the reason it results in zero for the logistic activation function has nothing to do with the activation function but simply because under the condition of $ k\neq j $, the following is also true: $ z_k\neq z_j $.
+<br /><br />
+Therefore, in general the following expression will hold true for any activation function $ f $:
+
+$$
+\frac{\partial a_k}{\partial z_j}=\frac{\partial f(z_k)}{\partial z_j}=0
+$$
+
+Which also means for any activation function $ f $, the following is also true:
+
+$$
+diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=f\prime(\vec{z})
+$$
+</p>
+</details>
+</td>
+</table>
+
+<p>Once we’ve computed the <script type="math/tex">diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}</script>, which is a <script type="math/tex">1</script>-by-<script type="math/tex">m</script> vector, we will implement some code that can inflate the diagonal matrix <script type="math/tex">\frac{\partial\vec{a}}{\partial \vec{z}}</script> by padding it with zeros. If coding in Python and using the NumPy library for our vectorized computations, then the method <a href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.diagflat.html" target="_blank"><code class="highlighter-rouge">numpy.diagflat</code></a> does exactly that.</p>
+
+<p>One good news is that we can take the equation <script type="math/tex">\frac{\partial J}{\partial \vec{w}}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}\mathbf{X}^T</script> to an alternative form that would allow us to skip the step of inflating the <script type="math/tex">diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}</script> and therefore saves us a little processing time.</p>
+
+<p>There is a well-known relationship between the multiplication of a vector with a diagonal matrix, and elementwise multiplication (a.k.a. Hadamard product), which is denoted as <script type="math/tex">\odot</script>. The relationship plays out like this.</p>
+
+<p>Say we have a row vector <script type="math/tex">v</script> and a diagonal matrix <script type="math/tex">D</script>, and when we flatten the <script type="math/tex">D</script> into a row vector <script type="math/tex">d</script> (that is, we pull out the diagonal from <script type="math/tex">D</script> and put it into a row vector), whose elements is just the diagonal of <script type="math/tex">D</script>, then we can write:</p>
+
+<script type="math/tex; mode=display">\color{brown}{v}\color{blue}{D}=\color{brown}{v} \odot \color{blue}{d}</script>
+
+<p>(Test out the above for yourself with small vectors and matrices and see if the two sides indeed equate to one another).</p>
+
+<p>We apply this relationship to our gradients and get:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial \vec{z}}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}=\frac{\partial J}{\partial \vec{a}}\odot\left(diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}\right)</script>
+
+<p>In fact, we can casually equate <script type="math/tex">\frac{\partial\vec{a}}{\partial \vec{z}}</script> to <script type="math/tex">f'(\vec{z})</script>, which is same as its diagonal vector. The math works out in a very nice way in that it gives the impression that we are extracting only the useful information from the matrix (which is the diagonal of the matrix).</p>
+
+<p>Therefore, we end up perfoming the following assignment operation:</p>
+
+<script type="math/tex; mode=display">\frac{\partial\vec{a}}{\partial \vec{z}}:=f'(\vec{z})=(\vec{a}\odot\left(1-\vec{a}\right))</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Note that the symbol := means that this is an assignment statement, not an equation. That is, we are setting the term on the LHS to represent the terms on the RHS.
+    </p>
+</div>
+
+<p>Therefore, our final equation for computing the cost gradient <script type="math/tex">\frac{\partial J}{\partial \vec{w}}</script> can be written as:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial \vec{w}}=\frac{\partial J}{\partial\vec{z}}\frac{\partial \vec{z}}{\partial \vec{w}}=\ \frac{\partial J}{\partial\vec{z}}\mathbf{X}^T=\frac{\partial J}{\partial\vec{a}}\odot\frac{\partial\vec{a}}{\partial \vec{z}}\mathbf{X}^T=\frac{\partial J}{\partial\vec{a}}\odot f'(\vec{z})\mathbf{X}^T</script>
+
+<script type="math/tex; mode=display">=-\frac{1}{m}\bullet\left(\frac{\vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)\ \odot(a\odot\left(1-a\right))\mathbf{X}^T</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        
+Where $ \frac{\partial\vec{a}}{\partial\vec{z}} $ here is just the diagonal of the actual $ \frac{\partial\vec{a}}{\partial\vec{z}} $ and has a shape of $ 1 $-by-$ m $ and is equal to $ f'(\vec{z}) $.
+<br /><br />
+Note that we applied a property of how Hadamard product interacts with matrix multiplication: $ \left(v \odot u\right)M = v\odot uM = \left(u \odot v\right)M=u\odot vM $. Where $ v $ and $ u $ are vectors of same length, and $ M $ is a matrix for which the matrix multiplication shown are valid.
+    </p>
+</div>
+
+<p>Now for <script type="math/tex">\frac{\partial J}{\partial b}</script>, we can borrow a lot of what we did for <script type="math/tex">\frac{\partial J}{\partial \vec{w}}</script> here as well.</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\vec{z}}\ \frac{\partial\vec{z}}{\partial b}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}\frac{\partial \vec{z}}{\partial b}</script>
+
+<p>We know that <script type="math/tex">\frac{\partial J}{\partial b}</script> has to be a scalar (or <script type="math/tex">1</script>-by-<script type="math/tex">1</script> vector) because there is only one bias in the model, unlike weights, of which there are <script type="math/tex">n</script> of them. During gradient descent, there is only one bias value to update, so if we have a vector or matrix for <script type="math/tex">\frac{\partial J}{\partial b}</script>, then we won’t know what to do with all those values in the vector or matrix.</p>
+
+<p>We have to recall that the only reason that <script type="math/tex">\vec{b}</script> is a <script type="math/tex">1</script>-by-<script type="math/tex">m</script> vector in the equations for forward propagation is because it gets stretched (broadcasted) into a <script type="math/tex">1</script>-by-<script type="math/tex">m</script> vector to match the shape of <script type="math/tex">\vec{z}</script>, so that the equations are valid. Fundamentally, it is a scalar and so is <script type="math/tex">\frac{\partial J}{\partial b}</script>.</p>
+
+<p>Although the further breakdown of <script type="math/tex">\frac{\partial J}{\partial\vec{z}}</script> into <script type="math/tex">\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}</script> is shown above, we won’t need to use that since we already fully delineated <script type="math/tex">\frac{\partial J}{\partial\vec{z}}</script> earlier. So, we just tackle <script type="math/tex">\frac{\partial J}{\partial\vec{z}}\frac{\partial\vec{z}}{\partial b}</script>.</p>
+
+<p>Actually, just need <script type="math/tex">\frac{\partial\vec{z}}{\partial b}</script> since we already have <script type="math/tex">\frac{\partial J}{\partial\vec{z}}</script>. The matrix representation of <script type="math/tex">\frac{\partial\vec{z}}{\partial b}</script> is:</p>
+
+<script type="math/tex; mode=display">\frac{\partial\vec{z}}{\partial b}=\left[\begin{matrix}\frac{\partial z_1}{\partial b}\\\frac{\partial z_2}{\partial b}\\\vdots\\\frac{\partial z_m}{\partial b}\\\end{matrix}\right]\</script>
+
+<p>Let’s work on it but keeping things in compact format:</p>
+
+<script type="math/tex; mode=display">\frac{\partial\vec{z}}{\partial b}=\frac{\partial(\vec{w}\mathbf{X} +\ \vec{b})}{\partial b}=\frac{\partial(\vec{w}\mathbf{X})}{\partial b}+\frac{\partial\vec{b}}{\partial b}=0+\frac{\partial\vec{b}}{\partial b}=\frac{\partial\vec{b}}{\partial b}</script>
+
+<p>Let’s examine <script type="math/tex">\frac{\partial\vec{b}}{\partial b}</script>. It’s an m-by-1 vector that is equal to <script type="math/tex">\frac{\partial\vec{z}}{\partial b}</script>, which also means it has same shape as <script type="math/tex">\frac{\partial\vec{z}}{\partial b}</script>. You also observe that it has the shape of <script type="math/tex">\vec{z}^T</script>.</p>
+
+<p>When you transpose a vector or matrix, you also transpose their shape, which fortunately is simply done by reversing the order of the shape, so when a 1-by-<script type="math/tex">m</script> vector is transposed, its new shape is <script type="math/tex">m</script>-by-1. And note that the content of <script type="math/tex">\vec{b}</script> is just <script type="math/tex">b</script> repeating <script type="math/tex">m</script> times. So, <script type="math/tex">\frac{\partial\vec{b}}{\partial b}</script> looks like this:</p>
+
+<script type="math/tex; mode=display">\frac{\partial\vec{b}}{\partial b}=\left[\begin{matrix}\frac{\partial b}{\partial b}\\\frac{\partial b}{\partial b}\\\vdots\\\frac{\partial b}{\partial b}\\\end{matrix}\right]=\left[\begin{matrix}1\\1\\\vdots\\1\\\end{matrix}\right]\</script>
+
+<p>Therefore <script type="math/tex">\frac{\partial \vec{z}}{\partial\boldsymbol{b}}</script> is a vector of all ones that has the shape <script type="math/tex">m</script>-by-<script type="math/tex">1</script> (the shape of <script type="math/tex">\vec{z}^T</script>).</p>
+
+<script type="math/tex; mode=display">\frac{\partial\vec{z}}{\partial b}=\frac{\partial\vec{b}}{\partial b}=\left[\begin{matrix}\frac{\partial b}{\partial b}\\\frac{\partial b}{\partial b}\\\vdots\\\frac{\partial b}{\partial b}\\\end{matrix}\right]=\left[\begin{matrix}1\\1\\\vdots\\1\\\end{matrix}\right]</script>
+
+<p>Thus <script type="math/tex">\frac{\partial J}{\partial b}</script> is fully delineated:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\vec{z}}\ \frac{\partial\vec{z}}{\partial b}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ \frac{\partial J}{\partial\vec{z}} $ is the gradient already computed in the steps for computing $ \frac{\partial J}{\partial\vec{w}} $, and $ \frac{\partial \vec{z}}{\partial b} $ is an $ m $-by-$ 1 $ vector of ones (i.e. has same shape as $ \vec{z}^T $).
+    </p>
+</div>
+
+<p>Therefore the Jacobian <script type="math/tex">\frac{\partial \vec{z}}{\partial b}</script> is easily implemented in code by simply creating a vector of ones whose shape is same as $ \vec{z}^T $. But there is another way we can recharacterize the above equation for <script type="math/tex">\frac{\partial J}{\partial b}</script> such that we avoid creating any new vectors.</p>
+
+<p>As <a href="/understand-an-artificial-neuron-from-scratch.html#artificial-neuron" target="_blank">mentioned in part 2</a>, matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction.</p>
+
+<p>Below is a quick overview of tensor contraction.</p>
+
+<p>Before continuing, note that there is a whole world of concepts associated with tensors and their contraction that is far beyond the scope of this blog series. We will go over just what we need. You can liken the overview presented here to talking about simple linear regression when an overview of machine learning is promised. Let’s continue!</p>
+
+<p>From the perspective of tensor contraction, using an elementwise notation, the vector-matrix multiplication of a row vector <script type="math/tex">\vec{v}</script> and a matrix <script type="math/tex">\mathbf{M}</script> to produce a row vector <script type="math/tex">\vec{u}</script> is:</p>
+
+<script type="math/tex; mode=display">u_q=\sum_{p}{v_p\cdot m_{p,q}}</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where the subscript $ p $ tracks the only non-unit axis of the vector $ \vec{v} $, and the subscript $ q $ tracks second axis of the matrix $ \mathbf{M} $.
+    </p>
+</div>
+
+<p>It shows exactly the elementwise version of matrix multiplication. Here is an example to illustrate the above. Say that <script type="math/tex">\vec{v}</script> and <script type="math/tex">\mathbf{M}</script> are:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+v=\ \left[\begin{matrix}1&2\\\end{matrix}\right] %]]></script>
+
+<script type="math/tex; mode=display">% <![CDATA[
+M=\left[\begin{matrix}3&5&7\\4&6&8\\\end{matrix}\right] %]]></script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        The vector $ v $ is $ 1 $-by-$ 2 $, and we will use the subscript $ q $ to track the non-unit axis, i.e. the second axis (the one that counts to a maximum of 2). That is: $ v_1=1 $ and $ v_2=2 $.
+<br /><br />
+The matrix $ M $ is $ 2 $-by-$ 3 $, and we will use the subscript $ q $ to track the first axis (the one that counts to a maximum of 2) and $ p $ to track the second axis (the one that counts to a maximum of 3). That is $ m_{2,1}=4 $ and $ m_{1,3}=7 $.
+    </p>
+</div>
+
+<p>We know that the vector-matrix multiplication, <script type="math/tex">\vec{v}\mathbf{M}</script>, produces a <script type="math/tex">1</script>-by-<script type="math/tex">3</script> vector. Let’s call it <script type="math/tex">\vec{u}</script>.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\vec{u}=\left[\begin{matrix}u_1&u_2&u_3\\\end{matrix}\right] %]]></script>
+
+<p>Using the tensor contraction format, we can fully characterize what the resulting vector <script type="math/tex">u</script> is, by describing it elementwise:</p>
+
+<script type="math/tex; mode=display">u_q=\sum_{p}{v_p\cdot M_{p,q}}</script>
+
+<p>For instance,</p>
+
+<script type="math/tex; mode=display">u_1=v_1\cdot m_{1,1}+v_2\cdot m_{2,1}=1\cdot3+2\cdot4=11</script>
+
+<p>And we can do this for <script type="math/tex">u_2</script> and <script type="math/tex">u_3</script> (try it). In all, we have:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+u=\left[\begin{matrix}11&17&23\\\end{matrix}\right] %]]></script>
+
+<p>To summarize, the vector multiplication <script type="math/tex">vM</script> is a contraction along the axis tracked by subscript <script type="math/tex">p</script>.</p>
+
+<p>We can use the tensor contraction format to recharacterize our solution for $ \frac{\partial J}{\partial b} $.</p>
+
+<p>In tensor contraction format, this equation:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\vec{z}}\ \frac{\partial\vec{z}}{\partial b}</script>
+
+<p>Can be written as this:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial b}=\sum_{j=1}^{m}{\left(\frac{\partial J}{\partial\vec{z}}\right)_j\cdot\left(\frac{\partial\vec{b}}{\partial\vec{b}}\right)_j}</script>
+
+<p>And because <script type="math/tex">\frac{\partial\vec{b}}{\partial b}</script> is a vector of ones, we have:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial b}=\sum_{j=1}^{m}\left(\frac{\partial J}{\partial\vec{z}}\right)_j</script>
+
+<p>In essence, we just summed across the second axis of $ \frac{\partial J}{\partial \vec{z}} $ which reduced it to a $1$-by-$1$ vector that is equal to $ \frac{\partial J}{\partial b} $.</p>
+
+<p>We now have all our cost gradients fully delineated.</p>
+
+<p>In all, we can summarize with this:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial b}=\frac{\partial J}{\partial\vec{z}}\ \frac{\partial\vec{z}}{\partial b}=\sum_{j=1}^{m}\left(\frac{\partial J}{\partial\vec{z}}\right)_j</script>
+
+<div>
+    <p style="margin-left:10%; margin-right:10%;">
+        Where $ \frac{\partial J}{\partial\vec{z}} $ is the gradient already computed in the steps for computing $ \frac{\partial J}{\partial\vec{w}} $, and $ \frac{\partial \vec{z}}{\partial b} $ is an $ m $-by-$ 1 $ vector of ones (i.e. has same shape as $ \vec{z}^T $).
+    </p>
+</div>
+
+<p>Although, we don’t really need to see the equation for $ \frac{\partial J}{\partial \vec{w}} $ in its contraction format, we will present it for the sake of it. We already know that $ \frac{\partial J}{\partial \vec{w}} $ is:</p>
+
+<script type="math/tex; mode=display">\frac{\partial J}{\partial \vec{w}}=\ \frac{\partial J}{\partial \vec{z}}\mathbf{X}^T</script>
+
+<p>And we also already know that $ \frac{\partial J}{\partial \vec{z}} $ is a $ 1 $-by-$ m $ row vector and $ X $ is an $ n $-by-$ m $ matrix, which makes $ \mathbf{X}^T $ an $ m $-by-$ n $ matrix. In tensor contraction format, the above equation is:</p>
+
+<script type="math/tex; mode=display">\left(\frac{\partial J}{\partial\vec{w}}\right)_i=\sum_{j=1}^{m}{\left(\frac{\partial J}{\partial\vec{z}}\right)_j\cdot\left(\mathbf{X}^T\right)_{j,i}}</script>
+
+<p>If you singled out a feature from your data (i.e. a column from <script type="math/tex">\mathbf{X}^T</script>) and replaced all of its values for all datapoints with 1, the above equation will turn exactly into the tensor contraction of the equation for <script type="math/tex">\frac{\partial J}{\partial b}</script>. This is exactly in line with what the bias node represents.</p>
+
+<p>The next step is to now implement these equations in code.</p>
+
+
+<!-- Overides the orignal include file -->
+
+<br><br>
+<div id="disqus_thread"></div>
+ <script type="text/javascript">
+     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+     var disqus_shortname = 'princy'; // required: replace example with your forum shortname
+
+     /* * * DON'T EDIT BELOW THIS LINE * * */
+     (function() {
+         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+         dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+     })();
+ </script>
+ <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+ <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+ 
+
+
+  </div><a class="u-url" href="/optimize-an-artificial-neuron-from-scratch.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading"><a href="/">Prince&#39;s scribbles</a></h2> <!-- custom code-->
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1">
+          <ul class="contact-list">
+            <li class="p-name"><!-- Prince Okoli -->
+                <p>&copy; 2020 Prince Okoli | All Rights Reserved. </p></li></ul>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/princyok"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">princyok</span></a></li><li><a href="https://www.linkedin.com/in/princeokoli"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">princeokoli</span></a></li></ul>
+</div>
+  
+        <div class="footer-col footer-col-3">
+          <p>My repository of some things that I&#39;ve been thinking about.</p>
+        </div>
+      </div>
+  
+    </div>
+  
+  </footer>
+  </body>
+
+</html>
