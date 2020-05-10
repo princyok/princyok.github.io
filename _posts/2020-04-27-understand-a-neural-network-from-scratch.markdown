@@ -173,9 +173,9 @@ $$
 \mathbf{Z}^{(l)}=\mathbf{W}^{(l)}\mathbf{A}^{(l-1)}+\mathbf{B}^{(l)}
 $$
 
-The way it works is we use our data (maybe after some preprocessing, like scaling the data, binning it, etc.) as the activations of the input layer $$\mathbf{A}^{(\mathbf{0})}$$ to compute $$\mathbf{Z}^{(\mathbf{1})}$$ and then $$\mathbf{A}^{(1)}$$. Then we use $$\mathbf{A}^{(1)}$$ to compute $$\mathbf{A}^{(\mathbf{2})}$$. Then we use $$\mathbf{A}^{(\mathbf{2})}$$ to compute $$\mathbf{A}^{(\mathbf{3})}$$ and so on, until we finally compute the activations of the output layer $$\mathbf{A}^{(\mathbf{L})}$$ (where $$L$$ is the serial number of the last layer).
+The way it works is we use our data (maybe after some preprocessing, like scaling the data, binning it, etc.) as the activations of the input layer $$\mathbf{A}^{(0)}$$ to compute $$\mathbf{Z}^{(1)}$$ and then $$\mathbf{A}^{(1)}$$. Then we use $$\mathbf{A}^{(1)}$$ to compute $$\mathbf{A}^{(2)}$$. Then we use $$\mathbf{A}^{(2)}$$ to compute $$\mathbf{A}^{(3)}$$ and so on, until we finally compute the activations of the output layer $$\mathbf{A}^{(L)}$$ (where $$L$$ is the serial number of the last layer).
 
-It is quickly evident that the shape of $$\mathbf{A}^{(\mathbf{0})}$$ is determined by the data, in particular the number of features ($$\mathbf{X}$$), which also means the number of units in the input layer. This also extends to $$\mathbf{A}^{(\mathbf{L})}$$, whose shape, and therefore number of units, is determined by the shape of the ground truth ($$y$$).
+It is quickly evident that the shape of $$\mathbf{A}^{(\mathbf{0})}$$ is determined by the data, in particular the number of features ($$\mathbf{X}$$), which also means the number of units in the input layer. This also extends to $$\mathbf{A}^{(L)}$$, whose shape, and therefore number of units, is determined by the shape of the ground truth ($$y$$).
 
 In the case of binary classification (i.e. the target only has two classes, e.g. male or female, malignant or benign, etc., which is encoded as 0 or 1), we know for certain that the ground truth will be a 1-by-$$m$$ vector, but multi-class classification can lead to the ground truth being a higher order tensor. 
 
@@ -193,10 +193,12 @@ However, given the premise we decided to work with, we should denote the activat
 </summary>
 <p>
 
-Say that our target contains nominal data. This means it won’t be proper to use a casual label encoding because we could encode the incorrect information. An example of label encoding of nominal data would be if the target contained names of North American countries and we encode “Canada” as 1, “Mexico” as 2, and “United States” as 3. 
-
+Say that our target contains nominal data. This means it won’t be proper to use a casual label encoding because we could encode the incorrect information. 
+<br><br>
+An example of label encoding of nominal data would be if the target contained names of North American countries and we encode “Canada” as 1, “Mexico” as 2, and “United States” as 3. 
+<br><br>
 This encoding implies that Mexico is thrice as weighted as Canada (because we encoded them as 3 and 1) in whatever property that the target is tracking (countryness? North Americanness? Yeah, not making much sense). The target is keeping track of the identity of countries, which just makes an ordinal representation completely unreasonable.
- 
+ <br><br>
 One way to better encode nominal data is to use onehot encoding. The idea is to encode each datum as a onehot vector (a vector that contains only zeros except for one element that will be one). In the example of countries above, we would have “Canada” as the onehot vector $ \left[\begin{matrix}1\\0\\0\\\end{matrix}\right] $ and “Mexico” as $ \left[\begin{matrix}0\\1\\0\\\end{matrix}\right] $ and “United States” as $ \left[\begin{matrix}0\\0\\1\\\end{matrix}\right] $. All three vectors have same magnitude while still being different. This means our ground truth will no longer be a 1-by-$ m $, but a $ c $-by-$ m $ matrix, where $ c $ is the number of classes in the target.
 <br><br>
 For example, the ground truth will look something like this:

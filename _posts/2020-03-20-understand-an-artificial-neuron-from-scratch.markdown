@@ -39,7 +39,7 @@ For instance, when you grab a very hot cup, sensory neurons in the nerves of you
 
 So clearly, in order to start modelling the brain, we have to first understand the neuron and try to model it mathematically.
 
-{% include image.html url="/assets/images/artificial_neuron/biological_neuron.png" description="A biological neuron is the building block of the nervous system, which includes the brain. Source: <a href='https://cdn.kastatic.org/ka-perseus-images/3567fc3560de474001ec0dafb068170d30b0c751.png'>Khan Academy</a>." %}
+{% include image.html url="/assets/images/artificial_neuron/biological_neuron.png" description="A biological neuron is the building block of the nervous system, which includes the brain. Source: <a href='https://cdn.kastatic.org/ka-perseus-images/3567fc3560de474001ec0dafb068170d30b0c751.png' target='_blank'>Khan Academy</a>." %}
 
 Neurons in the brain usually work in groups known as neural circuits (or biological neural networks), where they provide some biological function. A neuron has 3 main parts: the dendrites, soma (cell body) and axon.
 
