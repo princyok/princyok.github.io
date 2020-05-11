@@ -17,7 +17,9 @@ comments: true
 
 ## **Prologue**
 
-This is part 3 of the blog series, *Catching AI with its pants down*. In this part, I will dive into the mathematical details of training (optimizing) an artificial neuron via gradient descent. This will be a math-heavy article, so get your pen and scratch papers ready. But I made sure to simplify things.
+This is part 3 of the blog series, *Catching AI with its pants down*. This blog series aims to explore the inner workings of neural networks and show how to build a standard feedforward neural network from scratch.
+
+In this part, I will dive into the mathematical details of training (optimizing) an artificial neuron via gradient descent. This will be a math-heavy article, so get your pen and scratch papers ready. But I made sure to simplify things.
 
 {% include blogseries_index_catching_ai.html %}
 

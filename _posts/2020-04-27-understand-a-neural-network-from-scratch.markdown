@@ -16,21 +16,23 @@ comments: true
 
 ## **Prologue**
 
-This is part 5 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to build a standard feedforward neural network from scratch. In this part, I will go over the mathematical underpinnings of a standard feedfoward neural network.
+This is part 5 of this blog series, *Catching AI with its pants down*. This blog series aims to explore the inner workings of neural networks and show how to build a standard feedforward neural network from scratch.
+
+In this part, I will go over the mathematical underpinnings of a standard feedfoward neural network.
 
 {% include blogseries_index_catching_ai.html %}
 
 
 ## **Network of artificial neurons**
-A neural network is a network of artificial neurons. They are basically function approximators, and according to the universal approximation theorem, are capable of approximating any continuous function to any degree of accuracy. While that might sound very profound, the theorem doesn’t tell us how to optimize the neural network, so it doesn’t really help us much.
+A neural network is a network of artificial neurons. They are basically function approximators, and according to the [universal approximation theorem](https://en.wikipedia.org/wiki/Universal_approximation_theorem){:target="_blank"}, are capable of approximating continuous functions to any degree of accuracy. While that might sound very profound, the theorem doesn’t tell us how to optimize the neural network, so it doesn’t really help us much.
 
 We’ve seen how to build a single artificial neuron in part 1 to 4. We set up our equations entirely as equations of tensors, which makes transitioning to neural networks significantly easier.
 
-In a neural network, the units (neurons) are stacked in layers, where outputs from the previous layer serve as the inputs to the next layer. Activations get propagated forward through the network, hence the name forward propagation (or simply forward pass). Errors get propagated backward through the network, hence the name backward propagation. The process of back propagation of errors and updating of weights is known as backward pass.
+In a neural network, the units (neurons) are stacked in layers, where outputs from the previous layer serve as the inputs to the next layer. Activations get propagated forward through the network, hence the name forward propagation (or simply forward pass). Errors get propagated backward through the network, hence the name backward propagation. The process of back propagation of errors and updating of weights are together commonly referred to as backward pass.
 
-The input to the first layer is coming from the data, and it is commonly referred to as the input layer. It may be the preprocessed data instead of the raw data. The input layer is not counted as the first layer of the network and is instead counted as the 0th layer if counted at all. 
+The input to the neural network is the data, and it is commonly referred to as the input layer. It may be the preprocessed data instead of the raw data. The input layer is not counted as the first layer of the network and is instead counted as the 0th layer if counted at all. 
 
-The last layer is known as the output layer and its output is the prediction or estimation. Every other layer in the network, which is any layer between the input and output layers, is called a hidden layer.
+The last layer is known as the output layer and its output is the prediction or estimation. Every other layer in the network, which is any layer between the input and output layers, is called a hidden layer. This also means that the first hidden layer is also the first layer of the network.
 
 For instance, a five-layer feedforward neural network has one input layer, four hidden layers and finally an output layer.
 

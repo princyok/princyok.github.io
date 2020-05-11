@@ -16,7 +16,9 @@ comments: true
 
 ## **Prologue**
 
-This is part 2 of this blog series, *Catching AI with its pants down*, which aims to explore the inner workings of neural networks and show how to build a standard feedforward neural network from scratch. In this part, I will go over the biological inspiration for the artificial neuron and its mathematical underpinnings.
+This is part 2 of this blog series, *Catching AI with its pants down*. This blog series aims to explore the inner workings of neural networks and show how to build a standard feedforward neural network from scratch.
+
+In this part, I will go over the biological inspiration for the artificial neuron and its mathematical underpinnings.
 
 {% include blogseries_index_catching_ai.html %}
 
@@ -573,7 +575,7 @@ The above equation happens to be just one of the many types of loss functions (a
 <b>Cost function vs loss function vs objective function</b>
 </summary>
 <p>
-Some reserve the term loss function for when dealing with one datapoint and use cost function for the version that handles a batch of multiple datapoints.
+Some reserve the term loss function for when dealing with one datapoint and use cost function for the version that handles a batch of multiple datapoints. But such distinctions are purely up to personal taste, and it is common to see the two names used interchangeably.
 <br><br>
 An objective function is simply the function that gets optimized in order to solve an optimization problem. In deep learning the loss or cost function plays that role, therefore making objective function another name for loss or cost function.</p>
 </details>
@@ -596,7 +598,21 @@ $$
 Cross\ entropy\ loss:\ \ J = -\frac{1}{m}\cdot\sum_{j}^{m}{y_j\cdot\log{(a_j)}+(1-y_j)\cdot\log{({1-a}_j)}}=\frac{1}{m}\cdot\sum_{j=0}^{m}\varepsilon_j
 $$
 
-Note that the logarithm in the cross entropy loss is with base $$e$$ (Euler's number). In other words, it is a natural logarithm, which is sometimes abbreviated as $$\ln$$ instead of $$\log$$. Also note that we are implicitly assuming that our ground truth is binary (i.e. only two classes and therefore binary classification).
+Note that the logarithm in the cross entropy loss is with base $$e$$ (Euler's number). In other words, it is a natural logarithm, which is sometimes abbreviated as $$\ln$$ instead of $$\log$$. Also note that we are implicitly assuming that our ground truth is binary (i.e. only two classes and therefore binary classification). In actuality, the logarithm can be in other bases, but that tends to make symbolically  solving the cost derivatives more difficult.
+
+What the cross entropy loss really says is that for class 0, the loss is:
+
+$$
+-\log{({1-a}_j)}
+$$
+
+And for class 1, it is:
+
+$$
+-\log{(a_j)}
+$$
+
+And the premise is that a_j is expected to always be between 0 and 1. This will be true if the activation function is logistic.
 
 Notice that all these loss functions have one thing in common, they are all functions of activation, which also makes them functions of the parameters:
 

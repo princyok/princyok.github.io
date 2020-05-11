@@ -16,7 +16,9 @@ comments: true
 
 ## **Prologue**
 
-This is part 4 of the blog series, *Catching AI with its pants down*. In this part we will implement all the equation that we derived from scratch in the previous parts.
+This is part 4 of the blog series, *Catching AI with its pants down*. This blog series aims to explore the inner workings of neural networks and show how to build a standard feedforward neural network from scratch.
+
+In this part we will implement all the equation that we derived from scratch in the previous parts.
 
 {% include blogseries_index_catching_ai.html %}
 
