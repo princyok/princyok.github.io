@@ -50,15 +50,18 @@ Now, let’s consider a three-layer multilayer perceptron, with two units in the
 
 The notations being used here are as follows:
 
-{% include indent_paragraph.html content=
-"The activations are written as $ a_i^{(l)} $, where $ l $ is the serial number of the layer, and $ i $ is the serial number of the unit in the $ l $<sup>th</sup> layer. E.g. for the second unit of the second layer, it is $ a_2^{(2)} $
+{% include indent_paragraph.html content="
+The activations are written as $ a_i^{(l)} $, where $ l $ is the serial number of the layer, and $ i $ is the serial number of the unit in the $ l $<sup>th</sup> layer. E.g. for the second unit of the second layer, it is $ a_2^{(2)} $
 <br><br>
 Ideally the weight for each connection will be denoted by $ w_{i^{(l)},\ \ {\ i}^{(l-1)}}^{(l)} $, where $ l $ is the serial number of the layer, $ i^{(l)} $ is the serial number of the unit in the $ l $<sup>th</sup> layer, which is the destination of the connection, and $ i^{(l-1)} $ is the serial number of the unit in the $ (l-1) $th layer, which the origin of the connection. 
 <br><br>
 But to keep things cleaner, we will instead denote $ i^{(l)} $ as simply $ i $ and $ {\ i}^{(l-1)} $ as $ h $. So, $ w_{i,\ \ h}^{(l)} $ becomes the cleaner way to denote $ w_{i^{(l)},\ \ {\ i}^{(l-1)}}^{(l)} $. As an example, $ w_{1,2}^{(3)} $ is the weight of the connection pointing to the 1<sup>st</sup> unit of the 3<sup>rd</sup> layer and originating from the 2<sup>nd</sup> unit of the preceding layer (which is the second layer).
-<br><br>
-The input layer can be treated as the 0<sup>th</sup> layer, where $ x_i $ becomes denoted as $ a_i^{(0)} $. This means the number of features is now the same as the number of units in the input layer. The bias node, which is usually never shown and always equal to 1, is treated as the 0<sup>th</sup> unit in each layer."
-%}
+"%}
+
+The input layer can be treated as the 0<sup>th</sup> layer, where $$x_i$$ becomes denoted as $$a_i^{(0)}$$. This means the number of features is now the same as the number of units in the input layer. The bias node, which is usually never shown and always equal to 1, is treated as the 0<sup>th</sup> unit in each layer.
+
+{% include image.html url="/assets/images/neural_network/three_layer_MLP_input_layer_activations.png" description="A three-layer multilayer perceptron with the input treated as activations of the input layer." %}
+
 
 Since we’ve thoroughly gone over how to mathematically characterize a single unit in part 2, we will use that as the springboard for delineating the three-layer network. Let’s focus on one of the units, say the second unit of the second layer.
 
