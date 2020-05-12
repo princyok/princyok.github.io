@@ -35,7 +35,7 @@ According to CTM, if we have a mathematical model of all the computations that g
 
 In a nutshell, the brain is made up of two main kinds of cells: glial cells and neurons (a.k.a. nerve cells). There are about [86 billion neurons](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2776484/){:target="_blank"} and even more glial cells in the nervous system (brain, spinal cord and nerves) of an adult human. The primary function of glial cells is to provide physical protection and other kinds of support to neurons, so we are not very interested in glial cells here. It’s the neuron we came for.
 
-The primary function of biological neurons is to process and transmit signals, and there are three main types, sensory neurons (concentrated in your sensory organs like eyes, ears, skin, etc.), motor neurons (carry signals between the brain and spinal cord, and from both to the muscles), and interneurons (found only in the brain and spinal cord, and they process information).
+The primary function of biological neurons is to process and transmit signals, and there are three main types: sensory neurons (concentrated in your sensory organs like eyes, ears, skin, etc.), motor neurons (carry signals between the brain and spinal cord, and from both to the muscles), and interneurons (found only in the brain and spinal cord, and they process information).
 
 For instance, when you grab a very hot cup, sensory neurons in the nerves of your fingers send a signal to interneurons in your spinal cord. Some interneurons pass the signal on to motor neurons in your hand, which causes you to drop the cup, while other interneurons send a signal to those in your brain, and you experience pain.
 
@@ -64,7 +64,7 @@ Below is an excerpt of the dataset:
 
 {% include image.html url="/assets/images/artificial_neuron/toy_dataset_excerpt.png" description="A few records (datapoints) from the toy dataset, showing all the features and targets (the column headings)." %}
 
-The dataset has two features or inputs, i.e. `velocity` and `mass`, and a single output, which is `energy level` and it is binary. The last two columns are exactly the same, just that the third is the numerical version of the last and is what we actually use because we need to crunch numbers. In classification, the labels are converted to numbers for the learning process.
+The dataset has two features or inputs, i.e. `velocity` and `mass`, and a single output, which is `energy level` and it is binary. The last two columns are exactly the same, just that the third is the numerical version of the last and is what we actually use because we need to crunch numbers. In classification, the labels are converted to numbers for the learning process. The dataset was simulated using [classical mechanics](https://en.wikipedia.org/wiki/Kinetic_energy) and random uniform noise.
 
 The full toy dataset can be found [**here**](https://github.com/princyok/deep_learning_without_ml_libraries/blob/master/datasets/toy_dataset1/toy_dataset_velocity_ke.csv){:target="_blank"}.
 
@@ -75,6 +75,7 @@ Rosenblatt’s original perceptron was a simple [Heaviside function](https://en.
 
 An artificial neuron is simply a mathematical function that serves as the elementary unit of a neural network. It is also known as a node or a unit, with the latter name being very common in machine learning publications. I may jump between these names, and it’s not bad if you get used to that, as all of these names are common.
 
+### **Mathematical representation**
 This mathematical function has a collection of inputs, $$x_1,x_2,\ \ldots,\ x_n$$, and a single output, $$a$$, commonly known as the activation value (or post-activation value), or often without the term “value” (i.e. simply activation).
 
 {% include image.html url="/assets/images/artificial_neuron/artificial_neuron.png" description="Diagram of an artificial neuron." %}
@@ -114,6 +115,8 @@ $$
 
 Now check back with the diagram of an artificial neuron and see if you can make the connection between the equations and the diagram. Don't move on unless you already have this down.
 
+### **Math with some numbers**
+
 It’s important to start putting these equations in the context of data. Using our toy dataset (introduced above), the application of this equation can be demonstrated by taking any datapoint and subbing the values into the above equation. For instance, if we sub in the 0<sup>th</sup> datapoint (6.5233, 1.5484, 0), we get:
 
 $$
@@ -135,7 +138,7 @@ If you took a moment to really look at the equation for preactivation, you will 
 
 The variable $$w_0$$ is known as the bias, and $$x_0$$ (commonly referred to as the bias node) is a constant that is always equal to one and has nothing to do with the data, unlike $$x_1$$ to $$x_n$$ that comes from the data (e.g. the pixels of the images in the case of an image classification task). That’s how $$w_0 \cdot x_0$$ reduces to just $$w_0$$.
 
-Moreover, we will henceforth refer to $$w_0$$ as $$b$$, and this is the letter often used in literature to represent the bias. The weights ($$w_1,\ w_2,\ \ldots,\ w_n$$) and bias ($$w_0$$ or $$b$$) collectively are known as the parameters of the artificial neuron.
+Moreover, we will henceforth refer to $$w_0$$ as $$b$$, and this is the letter often used in literature to represent the bias. The weights ($$w_1,\ w_2,\ \ldots,\ w_n$$) and bias ($$w_0$$ or $$b$$) collectively are known as the **parameters of the artificial neuron**.
 
 <table>
 <td>
@@ -279,7 +282,7 @@ z_j=w_1\ \cdot x_{1,j}+w_2\ \cdot x_{2,j}+\ldots+w_n\ \cdot x_{n,j}+w_0=\sum_{i=
 $$
 
 {% include indent_paragraph.html content=
-"Where the subscript $ j $ keeps track of datapoints. Or you can think of it as, $ i $ tracks the columns and $ j $ tracks rows in our toy dataset. Note that $ w_0 $ is same as $ b $."
+"Where the subscript $ j $ is the serial number that keeps track of datapoints. Or you can think of it as, $ i $ tracks the columns and $ j $ tracks rows in our toy dataset. Note that $ w_0 $ is same as $ b $."
 %}
 
 So now we can write them as:
@@ -296,7 +299,7 @@ $$
 z_3=w_1\ \cdot1.7315+w_2\ \cdot45.6200+b
 $$
 
-Note that the numerical subscript on $$z$$ above is not counterpart to that on $$w$$. The former tracks datapoints (rows in our toy dataset), and the latter tracks features (columns in our toy dataset). It's all much clearer with algebra.
+Note that the numerical subscript on $$z$$ above is not counterpart to that on $$w$$. The former tracks datapoints (rows in our toy dataset), and the latter tracks features (columns in our toy dataset). It's all much clearer when they are all purely in algebra form.
 
 You can already notice the system of equations. And if it had been a batch of 100 datapoints, or even the entire dataset, it starts becoming unwieldy to carry around thousands of equations. Therefore we vectorize!
 
@@ -310,7 +313,7 @@ $$
 "Where $ m $ is the number of datapoints in our batch."
 %}
 
-What's the batch all about? In deep learning, it's very common to deal with very large datasets that may be too big or inefficient to load into memory all at once, so we sample out a portion of our dataset, we call it a batch, and we use it to train our model. That's one iteration. We repeat the sampling for the second iteration, and continue for as many iterations as we choose to.
+What's "the batch" all about? In deep learning, it's very common to deal with very large datasets that may be too big or inefficient to load into memory all at once. So typically we sample out a portion of our dataset, which we call a batch, and use it to train our model. That's one iteration of training. We repeat the sampling for the second iteration, and continue for as many iterations as we choose to.
 
 Now we have all the ingredients to convert to matrix format. Our system of equation, will go from this:
 
@@ -352,7 +355,7 @@ $$
 
 The variable $$b$$ is a $$1$$-by-$$m$$ vector. Fundamentally, however, the bias is a scalar (or a $$1$$-by-$$1$$ vector) regardless of the number datapoints in the batch.
 
-There is only one bias for a neuron, and it's simply the weight for the bias node, just like each of the other weights. It only gets stretched into a $$1$$-by-$$m$$ vector to match the shape of $$z$$, so that the matrix equation is valid. The stretching involves repeating the elements to fill up the stretched-out vector. When coding in Python and using the NumPy library for your computations, it's good to know that this stretching (also called [broadcasting](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy){:target="_blank"})) is already baked into the library.
+There is only one bias for a neuron, and it's simply the weight for the bias node, just like each of the other weights. It only gets stretched into a $$1$$-by-$$m$$ vector to match the shape of $$z$$, so that the matrix equation is valid. The stretching involves repeating the elements to fill up the stretched-out vector. When coding in Python and using the NumPy library for your computations, it's good to know that this stretching (also called [broadcasting](https://docs.scipy.org/doc/numpy/user/theory.broadcasting.html#array-broadcasting-in-numpy){:target="_blank"}) is already baked into the library.
 
 Therefore the full answer for the shape of $$b$$ is that it is fundamentally a scalar (or a $ 1 $-by-$ 1 $ vector) that gets broadcasted into a vector of the right shape during the computation involved in the matrix equation for computing the preactivation. (If this still doesn’t make sense here, return to it later after you finish [part 4](/implement-an-artificial-neuron-from-scratch.html){:target="_blank"}).
 
@@ -380,7 +383,7 @@ $$
 \vec{z}\ =\vec{w}\mathbf{X}\ +b
 $$
 
-The variables $$\mathbf{X}$$ will depend on the shape of the input data that gets fed to the neuron. It could be a vector or matrix (and in neural networks they could even be higher order tensors). When multiple datapoints, it’s an $$n$$-by-$$m$$ matrix, and when a single datapoint it's an $$n$$-by-$$1$$ vector. It looks like this:
+The variables $$\mathbf{X}$$ will depend on the shape of the input data that gets fed to the neuron. It could be a vector or matrix (and in neural networks they could even be higher order tensors). When dealing with multiple datapoints, it’s an $$n$$-by-$$m$$ matrix, and when a single datapoint it's an $$n$$-by-$$1$$ vector. It looks like this:
 
 $$
 \mathbf{X}=\left[\begin{matrix}x_{1,1}&x_{1,2}&\cdots&x_{1,m}\\x_{2,1}&x_{2,2}&\cdots&x_{2,m}\\\vdots&\vdots&\ddots&\vdots\\x_{n,1}&x_{n,2}&\cdots&x_{n,m}\\\end{matrix}\right]
@@ -388,7 +391,7 @@ $$
 
 Keep in mind that these statements about the shapes of these tensors are all for a single artificial neuron, as there are some changes when moving unto neural networks (a network of neurons).
 
-Let’s illustrate with our toy dataset how the preactivation equation works in matrix format. Let’s say we decide that our batch size will be 3, which means we will feed our neuron 3 datapoints (3 rows of our toy dataset), then our $$X$$ will look like this:
+Let’s illustrate with our toy dataset how the preactivation equation works in matrix format. Let’s say we decide that our batch size will be 3, which means we will feed our neuron 3 datapoints (3 rows from our toy dataset), then our $$X$$ will look like this:
 
 $$
 \mathbf{X}=\left[\begin{matrix}6.5233&9.2112&1.7315\\1.5484&12.7141&45.6200\\\end{matrix}\right]
@@ -406,7 +409,7 @@ $$
 \vec{w}=\left[\begin{matrix}w_1\\w_2\\\end{matrix}\right]^T=\left[\begin{matrix}0.5&-0.3\\\end{matrix}\right]
 $$
 
-And we set our bias to zero. Note that it will be a scalar, but broadcasted during computation to match whatever shape $$\boldsymbol{z}$$ has:
+And we set our bias to zero. Note that it will be a scalar, but broadcasted during computation to match whatever shape $$\vec{z}$$ has:
 
 $$
 b=0
@@ -432,7 +435,7 @@ a_j =
 \end{cases}
 $$
 
-Now we pass $$\boldsymbol{z}$$ through a Heaviside function to obtain our activation value:
+Now we pass $$\vec{z}$$ through a Heaviside function to obtain our activation value:
 
 $$
 \vec{a}=\left[\begin{matrix}1&1&0\\\end{matrix}\right]
@@ -448,6 +451,7 @@ And it did okay. It got the first datapoint wrong (it predicted high energy inst
 
 We can easily notice that $$\vec{a}$$, $$\vec{y}$$ and $$\vec{z}$$ will always have the same shape, which is a $$1$$-by-$$m$$ vector; and if only one datapoint, will be a vector of only one entry (which is equivalent to a scalar).
 
+### **Raison d'être of artificial neuron**
 
 To improve the performance of the artificial neuron, we need to train it. That simply means that we need to find the right values for the parameters $ \vec{w} $ and $ b $ such that when we feed our neuron any datapoint from the dataset, it will estimate the correct energy level.
 
@@ -455,11 +459,11 @@ This is the general idea of how the perceptron, or any other kind of artificial 
 
 For instance, when fed the images of cats and dogs, a unit (an artificial neuron) with good parameters will correctly classify them. The pixels of the image will be the input, $$x_1,x_2,\ \ldots,\ x_n$$, and the unit will do its math and output 0 or 1 (representing the two possible labels). Simple!
 
-This is the whole point of a neural network (a.k.a. network of artificial neurons). And that process of finding a good collection of parameters for a neuron (or a network of neurons as we will see later) is what we call “learning” or “training”, which is the same thing mathematicians call mathematical optimization.
+This is the whole point of a neural network (a.k.a. network of artificial neurons). And that process of finding a good collection of parameters for a neuron (or a network of neurons as we will see [later](/optimize-a-neural-network-from-scratch.html){:target="_blank"}) is what we call “learning” or “training”, which is the same thing mathematicians call mathematical optimization.
 
 Unfortunately, the original perceptron did not fair very well in practice and failed to deliver on the high hopes heaped on it. I can assure you that it will not do too well with image classification of, say, cats and dogs. We need something more complex with some more nonlinearity.
 
-Note that linearity is not the biggest reason Heaviside functions went out of favour. In fact, a Heaviside function is not purely linear, but instead piecewise linear. It’s also common to see lack of differentiability at zero blamed for the disfavour, but again this is cannot be the critical reason, as there are cheap tricks around this too (e.g. the same type of schemes used to get around the undifferentiability of the rectified linear function at zero, which by the way is currently the most widely used activation function in deep learning).
+Note that linearity is not the biggest reason Heaviside functions went out of favour. In fact, a Heaviside function is not purely linear, but instead piecewise linear. It’s also common to see lack of differentiability at zero blamed for the disfavour, but again this cannot be the critical reason, as there are cheap tricks around this too (e.g. the same type of schemes used to get around the undifferentiability of the rectified linear function at zero, which by the way is currently the most widely used activation function in deep learning).
 
 The main problem is that the Heaviside function jumps too rapidly, in fact instantaneously, between the two extremes of its range. That is, when traversing the domain of the Heaviside function, starting from positive to negative infinity, we will keep outputting one (the highest value in its range), until suddenly at the input of zero, its output snaps to 0 (the minimum value in its range) and then continues outputting that for the rest of negative infinity. This causes a lot of instability. When doing mathematical optimization, we typically prefer small changes to also produce small changes.
 
@@ -467,7 +471,7 @@ The main problem is that the Heaviside function jumps too rapidly, in fact insta
 
 It is possible to use other kinds of functions as an activation function (a.k.a. transfer function), and this is indeed what researchers did when the original perceptron failed to deliver. One such replacement was the sigmoid function, which resembles a smoothened Heaviside function.
 
-{% include image.html url="/assets/images/artificial_neuron/heaviside_logistic.png" description="Plots of the Heaviside and logistic activation functions." %}
+{% include image.html url="/assets/images/artificial_neuron/heaviside_logistic.png" description="Plots of the Heaviside and logistic (sigmoid) activation functions." %}
 
 Note that the term “sigmoid function” refers to a family of s-shaped functions, of which the very popular logistic function is one of them. As such, it is common to see logistic and sigmoid used interchangeably, even though they are strictly not synonyms.
 
@@ -476,7 +480,7 @@ The logistic function performs better than the Heaviside function. In fact, mach
 This is the equation for logistic regression:
 
 $$
-\boldsymbol{\hat{y}}=\frac{1}{1+e^{-\vec{z}}}
+\hat{y}=\frac{1}{1+e^{-\vec{z}}}
 $$
 
 $$
@@ -484,7 +488,7 @@ $$
 $$
 
 {% include indent_paragraph.html content=
-"Where $ \boldsymbol{\hat{y}} $ is the prediction or estimation (just another name for activation). It is a 1-by-$ m $ vector. It's not the unit vector for $ \vec{y} $."
+"Where $ \hat{y} $ is the prediction or estimation (just another name for activation). It is a 1-by-$ m $ vector. It's not the unit vector for $ \vec{y} $."
 %}
 
 And this is the equation for an artificial neuron with a logistic (sigmoid) activation function:
@@ -505,7 +509,7 @@ Besides the sigmoid and Heaviside functions, there are a plethora of other funct
 
 One more important mention is that the process of going from input data ($$\mathbf{X}$$) all the way to activation (essentially, the execution of an activation function) is called **forward pass** (or forward propagation in the context of neural networks), and this is the process we demonstrated above using the toy dataset. This distinguishes from the sequel process, known as **backward pass**, where we use the error between the activation ($$\vec{a}$$) and the ground truth ($$\vec{y}$$) to tune our parameters in such a way that the error decreases.
 
-To tie things back to our toy dataset. If we used a logistic activation function instead of a Heaviside function, and trained our neuron for 2000 iterations, we obtain some values for the parameters that gives us the correct result 91% of the time. (We will later go over exactly what happens during “training”).
+To tie things back to our toy dataset. If we used a logistic activation function instead of a Heaviside function, and trained our neuron for 2000 iterations, we obtain some values for the parameters that gives us the correct result 89% of the time. (We will [later](/optimize-an-artificial-neuron-from-scratch.html){:target="_blank"} go over exactly what happens during “training”).
 
 The parameters after training are:
 
@@ -548,7 +552,7 @@ $$
 y-\hat{y}\neq\hat{y}-y
 $$
 
-For instance, we know the difference between the [natural numbers](https://en.wikipedia.org/wiki/Natural_number){:target="_blank"}) 5 and 3 is 2, but depending on how you rearrange the subtraction between them, we could end up with -2 instead, and we don’t want that to be happening, so we apply an absolute value operation and restate the error as:
+For instance, we know the difference between the [natural numbers](https://en.wikipedia.org/wiki/Natural_number){:target="_blank"} 5 and 3 is 2, but depending on how you rearrange the subtraction between them, we could end up with -2 instead, and we don’t want that to be happening, so we apply an absolute value operation and restate the error as:
 
 $$
 \varepsilon=|y-\hat{y}|
@@ -598,7 +602,7 @@ $$
 Cross\ entropy\ loss:\ \ J = -\frac{1}{m}\cdot\sum_{j}^{m}{y_j\cdot\log{(a_j)}+(1-y_j)\cdot\log{({1-a}_j)}}=\frac{1}{m}\cdot\sum_{j=0}^{m}\varepsilon_j
 $$
 
-Note that the logarithm in the cross entropy loss is with base $$e$$ (Euler's number). In other words, it is a natural logarithm, which is sometimes abbreviated as $$\ln$$ instead of $$\log$$. Also note that we are implicitly assuming that our ground truth is binary (i.e. only two classes and therefore binary classification). In actuality, the logarithm can be in other bases, but that tends to make symbolically  solving the cost derivatives more difficult.
+Note that the logarithm in the cross entropy loss is with base $$e$$ (Euler's number). In other words, it is a natural logarithm, which is sometimes abbreviated as $$\ln$$ instead of $$\log$$. In actuality, the logarithm can be in other bases, but that tends to make symbolically  solving the cost derivatives more difficult. Also note that we are implicitly assuming that our ground truth is binary (i.e. only two classes and therefore binary classification). 
 
 What the cross entropy loss really says is that for class 0, the loss is:
 
@@ -612,7 +616,9 @@ $$
 -\log{(a_j)}
 $$
 
-And the premise is that a_j is expected to always be between 0 and 1. This will be true if the activation function is logistic.
+And the premise is that $$a_j$$ is expected to always be between 0 and 1. This will be true if the activation function is logistic.
+
+### **Loss as a function of parameters**
 
 Notice that all these loss functions have one thing in common, they are all functions of activation, which also makes them functions of the parameters:
 
@@ -624,10 +630,6 @@ For instance, cross entropy loss function for a single datapoint can be recharac
 
 $$
 Cross\ entropy\ loss=\ -\left(y\cdot\log{a})+(1-y)\cdot\log(1-a)\right)
-$$
-
-$$
-=-\left(data+\left(1-\frac{1}{1+e^{-z}}\right)\cdot\log{\left(1-\frac{1}{1+e^{-z}}\right)}\right)\
 $$
 
 $$
@@ -646,4 +648,4 @@ $$
 =-\left(data\cdot\log{\left(\frac{1}{1+e^{\sum_{i=0}^{n}{w_i\ \cdot d a t a}}}\right)}+\left(1-data\right)\cdot\log{\left(1-\frac{1}{1+e^{-\sum_{i=0}^{n}{w_i\ \cdot data}}}\right)}\right)\
 $$
 
-In other words, the loss function can be described purely as a function of the parameters ($$\vec{w}$$, $$b$$) and the data ($$\mathbf{X}$$, $$\vec{y}$$). And since data is known, the only unknowns on the right-hand side of the equation are the parameters.
+In other words, the loss function can be described purely as a function of the parameters ($$\vec{w}$$, $$b$$) and the data ($$\mathbf{X}$$, $$\vec{y}$$). And since data is known, the only unknowns on the right-hand side of the equation are the parameters. Hence, it is really just a function of the parameters.

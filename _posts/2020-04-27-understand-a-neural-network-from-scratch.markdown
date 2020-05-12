@@ -24,7 +24,7 @@ In this part, I will go over the mathematical underpinnings of a standard feedfo
 
 
 ## **Network of artificial neurons**
-A neural network is a network of artificial neurons. They are basically function approximators, and according to the [universal approximation theorem](https://en.wikipedia.org/wiki/Universal_approximation_theorem){:target="_blank"}, are capable of approximating continuous functions to any degree of accuracy. While that might sound very profound, the theorem doesn’t tell us how to optimize the neural network, so it doesn’t really help us much.
+A neural network is a network of artificial neurons. They are basically function approximators, and according to the [universal approximation theorem](https://en.wikipedia.org/wiki/Universal_approximation_theorem){:target="_blank"}, are capable of approximating continuous functions to any degree of accuracy. While that might sound very profound, the theorem doesn’t tell us how to optimize the neural network, so it is not a panacea.
 
 We’ve seen how to build a single artificial neuron in part 1 to 4. We set up our equations entirely as equations of tensors, which makes transitioning to neural networks significantly easier.
 
@@ -51,13 +51,13 @@ Now, let’s consider a three-layer multilayer perceptron, with two units in the
 The notations being used here are as follows:
 
 {% include indent_paragraph.html content=
-"The activations are written as $ a_i^{(l)} $, where $ l $ is the serial number of the layer (which is 2 in this case), and $ i $ is the serial number of the unit in the lth layer (which is 2 in this case).
+"The activations are written as $ a_i^{(l)} $, where $ l $ is the serial number of the layer, and $ i $ is the serial number of the unit in the $ l $<sup>th</sup> layer. E.g. for the second unit of the second layer, it is $ a_2^{(2)} $
 <br><br>
-Ideally the weight for each connection will be denoted by $ w_{i^{(l)},\ \ {\ i}^{(l-1)}}^{(l)} $, where $ l $ is the serial number of the layer, $ i^{(l)} $ is the serial number of the unit in the lth layer, which is the destination of the connection, and $ i^{(l-1)} $ is the serial number of the unit in the $ (l-1) $th layer, which the origin of the connection. 
+Ideally the weight for each connection will be denoted by $ w_{i^{(l)},\ \ {\ i}^{(l-1)}}^{(l)} $, where $ l $ is the serial number of the layer, $ i^{(l)} $ is the serial number of the unit in the $ l $<sup>th</sup> layer, which is the destination of the connection, and $ i^{(l-1)} $ is the serial number of the unit in the $ (l-1) $th layer, which the origin of the connection. 
 <br><br>
 But to keep things cleaner, we will instead denote $ i^{(l)} $ as simply $ i $ and $ {\ i}^{(l-1)} $ as $ h $. So, $ w_{i,\ \ h}^{(l)} $ becomes the cleaner way to denote $ w_{i^{(l)},\ \ {\ i}^{(l-1)}}^{(l)} $. As an example, $ w_{1,2}^{(3)} $ is the weight of the connection pointing to the 1<sup>st</sup> unit of the 3<sup>rd</sup> layer and originating from the 2<sup>nd</sup> unit of the preceding layer (which is the second layer).
 <br><br>
-The input layer can be treated as the 0th layer, where $ x_i $ becomes denoted as $ a_i^{(0)} $. This means the number of features is now the same as the number of units in the input layer. The bias node, which is usually never shown and always equal to 1, is treated as the 0<sup>th</sup> unit in each layer."
+The input layer can be treated as the 0<sup>th</sup> layer, where $ x_i $ becomes denoted as $ a_i^{(0)} $. This means the number of features is now the same as the number of units in the input layer. The bias node, which is usually never shown and always equal to 1, is treated as the 0<sup>th</sup> unit in each layer."
 %}
 
 Since we’ve thoroughly gone over how to mathematically characterize a single unit in part 2, we will use that as the springboard for delineating the three-layer network. Let’s focus on one of the units, say the second unit of the second layer.
@@ -79,14 +79,14 @@ $$
 {% include indent_paragraph.html content="
 Where $ {\vec{z}}_2^{(2)} $ and $ {\vec{a}}_2^{(2)} $, are the preactivations and activations of for the second unit in the second layer, and both have the same shape 1-by-$ m $, where $ m $ is the number of examples in the batch.
 <br><br>
-And $ {\vec{w}}_2^{(2)} $ contains the weights for the connections pointing to the second unit of the second layer, and it has the shape 1-by-$ n^{(2)} $, where $ n^{(2)} $ is the number of units in the second layer.
+And $ {\vec{w}}_2^{(2)} $ contains the weights for the connections pointing to the second unit of the second layer, and it has the shape 1-by-$ n^{(2)} $, where $ n^{(2)} $ is the number of units in the second layer (layer 2).
 
 $$
 {\vec{w}}_2^{(2)}=\left[\begin{matrix}w_{2,\ 1}^{(2)}&w_{2,\ \ 2}^{(2)}\\\end{matrix}\right] 
 $$
 And as in part 1, $ {\vec{b}}_2^{(2)} $ is fundamentally a scalar but gets broadcasted to match the shape of $ {\vec{z}}_2^{(2)} $ during computation.
 <br><br>
-And $ \mathbf{A}^{(1)} $ contains the activations from the first layer and has shape $ n^{(1)} $-by-$ m $, where $ n^{(1)} $ is the number of units in the first layer.
+And $ \mathbf{A}^{(1)} $ contains the activations from the first layer and has shape $ n^{(1)} $-by-$ m $, where $ n^{(1)} $ is the number of units in the first layer (layer 1).
 "%}
 
 This gives us a template to write out the equations for the other units in the network. For example, for the first unit in the second layer, we have:
@@ -163,7 +163,7 @@ $$
 \mathbf{W}^{(l)}=\left[\begin{matrix}{\vec{w}}_1^{(l)}\\{\vec{w}}_2^{(l)}\\\vdots\\{\vec{w}}_{n^{(l)}}^{(l)}\\\end{matrix}\right]=\left[\begin{matrix}w_{1,1}^{(l)}&w_{1,2}^{(l)}&\cdots&w_{1,n^{(l-1)}}^{(l)}\\w_{2,1}^{(l)}&w_{2,2}^{(l)}&\cdots&z_{2,n^{(l-1)}}^{(l)}\\\vdots&\vdots&\ddots&\vdots\\w_{n^{(l)},1}^{(l)}&w_{n^{(l)},2}^{(l)}&\cdots&w_{n^{(l)},n^{(l-1)}}^{(l)}\\\end{matrix}\right]
 $$
 
-There is a reason why each of the above matrices is also presented as a column vector of row vectors. This kind of representation will come in very handy when we try to solve the cost gradients symbolically during back propagation.
+There is a reason why each of the above matrices is also presented as a column vector of row vectors. This kind of representation will come in very handy when we try to solve the cost gradients symbolically via back propagation.
 
 And as you probably already expect, the full forward propagation equation for a feedforward neural network is:
 
@@ -175,22 +175,17 @@ $$
 \mathbf{Z}^{(l)}=\mathbf{W}^{(l)}\mathbf{A}^{(l-1)}+\mathbf{B}^{(l)}
 $$
 
-The way it works is we use our data (maybe after some preprocessing, like scaling the data, binning it, etc.) as the activations of the input layer $$\mathbf{A}^{(0)}$$ to compute $$\mathbf{Z}^{(1)}$$ and then $$\mathbf{A}^{(1)}$$. Then we use $$\mathbf{A}^{(1)}$$ to compute $$\mathbf{A}^{(2)}$$. Then we use $$\mathbf{A}^{(2)}$$ to compute $$\mathbf{A}^{(3)}$$ and so on, until we finally compute the activations of the output layer $$\mathbf{A}^{(L)}$$ (where $$L$$ is the serial number of the last layer).
+The way it works is we use our data (maybe after some preprocessing, like scaling the data, binning it, etc.) as the activations of the input layer $$\mathbf{A}^{(0)}$$ to compute $$\mathbf{Z}^{(1)}$$, and then use that to get $$\mathbf{A}^{(1)}$$. Then we use $$\mathbf{A}^{(1)}$$ to compute $$\mathbf{A}^{(2)}$$. Then we use $$\mathbf{A}^{(2)}$$ to compute $$\mathbf{Z}^{(3)}$$ and subsequently $$\mathbf{A}^{(3)}$$. We continue the pattern until we finally compute the activations of the output layer $$\mathbf{A}^{(L)}$$ (where $$L$$ is the serial number of the last layer).
 
-It is quickly evident that the shape of $$\mathbf{A}^{(\mathbf{0})}$$ is determined by the data, in particular the number of features ($$\mathbf{X}$$), which also means the number of units in the input layer. This also extends to $$\mathbf{A}^{(L)}$$, whose shape, and therefore number of units, is determined by the shape of the ground truth ($$y$$).
+It is quickly evident that the shape of $$\mathbf{A}^{(\mathbf{0})}$$ is determined by the data, in particular by the number of features ($$\mathbf{X}$$), which becomes the number of units in the input layer. Similarly, the shape of $$\mathbf{A}^{(L)}$$, and therefore number of units in the $$L$$<sup>th</sup> layer, is determined by the shape of the ground truth ($$y$$).
 
 In the case of binary classification (i.e. the target only has two classes, e.g. male or female, malignant or benign, etc., which is encoded as 0 or 1), we know for certain that the ground truth will be a 1-by-$$m$$ vector, but multi-class classification can lead to the ground truth being a higher order tensor. 
-
-In the analysis covered in this writeup, we will restrict valid tasks for our network to just binary classification or regression. The reason is to preclude the need for a softmax output layer (an output layer that’s using the softmax activation function), which is the preferred kind of output layer for dealing with multiclass classification problems. The reason we are excluding the softmax output layer is because it will add another layer of complexity to the backprop calculations, and that’s best kept for a separate article as multiclass classification is a topic in its own right.
-
-However, given the premise we decided to work with, we should denote the activation of the last layer as $$a^{(L)}$$ because we know it can only be a 1-by-$$m$$ vector or a scalar (actually a 1-by-1 vector) if a batch of only 1 datapoint, but we will eschew all that and continue to denote it as $$\mathbf{A}^{(L)}$$.
-
 
 <table>
 <td>
 <details>
 <summary>
-<b>How can our target (a.k.a. ground truth, dependent variable, response, etc.) be a higher tensor (e.g. matrix, order-3 tensor, etc.)?
+<b>How can our target (a.k.a. ground truth, dependent variable, response, etc.) be a higher order tensor (e.g. a matrix, order-three tensor, etc.)?
 </b>
 </summary>
 <p>
@@ -199,19 +194,22 @@ Say that our target contains nominal data. This means it won’t be proper to us
 <br><br>
 An example of label encoding of nominal data would be if the target contained names of North American countries and we encode “Canada” as 1, “Mexico” as 2, and “United States” as 3. 
 <br><br>
-This encoding implies that Mexico is thrice as weighted as Canada (because we encoded them as 3 and 1) in whatever property that the target is tracking (countryness? North Americanness? Yeah, not making much sense). The target is keeping track of the identity of countries, which just makes an ordinal representation completely unreasonable.
+This encoding implies that Mexico is thrice as weighted as Canada (because we encoded the former as 3 and the later as 1) in whatever property that the target is tracking (countryness? North Americanness? Yeah, not making much sense). The target is keeping track of the identity of countries, which just makes an ordinal representation completely unreasonable.
  <br><br>
 One way to better encode nominal data is to use onehot encoding. The idea is to encode each datum as a onehot vector (a vector that contains only zeros except for one element that will be one). In the example of countries above, we would have “Canada” as the onehot vector $ \left[\begin{matrix}1\\0\\0\\\end{matrix}\right] $ and “Mexico” as $ \left[\begin{matrix}0\\1\\0\\\end{matrix}\right] $ and “United States” as $ \left[\begin{matrix}0\\0\\1\\\end{matrix}\right] $. All three vectors have same magnitude while still being different. This means our ground truth will no longer be a 1-by-$ m $, but a $ c $-by-$ m $ matrix, where $ c $ is the number of classes in the target.
 <br><br>
-For example, the ground truth will look something like this:
+For example, the ground truth could look something like this:
 $$
 \mathbf{Y}=\left[\begin{matrix}``Canada"&``Mexico"&``United\ States"&``Mexico"&``Canada"\\\end{matrix}\right]=\left[\begin{matrix}\begin{matrix}1&0&0\\\end{matrix}&0&1\\\begin{matrix}0&1&0\\\end{matrix}&1&0\\\begin{matrix}0&0&1\\\end{matrix}&0&0\\\end{matrix}\right]
 $$
 
 But with binary classification, the ground truth will always be a 1-by-$ m $ vector, $ \vec{y} $.
 
-
 </p>
 </details>
 </td>
 </table>
+
+In the analysis covered in this writeup, we will restrict our network to just binary classification or regression. The reason is to preclude the need for a softmax output layer (an output layer that’s using the softmax activation function), which is the preferred kind of output layer for dealing with multiclass classification problems. The reason we are excluding the softmax output layer is because it will add another layer of complexity to the backprop calculations, and that’s best kept for a separate article as multiclass classification is a topic in its own right.
+
+However, given the premise we decided to work with, we should denote the activation of the last layer as $$\vec{a}^{(L)}$$ because we know it can only be a 1-by-$$m$$ vector or a scalar (actually a 1-by-1 vector) if a batch of only 1 datapoint, but we will eschew all that and continue to denote it as $$\mathbf{A}^{(L)}$$. This is purely for the sake of aesthetics and uniformity with the notations for the hidden layers, because the hidden layers are rightly denoted as $$\mathbf{A}^{(l)}$$ as they are matrices.
