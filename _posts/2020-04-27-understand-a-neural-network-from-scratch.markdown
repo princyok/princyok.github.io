@@ -87,7 +87,7 @@ And $ {\vec{w}}_2^{(2)} $ contains the weights for the connections pointing to t
 $$
 {\vec{w}}_2^{(2)}=\left[\begin{matrix}w_{2,\ 1}^{(2)}&w_{2,\ \ 2}^{(2)}\\\end{matrix}\right] 
 $$
-And as in part 1, $ {\vec{b}}_2^{(2)} $ is fundamentally a scalar but gets broadcasted to match the shape of $ {\vec{z}}_2^{(2)} $ during computation.
+And as in part 2, $ {\vec{b}}_2^{(2)} $ is fundamentally a scalar but gets broadcasted to match the shape of $ {\vec{z}}_2^{(2)} $ during computation.
 <br><br>
 And $ \mathbf{A}^{(1)} $ contains the activations from the first layer and has shape $ n^{(1)} $-by-$ m $, where $ n^{(1)} $ is the number of units in the first layer (layer 1).
 "%}
@@ -128,7 +128,7 @@ $$
 {\vec{z}}_{n^{(2)}}^{(2)}=\ {\vec{w}}_{n^{(2)}}^{(2)}\mathbf{A}^{(1)}\ +\ {\vec{b}}_{n^{(2)}}^{(2)}
 $$
 
-Just like in part 1, we can put the above system of equations into matrix format. One caveat is to remember that the terms in the above equations are themselves vectors and matrices, so we use relationship between matrix-matrix and vector-matrix multiplications:
+Just like in part 2, we can put the above system of equations into matrix format. One caveat is to remember that the terms in the above equations are themselves vectors and matrices, so we use relationship between matrix-matrix and vector-matrix multiplications:
 
 $$
 \left[\begin{matrix}{\vec{z}}_1^{(2)}\\{\vec{z}}_2^{(2)}\\\vdots\\{\vec{z}}_{n^{(2)}}^{(2)}\\\end{matrix}\right]=\left[\begin{matrix}{\vec{w}}_1^{(2)}\mathbf{A}^{(1)}\\{\vec{w}}_2^{(2)}\mathbf{A}^{(1)}\\\vdots\\{\vec{w}}_{n^{(2)}}^{(2)}\mathbf{A}^{(1)}\\\end{matrix}\right]+\left[\begin{matrix}{\vec{b}}_1^{(2)}\\{\vec{b}}_2^{(2)}\\\vdots\\{\vec{b}}_{n^{(2)}}^{(2)}\\\end{matrix}\right]
