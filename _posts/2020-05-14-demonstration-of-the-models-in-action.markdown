@@ -43,7 +43,7 @@ This is a dataset containing 4273 chest x-ray images of children suffering from 
 
 The model (a standard feedforward neural network) learned to reach a **92% accuracy** in predicting whether a patient has pneumonia or not, based on their chest x-ray image. This is despite being less suited for image learning when compared to convolutional neural networks.
 
-Full details can be found in [**this Jupyter notebook**](https://github.com/princyok/deep_learning_without_ml_libraries/tree/master/neural_network/Chest_XRay_Pneumonia.ipynb){:target="_blank"}.
+Full details can be found in [**this Jupyter notebook**](https://github.com/princyok/deep_learning_without_ml_libraries/blob/master/neural_network/Chest_X-Ray_Pneumonia.ipynb){:target="_blank"}.
 
 ### **Cat vs Not-Cat Dataset**
 
