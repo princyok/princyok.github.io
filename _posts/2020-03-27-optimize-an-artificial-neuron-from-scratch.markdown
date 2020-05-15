@@ -30,13 +30,13 @@ Let’s recap before we begin the last dash:
 <br><br>
 We want the activation to be as close as possible to the ground truth by getting the loss to be as small as possible. In order to do that, we want to find a set of values for $ \vec{w} $ such that the loss is always as low as possible.
 <br><br>
-What remains to be seen is how we pull this off."
-%}
+What remains to be seen is how we find this $ \vec{w} $ that minimizes the loss.
+"%}
 
 ## **Gradient Descent Algorithm**
 As we [saw in part 2](/understand-an-artificial-neuron-from-scratch.html#loss-function){:target="_blank"}, we have a loss function that is a function of the weights and biases, and we need a way to find the set of weights and biases that minimizes the loss. This is a clearcut optimization problem.
 
-There are many ways to solve this optimization problem, but we will go with the one that scales excellently with deep neural networks, since that is the eventual goal of this writeup. And that brings us to the gradient descent algorithm.
+There are many ways to solve this optimization problem, but we will go with the one that scales excellently with deep neural networks, since that is the eventual goal of this writeup. And that brings us to the gradient descent algorithm. A method for finding local extrema of a function using the gradient of that function. It was introduced in 1847 by Augustin-Louis Cauchy, and still remains widely used in deep learning today.
 
 We will illustrate how it works using a simple scenario where we have a dataset made of one feature and one target, and we want to use the mean square error as cost function. We specify a linear activation function ($$a=f(a)$$) for the neuron. Then the equation for our neuron will be:
 
@@ -86,10 +86,13 @@ If we had more than two parameters, or a non-linear activation function, or some
 
 What remains to be answered is how we can efficiently compute $$\frac{\partial J}{\partial w_{old}}$$ and $$\frac{\partial J}{\partial b_{old}}$$.
 
-## **Chain rule for cost gradient**
-Heads up: For this part, which is the real meat of the training process, I advised that you bring out a pen and some paper to work along, especially if this is your first time working with Jacobians.
+## **Chain rule for cost gradients**
+
+Heads up: For this part, which is the real meat of the training process, I advise that you bring out a pen and some paper to work along if this is your first time working with Jacobians.
 
 Let’s focus on just $$\frac{\partial J}{\partial \vec{w}}$$ for now. To compute the cost gradient $$\frac{\partial J}{\partial \vec{w}}$$ we simply use the chain rule.
+
+### **Cost gradient with respect to weights**
 
 $$
 \frac{\partial J}{\partial \vec{w}}=\ \frac{\partial J}{\partial \vec{a}}\frac{\partial \vec{a}}{\partial \vec{z}}\frac{\partial \vec{z}}{\partial \vec{w}}
@@ -97,7 +100,7 @@ $$
 
 The gradient $$\frac{\partial J}{\partial \vec{a}}$$ (can also be called a Jacobian, because it is) depends on the choice of the cost function because we can’t do anything if we haven’t picked what function to use for $$J$$. Also, $$\frac{\partial \vec{a}}{\partial \vec{z}}$$ depends on the choice of activation function, although we can solve it for an arbitrary function.
 
-But for $$\frac{\partial \vec{z}}{\partial \vec{w}}$$, we know that preactivation ($$\vec{z}$$), at least for one neuron, will always be a simple linear combination of the parameters and the input data:
+But for $$\frac{\partial \vec{z}}{\partial \vec{w}}$$, we know that preactivation ($$\vec{z}$$), at least for one neuron, will always be a simple linear combination of the parameters and the input data (see [part 2](/understand-an-artificial-neuron-from-scratch.html)):
 
 $$
 \vec{z}=\vec{w}\mathbf{X}+\vec{b}$$
@@ -131,15 +134,17 @@ $$
 "Where their shapes are: $ \frac{\partial J}{\partial \vec{w}} $ is $ 1 $-by-$ n $, $ \frac{\partial J}{\partial \vec{a}} $ is $ 1 $-by-$ m $, $ \frac{\partial \vec{a}}{\partial \vec{z}} $ is $ m $-by-$ m $, and $ \frac{\partial \vec{z}}{\partial \vec{w}} $ is $ m $-by-$ n $."
 %}
 
-The shapes show us that matrix multiplication present in the chain rule expansion is valid.
+The shapes show us that matrix multiplications present in the chain rule expansion are valid.
 
-From the above equation for $$z$$, we can immediately compute the Jacobian $$\frac{\partial \vec{z}}{\partial \vec{w}}$$.
 
-We can observe that the Jacobian $$\frac{\partial \vec{z}}{\partial \vec{w}}$$ is an $$m$$-by-$$n$$ matrix. But at this stage, our Jacobian hasn’t given us anything useful because we still need the solution for each element of the matrix.
+#### **Preactivation gradient with respect to weights**
+From the equation for $$\vec{z}$$ stated above, we can immediately compute the Jacobian $$\frac{\partial \vec{z}}{\partial \vec{w}}$$.
+
+We can observe that the Jacobian $$\frac{\partial \vec{z}}{\partial \vec{w}}$$ is an $$m$$-by-$$n$$ matrix. But at this stage, our Jacobian hasn’t given us anything useful because we still need the solution for each scalar element of the matrix.
 
 We’ll solve an arbitrary element of the Jacobian and extend the pattern to the rest. Let’s begin.
 
-We pick an element $$\frac{\partial z_j}{\partial w_i}$$ from the matrix, and immediately we observe that we have already encountered the generalized elements $$z_j$$ and $$w_i$$ in the following equation:
+We pick an arbitrary scalar element $$\frac{\partial z_j}{\partial w_i}$$ from the matrix, and immediately we observe that we have already encountered the generalized elements $$z_j$$ and $$w_i$$ in the following equation:
 
 $$
 z_j=w_1\ \cdot x_{1,j}+w_2\ \cdot x_{2,j}+\ldots+w_n\ \cdot x_{n,j}+w_0=\sum_{i=0}^{n}{w_i\ \cdot x_{i,j}}
@@ -168,16 +173,18 @@ $$
 Recall that we originally defined $$\mathbf{X}$$ as:
 
 $$
-X=\left[\begin{matrix}x_{1,1}&x_{1,2}&\cdots&x_{1,m}\\x_{2,1}&x_{2,2}&\cdots&x_{2,m}\\\vdots&\vdots&\ddots&\vdots\\x_{n,1}&x_{n,2}&\cdots&x_{n,m}\\\end{matrix}\right]
+\mathbf{X}=\left[\begin{matrix}x_{1,1}&x_{1,2}&\cdots&x_{1,m}\\x_{2,1}&x_{2,2}&\cdots&x_{2,m}\\\vdots&\vdots&\ddots&\vdots\\x_{n,1}&x_{n,2}&\cdots&x_{n,m}\\\end{matrix}\right]
 $$
 
-Therefore, we observe that $$\frac{\partial \vec{z}}{\partial \vec{w}}$$ is exactly the transpose of our original definition of X:
+Therefore, we observe that $$\frac{\partial \vec{z}}{\partial \vec{w}}$$ is exactly the transpose of our original definition of $$\mathbf{X}$$:
 
 $$
 \frac{\partial \vec{z}}{\partial \vec{w}}= \mathbf{X}^T
 $$
 
 One Jacobian is down. Two more to go.
+
+#### **Activation gradient with respect to preactivations**
 
 The Jacobian $$\frac{\partial \vec{a}}{\partial \vec{z}}$$ depends on the choice of activation function, since it is obviously the gradient of the activation w.r.t. to preactivation (i.e. the derivative of the activation function). We cannot characterize it until we fully characterize the equation for $$\vec{a}$$.
 
@@ -241,7 +248,15 @@ $$
 \frac{\partial a_k}{\partial z_j}=\frac{e^{z_k}}{e^{z_k}+1}\cdot\left(\frac{1}{e^{z_k}+1}\right)=\color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}}\cdot\left(1-\color{magenta}{\frac{e^{z_k}}{e^{z_k}+1}}\right)
 $$
 
-We can now simply substitute it in the activation (while recalling that $$k\ =\ j$$):
+Notice that when $$k\ =\ j$$ (which refers to the diagonal of $$\frac{\partial\vec{a}}{\partial\vec{z}}$$, as that is only where that equality holds true), we have this:
+
+$$
+\frac{\partial a_k}{\partial z_j}=\frac{\partial a_j}{\partial z_j}=f'(z_j)
+$$
+
+The above characterization will be useful later.
+
+We can now simply substitute it in the activation (while keeping in mind that $$k\ =\ j$$):
 
 $$\frac{\partial a_k}{\partial z_j}=a_k\cdot\left(1-a_k\right)=a_j\cdot\left(1-a_j\right)$$
 
@@ -255,7 +270,9 @@ It’s an $$m$$-by-$$m$$ diagonal matrix.
 
 Two Jacobians are down and one more to go.
 
-However, I will leave the details for the last Jacobian $$\frac{\partial J}{\partial \vec{a}}$$ as an exercise for you (it’s not more challenging than the other two). Here's the setup for it.
+#### **Cost gradient with respect to activations**
+
+I will leave the details for the last Jacobian $$\frac{\partial J}{\partial \vec{a}}$$ as an exercise for you (it’s not more challenging than the other two). Here's the setup for it.
 
 The cost gradient $$\frac{\partial J}{\partial \vec{a}}$$ depends on the choice of the cost function since it is obviously the gradient of the cost w.r.t. activation. Since we are using a logistic activation function, we will go ahead and use the logistic loss function (a.k.a. cross entropy loss or negative log-likelihoods):
 
@@ -267,7 +284,9 @@ $$
 \frac{\partial J}{\partial\vec{a}}=-\frac{1}{m}\cdot\left(\frac{ \vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)
 $$
 
-Note that all the arithmetic operations in the above are all elementwise. The resulting cost gradient is a vector that has same shape as $$a$$ and $$y$$, which is $$1$$-by-$$m$$.
+Note that all the arithmetic operations in the above are all elementwise. The resulting cost gradient is a vector that has same shape as $$\vec{a}$$ and $$\vec{y}$$, which is $$1$$-by-$$m$$.
+
+#### **Consolidate the results**
 
 Now we recombine everything. Therefore, the equation for computing the cost gradient for an artificial neuron that uses a logistic activation function and a cross entropy loss is:
 
@@ -292,6 +311,8 @@ We already have everything for  $$\frac{\partial J}{\partial \vec{z}}$$:
 $$
 \frac{\partial J}{\partial \vec{z}}=\color{brown}{\frac{\partial J}{\partial \vec{a}}}\color{blue}{\frac{\partial \vec{a}}{\partial \vec{z}}}=\color{brown}{-\frac{1}{m}\cdot\left(\frac{ \vec{y}}{ \vec{a}}-\frac{1- \vec{y}}{1- \vec{a}}\right) }\color{blue}{\left[\begin{matrix}a_1\cdot\left(1-a_1\right)&0&\cdots&0\\0&a_2\cdot\left(1-a_2\right)&\cdots&0\\\vdots&\vdots&\ddots&\vdots\\0&0&\cdots&a_m\cdot\left(1-a_m\right)\\\end{matrix}\right]}
 $$
+
+Therefore, we also have everything for $$\frac{\partial J}{\partial \vec{w}}$$:
 
 $$
 \frac{\partial J}{\partial \vec{w}}=\frac{\partial J}{\partial\vec{z}}\mathbf{X}^T=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}\mathbf{X}^T
@@ -321,7 +342,7 @@ The $ diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}} $ is the $ 
 %}
 
 
-We also observe that the $$diagonal\ vector\ of\frac{\partial\vec{a}}{\partial \vec{z}}$$ (the vector that you get if you pulled out the diagonal of the matrix $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ and put it into a row vector) is simply the elementwise derivative of the vector $$\vec{z}$$:
+We also observe that the $$diagonal\ vector\ of\frac{\partial\vec{a}}{\partial \vec{z}}$$ (the vector that you get if you pulled out the diagonal of the matrix $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ and put it into a row vector) is simply the derivative of activation function elementwise to the vector $$\vec{z}$$:
 
 $$
 diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=\left[\begin{matrix}a_1\cdot\left(1-a_1\ \right)&a_2\cdot\left(1-a_2\ \right)&\cdots&a_m\cdot\left(1-a_m\ \right)\\\end{matrix}\right]
@@ -343,10 +364,10 @@ So, computing the $$diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}$
 </b>
 </summary>
 <p>
-The reason why the expression, $ diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=f\prime(\vec{z}) $, is valid for the logistic activation function is precisely because of this result (already shown before):
+The reason why the expression, $ diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=f'(\vec{z}) $, is valid for the logistic activation function is precisely because of this result (already shown before):
 
 $$
-\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{e^{\vec{z}_\boldsymbol{k}}}{e^{\vec{z}_\boldsymbol{k}}+1}\right)}{\partial z_j}=0
+\frac{\partial a_k}{\partial z_j}=\frac{\partial\left(\frac{e^{\vec{z}_k}}{e^{\vec{z}_k}+1}\right)}{\partial z_j}=0
 $$
 
 {% include indent_paragraph.html content="
@@ -368,22 +389,24 @@ Which also means for any activation function $ f $, the following is also true:
 $$
 diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=f\prime(\vec{z})
 $$
+
+This is all strictly under the assumption that we are dealing with the model of a single artificial neuron with only feedforward connections (i.e. no loops and such).
 </p>
 </details>
 </td>
 </table>
 
 
-Once we’ve computed the $$diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}$$, which is a $$1$$-by-$$m$$ vector, we will implement some code that can inflate the diagonal matrix $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ by padding it with zeros. If coding in Python and using the NumPy library for our vectorized computations, then the method [`numpy.diagflat`](https://docs.scipy.org/doc/numpy/reference/generated/numpy.diagflat.html){:target="_blank"} does exactly that.
+Once we’ve computed the $$diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}$$, which is a $$1$$-by-$$m$$ vector, we will implement some code that can inflate the diagonal matrix $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ by padding it with zeros. If coding in Python and using the NumPy library for our vectorized computations, then the method [`numpy.diagflat`](https://numpy.org/doc/stable/reference/generated/numpy.diagflat.html){:target="_blank"} does exactly that.
 
-One good news is that we can take the equation $$\frac{\partial J}{\partial \vec{w}}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}\mathbf{X}^T$$ to an alternative form that would allow us to skip the step of inflating the $$diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}$$ and therefore saves us a little processing time.
+One good news is that we can take the equation $$\frac{\partial J}{\partial \vec{w}}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}\mathbf{X}^T$$ to an alternative form that would allow us to skip the step of inflating the $$diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}}$$ and therefore saves us some processing time.
 
 There is a well-known relationship between the multiplication of a vector with a diagonal matrix, and elementwise multiplication (a.k.a. Hadamard product), which is denoted as $$\odot$$. The relationship plays out like this.
 
-Say we have a row vector $$v$$ and a diagonal matrix $$D$$, and when we flatten the $$D$$ into a row vector $$d$$ (that is, we pull out the diagonal from $$D$$ and put it into a row vector), whose elements is just the diagonal of $$D$$, then we can write:
+Say we have a row vector $$\vec{v}$$ and a diagonal matrix $$\mathbf{D}$$, and when we flatten the $$\mathbf{D}$$ into a row vector $$\vec{d}$$ (that is, we pull out the diagonal from $$\mathbf{D}$$ and put it into a row vector), whose elements is just the diagonal of $$\mathbf{D}$$, then we can write:
 
 $$
-\color{brown}{v}\color{blue}{D}=\color{brown}{v} \odot \color{blue}{d}
+\color{brown}{\vec{v}}\color{blue}{\mathbf{D}}=\color{brown}{\vec{v}} \odot \color{blue}{\vec{d}}
 $$
 
 (Test out the above for yourself with small vectors and matrices and see if the two sides indeed equate to one another).
@@ -413,15 +436,17 @@ $$
 $$
 
 $$
-=-\frac{1}{m}\bullet\left(\frac{\vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)\ \odot(a\odot\left(1-a\right))\mathbf{X}^T
+=-\frac{1}{m}\bullet\left(\frac{\vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)\ \odot(\vec{a}\odot\left(1-\vec{a}\right))\mathbf{X}^T
 $$
 
 {% include indent_paragraph.html content=
 "
 Where $ \frac{\partial\vec{a}}{\partial\vec{z}} $ here is just the diagonal of the actual $ \frac{\partial\vec{a}}{\partial\vec{z}} $ and has a shape of $ 1 $-by-$ m $ and is equal to $ f'(\vec{z}) $.
 <br><br>
-Note that we applied a property of how Hadamard product interacts with matrix multiplication: $ \left(v \odot u\right)M = v\odot uM = \left(u \odot v\right)M=u\odot vM $. Where $ v $ and $ u $ are vectors of same length, and $ M $ is a matrix for which the matrix multiplication shown are valid."
+Note that we applied a property of how Hadamard product interacts with matrix multiplication: $ \left(\vec{v} \odot \vec{u}\right)\mathbf{M} = \vec{v}\odot \vec{u}\mathbf{M} = \left(\vec{u} \odot \vec{v}\right)\mathbf{M}=\vec{u}\odot \vec{v}\mathbf{M} $. Where $ \vec{v} $ and $ \vec{u} $ are vectors of same length, and $ \mathbf{M} $ is a matrix for which the matrix multiplications shown are valid."
 %}
+
+### **Cost gradient with respect to biases**
 
 Now for $$\frac{\partial J}{\partial b}$$, we can borrow a lot of what we did for $$\frac{\partial J}{\partial \vec{w}}$$ here as well.
 
@@ -429,7 +454,7 @@ $$
 \frac{\partial J}{\partial b}=\frac{\partial J}{\partial\vec{z}}\ \frac{\partial\vec{z}}{\partial b}=\frac{\partial J}{\partial\vec{a}}\frac{\partial\vec{a}}{\partial \vec{z}}\frac{\partial \vec{z}}{\partial b}
 $$
 
-We know that $$\frac{\partial J}{\partial b}$$ has to be a scalar (or $$1$$-by-$$1$$ vector) because there is only one bias in the model, unlike weights, of which there are $$n$$ of them. During gradient descent, there is only one bias value to update, so if we have a vector or matrix for $$\frac{\partial J}{\partial b}$$, then we won’t know what to do with all those values in the vector or matrix.
+We know that $$\frac{\partial J}{\partial b}$$ has to be a scalar (or $$1$$-by-$$1$$ vector) because there is only one bias in the model, unlike weights, of which there are $$n$$ of them (see part 2). During gradient descent, there is only one bias value to update, so if we have a vector or matrix for $$\frac{\partial J}{\partial b}$$, then we won’t know what to do with all those values in the vector or matrix.
 
 We have to recall that the only reason that $$\vec{b}$$ is a $$1$$-by-$$m$$ vector in the equations for forward propagation is because it gets stretched (broadcasted) into a $$1$$-by-$$m$$ vector to match the shape of $$\vec{z}$$, so that the equations are valid. Fundamentally, it is a scalar and so is $$\frac{\partial J}{\partial b}$$.
 
@@ -447,7 +472,7 @@ $$
 \frac{\partial\vec{z}}{\partial b}=\frac{\partial(\vec{w}\mathbf{X} +\ \vec{b})}{\partial b}=\frac{\partial(\vec{w}\mathbf{X})}{\partial b}+\frac{\partial\vec{b}}{\partial b}=0+\frac{\partial\vec{b}}{\partial b}=\frac{\partial\vec{b}}{\partial b}
 $$
 
-Let’s examine $$\frac{\partial\vec{b}}{\partial b}$$. It’s an m-by-1 vector that is equal to $$\frac{\partial\vec{z}}{\partial b}$$, which also means it has same shape as $$\frac{\partial\vec{z}}{\partial b}$$. You also observe that it has the shape of $$\vec{z}^T$$.
+Let’s examine $$\frac{\partial\vec{b}}{\partial b}$$. It’s an $$m$$-by-1 vector that is equal to $$\frac{\partial\vec{z}}{\partial b}$$, which also means it has same shape as $$\frac{\partial\vec{z}}{\partial b}$$. You also observe that it has the shape of $$\vec{z}^T$$.
 
 When you transpose a vector or matrix, you also transpose their shape, which fortunately is simply done by reversing the order of the shape, so when a 1-by-$$m$$ vector is transposed, its new shape is $$m$$-by-1. And note that the content of $$\vec{b}$$ is just $$b$$ repeating $$m$$ times. So, $$\frac{\partial\vec{b}}{\partial b}$$ looks like this:
 
@@ -455,7 +480,7 @@ $$
 \frac{\partial\vec{b}}{\partial b}=\left[\begin{matrix}\frac{\partial b}{\partial b}\\\frac{\partial b}{\partial b}\\\vdots\\\frac{\partial b}{\partial b}\\\end{matrix}\right]=\left[\begin{matrix}1\\1\\\vdots\\1\\\end{matrix}\right]\
 $$
 
-Therefore $$\frac{\partial \vec{z}}{\partial\boldsymbol{b}}$$ is a vector of all ones that has the shape $$m$$-by-$$1$$ (the shape of $$\vec{z}^T$$).
+Therefore $$\frac{\partial \vec{z}}{\partial b}$$ is a vector of all ones that has the shape $$m$$-by-$$1$$ (the shape of $$\vec{z}^T$$).
 
 $$
 \frac{\partial\vec{z}}{\partial b}=\frac{\partial\vec{b}}{\partial b}=\left[\begin{matrix}\frac{\partial b}{\partial b}\\\frac{\partial b}{\partial b}\\\vdots\\\frac{\partial b}{\partial b}\\\end{matrix}\right]=\left[\begin{matrix}1\\1\\\vdots\\1\\\end{matrix}\right]
@@ -471,11 +496,11 @@ $$
 "Where $ \frac{\partial J}{\partial\vec{z}} $ is the gradient already computed in the steps for computing $ \frac{\partial J}{\partial\vec{w}} $, and $ \frac{\partial \vec{z}}{\partial b} $ is an $ m $-by-$ 1 $ vector of ones (i.e. has same shape as $ \vec{z}^T $)."
 %}
 
-Therefore the Jacobian $$\frac{\partial \vec{z}}{\partial b}$$ is easily implemented in code by simply creating a vector of ones whose shape is same as $ \vec{z}^T $. But there is another way we can recharacterize the above equation for $$\frac{\partial J}{\partial b}$$ such that we avoid creating any new vectors.
+Therefore the Jacobian $$\frac{\partial \vec{z}}{\partial b}$$ is easily implemented in code by simply creating a vector of ones whose shape is same as $ \vec{z}^T $. In NumPy, this can be easily accomplished with [`numpy.ones`](https://numpy.org/doc/stable/reference/generated/numpy.ones.html){:target="_blank"}.
 
-As [mentioned in part 2](/understand-an-artificial-neuron-from-scratch.html#artificial-neuron){:target="_blank"}, matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction.
+But there is another way we can recharacterize the above equation for $$\frac{\partial J}{\partial b}$$ such that we avoid creating any new vectors.
 
-Below is a quick overview of tensor contraction.
+As [mentioned in part 2](/understand-an-artificial-neuron-from-scratch.html#artificial-neuron){:target="_blank"}, matrix multiplication, or specifically vector-matrix multiplication, is essentially one example of tensor contraction. Below is a quick overview of tensor contraction.
 
 Before continuing, note that there is a whole world of concepts associated with tensors and their contraction that is far beyond the scope of this blog series. We will go over just what we need. You can liken the overview presented here to talking about simple linear regression when an overview of machine learning is promised. Let's continue!
 
@@ -491,7 +516,7 @@ $$u_q=\sum_{p}{v_p\cdot m_{p,q}}$$
 It shows exactly the elementwise version of matrix multiplication. Here is an example to illustrate the above. Say that $$\vec{v}$$ and $$\mathbf{M}$$ are:
 
 $$
-v=\ \left[\begin{matrix}1&2\\\end{matrix}\right]
+\vec{v}=\ \left[\begin{matrix}1&2\\\end{matrix}\right]
 $$
 
 $$
@@ -499,9 +524,9 @@ M=\left[\begin{matrix}3&5&7\\4&6&8\\\end{matrix}\right]
 $$
 
 {% include indent_paragraph.html content=
-"The vector $ v $ is $ 1 $-by-$ 2 $, and we will use the subscript $ q $ to track the non-unit axis, i.e. the second axis (the one that counts to a maximum of 2). That is: $ v_1=1 $ and $ v_2=2 $.
+"The vector $ \vec{v} $ is $ 1 $-by-$ 2 $, and we will use the subscript $ q $ to track the non-unit axis, i.e. the second axis (the one that counts to a maximum of 2). That is: $ v_1=1 $ and $ v_2=2 $.
 <br><br>
-The matrix $ M $ is $ 2 $-by-$ 3 $, and we will use the subscript $ q $ to track the first axis (the one that counts to a maximum of 2) and $ p $ to track the second axis (the one that counts to a maximum of 3). That is $ m_{2,1}=4 $ and $ m_{1,3}=7 $."
+The matrix $ \mathbf{M} $ is $ 2 $-by-$ 3 $, and we will use the subscript $ q $ to track the first axis (the one that counts to a maximum of 2) and $ p $ to track the second axis (the one that counts to a maximum of 3). That is $ m_{2,1}=4 $ and $ m_{1,3}=7 $."
 %}
 
 We know that the vector-matrix multiplication, $$\vec{v}\mathbf{M}$$, produces a $$1$$-by-$$3$$ vector. Let’s call it $$\vec{u}$$.
@@ -510,7 +535,7 @@ $$
 \vec{u}=\left[\begin{matrix}u_1&u_2&u_3\\\end{matrix}\right]
 $$
 
-Using the tensor contraction format, we can fully characterize what the resulting vector $$u$$ is, by describing it elementwise:
+Using the tensor contraction format, we can fully characterize what the resulting vector $$\vec{u}$$ is, by describing it elementwise:
 
 $$
 u_q=\sum_{p}{v_p\cdot M_{p,q}}
@@ -525,10 +550,10 @@ $$
 And we can do this for $$u_2$$ and $$u_3$$ (try it). In all, we have:
 
 $$
-u=\left[\begin{matrix}11&17&23\\\end{matrix}\right]
+\vec{u}=\left[\begin{matrix}11&17&23\\\end{matrix}\right]
 $$
 
-To summarize, the vector multiplication $$vM$$ is a contraction along the axis tracked by subscript $$p$$.
+To summarize, the vector multiplication $$\vec{v}\mathbf{M}$$ is a contraction along the axis tracked by subscript $$p$$.
 
 We can use the tensor contraction format to recharacterize our solution for $ \frac{\partial J}{\partial b} $.
 
@@ -572,7 +597,7 @@ $$
 \frac{\partial J}{\partial \vec{w}}=\ \frac{\partial J}{\partial \vec{z}}\mathbf{X}^T
 $$
 
-And we also already know that $ \frac{\partial J}{\partial \vec{z}} $ is a $ 1 $-by-$ m $ row vector and $ X $ is an $ n $-by-$ m $ matrix, which makes $ \mathbf{X}^T $ an $ m $-by-$ n $ matrix. In tensor contraction format, the above equation is:
+And we also already know that $ \frac{\partial J}{\partial \vec{z}} $ is a $ 1 $-by-$ m $ row vector and $ \mathbf{X} $ is an $ n $-by-$ m $ matrix, which makes $ \mathbf{X}^T $ an $ m $-by-$ n $ matrix. In tensor contraction format, the above equation is:
 
 $$
 \left(\frac{\partial J}{\partial\vec{w}}\right)_i=\sum_{j=1}^{m}{\left(\frac{\partial J}{\partial\vec{z}}\right)_j\cdot\left(\mathbf{X}^T\right)_{j,i}}

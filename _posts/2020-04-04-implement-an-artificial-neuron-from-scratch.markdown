@@ -76,7 +76,7 @@ def _initialize_parameters(self, random_seed=11):
 ### **Forward pass**
 Forward pass can be broken into two steps: First is the linear combination of the parameters and datapoint values to get the preactivation. Next is the passing of the preactivation through an activation function to get the activation.
 
-The equations for forward pass are:
+The equations for forward pass are (see [part 2](/understand-an-artificial-neuron-from-scratch.html)):
 
 $$
 \vec{z}=\vec{w}\mathbf{X}+b
@@ -96,7 +96,7 @@ Notice that that I used `self.X_batch` instead of `self.X`, because we perform o
 
 #### **Activation function**
 
-Next, we implement out activation function. We will only do logistic for this model of an artificial neuron. Check out the deep neural network code for some other activation functions.
+Next, we implement out activation function. We will only do logistic for this model of an artificial neuron (see [part 2](/understand-an-artificial-neuron-from-scratch.html)). Check out the deep neural network code for some other activation functions.
 
 $$
 \vec{a}=f\left(\vec{z}\right)=\frac{1}{1+e^{-\vec{z}}}
@@ -107,7 +107,7 @@ def _logistic(self, z):
     a = 1/(1+np.exp(-z))
     return a
 ```
-We will also implement the derivate of the activation function (we are using the logistic function). But note that we invoke this method only during backward pass, not forward pass. Presenting it here (and writing the code near that for the forward pass) is just a matter of personal taste.
+We will also implement the derivate of the activation function, and we are using the logistic function (see [part 3](/optimize-an-artificial-neuron-from-scratch.html)). But note that we invoke this method only during backward pass, not forward pass. Presenting it here and also writing the code near that for the forward pass is just a matter of personal taste.
 
 $$
 f'\left(\vec{z}\right)=\vec{a}\odot\left(1-\vec{a}\right)
@@ -132,19 +132,19 @@ $$
 
 ### **Backward pass**
 
-Now we will optimize our parameters in such a way that our loss decreases. We start by first computing the cost gradient $$\frac{\partial J}{\partial\vec{w}}$$:
+Now we will optimize our parameters in such a way that our loss decreases.To do this, we first compute the cost gradient $$\frac{\partial J}{\partial\vec{w}}$$, which we showed in [part3](/optimize-an-artificial-neuron-from-scratch.html):
 
 $$
-\frac{\partial J}{\partial\vec{w}}=\frac{\partial J}{\partial\vec{z}}\frac{\partial\vec{z}}{\partial\vec{w}}=\ \frac{\partial J}{\partial\vec{z}}X^T=\frac{\partial J}{\partial\vec{a}}\odot\frac{\partial\vec{a}}{\partial\vec{z}}X^T=\frac{\partial J}{\partial\vec{a}}\odot f'(\vec{z})X^T
+\frac{\partial J}{\partial\vec{w}}=\frac{\partial J}{\partial\vec{z}}\frac{\partial\vec{z}}{\partial\vec{w}}=\ \frac{\partial J}{\partial\vec{z}}\mathbf{X}^T=\frac{\partial J}{\partial\vec{a}}\odot\frac{\partial\vec{a}}{\partial\vec{z}}\mathbf{X}^T=\frac{\partial J}{\partial\vec{a}}\odot f'(\vec{z})\mathbf{X}^T
 $$
 
 For a logistic loss function and a logistic activation function, we have:
 
 $$
-\frac{\partial J}{\partial\vec{w}}=-\frac{1}{m}\bullet\left(\frac{\vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)\ \odot(\vec{a}\odot\left(1-\vec{a}\right))X^T
+\frac{\partial J}{\partial\vec{w}}=-\frac{1}{m}\bullet\left(\frac{\vec{y}}{\vec{a}}-\frac{1-\vec{y}}{1-\vec{a}}\right)\ \odot(\vec{a}\odot\left(1-\vec{a}\right))\mathbf{X}^T
 $$
 
-We could directly implement the above equation, but I chose to implement it in stages, with each gradient computed at each stage. This will make it a little easier to swap in other activation functions and loss functions in the future (I don’t really have any intention to do so for the artificial neuron code, as I already did it in the deep neural network code).
+We could directly implement the above equation, but I chose to implement it in stages, with each gradient computed at each stage. This will make it a little easier to swap in other activation functions and loss functions if you ever choose to do so in the future.
 
 So, we implement the following equations step by step:
 
@@ -161,7 +161,7 @@ $$
 $$
 
 $$
-\frac{\partial J}{\partial\vec{w}}=\ \frac{\partial J}{\partial\vec{z}}X^T
+\frac{\partial J}{\partial\vec{w}}=\ \frac{\partial J}{\partial\vec{z}}\mathbf{X}^T
 $$
 
 The cost gradients for the bias is:

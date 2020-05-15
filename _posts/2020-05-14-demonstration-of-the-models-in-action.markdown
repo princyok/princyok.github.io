@@ -41,7 +41,7 @@ Full details can be found in [**this Jupyter notebook**](https://github.com/prin
 
 This is a dataset containing 4273 chest x-ray images of children suffering from pneumonia (both bacterial and viral) and 1592 chest x-ray images of those not suffering from the lung infection. 
 
-The model (a neural network) learned to reach a **92% accuracy** in predicting whether a patient has pneumonia or not, based on their chest x-ray image.
+The model (a standard feedforward neural network) learned to reach a **92% accuracy** in predicting whether a patient has pneumonia or not, based on their chest x-ray image. This is despite being less suited for image learning when compared to convolutional neural networks.
 
 Full details can be found in [**this Jupyter notebook**](https://github.com/princyok/deep_learning_without_ml_libraries/tree/master/neural_network/Chest_XRay_Pneumonia.ipynb){:target="_blank"}.
 
@@ -49,7 +49,7 @@ Full details can be found in [**this Jupyter notebook**](https://github.com/prin
 
 This is a dataset of images of cats and those without cats. 
 
-The model (a neural network) learned to reach a **73% accuracy** in predicting whether there is a cat in an image or not.
+The model (a standard feedforward neural network) learned to reach a **73% accuracy** in predicting whether there is a cat in an image or not.
 
 ***Will be released soon.***
 

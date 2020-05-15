@@ -363,11 +363,9 @@ We must keep in mind that $$b$$ is a parameter of the estimator, and it would be
 
 Here are some problems we would have if we defined $$b$$ to be fundamentally a $$1$$-by-$$m$$ vector:
 
-{% include indent_paragraph.html content=
-"The neuron becomes restricted to a fixed batch size. That is, the batch size we use to train the neuron becomes a fixture of the neuron, to the point that we can’t use the neuron to carry out predictions or estimations for a different batch size.
-<br><br>
-Each example in the batch will have a different corresponding value for $ b $. This is not even the case for $ w $, and it is just simply improper for the parameters to change from datapoint to datapoint. If that happened, then it means the model is not identical for all datapoints. Absolutely appalling."
-%}
+* The neuron becomes restricted to a fixed batch size. That is, the batch size we use to train the neuron becomes a fixture of the neuron, to the point that we can’t use the neuron to carry out predictions or estimations for a different batch size.
+
+* Each example in the batch will have a different corresponding value for $ b $. This is not even the case for $ w $, and it is just simply improper for the parameters to change from datapoint to datapoint. If that happened, then it means the model is not identical for all datapoints. Absolutely appalling.
 
 When $$b$$ is broadcasted into the $$1$$-by-$$m$$ vector $$\vec{b}$$, it is simply the scalar value $$b$$ repeating $$m$$ times. It looks like this:
 
