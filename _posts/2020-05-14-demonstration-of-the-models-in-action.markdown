@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Catching AI with its pants down: Demonstration of the Models in Action"
-logline: "Going from equations to implementation in Python."
+logline: "Demonstrating the models that were designed from scratch by tackling real, research datasets."
 date:   "2020-05-14"
 categories: machine-learning
 permalink:
