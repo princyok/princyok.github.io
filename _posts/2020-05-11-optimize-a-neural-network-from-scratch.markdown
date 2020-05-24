@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Catching AI with its pants down: Optimize a Neural Network from Scratch"
-logline: "Going from equations to implementation in Python."
+logline: "Mathematical details of training a neural network, including backpropagation and gradient descent."
 date:   "2020-05-11"
 categories: machine-learning
 permalink:
