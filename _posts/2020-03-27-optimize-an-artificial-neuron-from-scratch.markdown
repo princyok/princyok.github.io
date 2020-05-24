@@ -98,7 +98,7 @@ $$
 \frac{\partial J}{\partial \vec{w}}=\ \frac{\partial J}{\partial \vec{a}}\frac{\partial \vec{a}}{\partial \vec{z}}\frac{\partial \vec{z}}{\partial \vec{w}}
 $$
 
-The gradient $$\frac{\partial J}{\partial \vec{a}}$$ (can also be called a Jacobian, because it is) depends on the choice of the cost function because we can’t do anything if we haven’t picked what function to use for $$J$$. Also, $$\frac{\partial \vec{a}}{\partial \vec{z}}$$ depends on the choice of activation function, although we can solve it for an arbitrary function.
+The gradient $$\frac{\partial J}{\partial \vec{a}}$$ (it is also a Jacobian) depends on the choice of the cost function because we can’t do anything if we haven’t picked what function to use for $$J$$. Also, $$\frac{\partial \vec{a}}{\partial \vec{z}}$$ depends on the choice of activation function, although we can solve it for an arbitrary function.
 
 But for $$\frac{\partial \vec{z}}{\partial \vec{w}}$$, we know that preactivation ($$\vec{z}$$), at least for one neuron, will always be a simple linear combination of the parameters and the input data (see [part 2](/understand-an-artificial-neuron-from-scratch.html)):
 
