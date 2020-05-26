@@ -113,7 +113,8 @@ However, much of the advances we've seen with deep learning in the last two deca
 When you see an apple, you are able to recognize that the fruit is an apple. When the accelerator (gas pedal) of a car is pressed down, the velocity of the car changes. When you see a ticktacktoe board where the game is ongoing, a decision on what is the best next move emerges.
 
 All of these have one thing in common: there is a process that takes an input and spits out an output. The visuals of an apple is the input and the recognition of the name is the output. Pressing down of the accelerator is an input and the rate of change of velocity is the output.
-All of these processes can be thought of as functions. A function is the mapping of a set of inputs to a set of outputs in such a way that no two or more inputs will result in the same output. Almost any process can be thought of as a function. The hard part is fully characterizing the function that underlies a process.
+
+All of these processes can be thought of as functions. A function is the mapping of a set of inputs to a set of outputs in such a way that no input maps to more than one output. Almost any process can be thought of as a function. The hard part is fully characterizing the function that underlies the said process.
 
 An estimator is a function that tries to estimate the behavior of another function whose details are not fully unknown.
 
