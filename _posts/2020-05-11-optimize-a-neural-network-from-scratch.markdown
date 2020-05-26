@@ -403,4 +403,6 @@ $$
 b_{new}=b_{old}-\gamma\frac{\partial J}{\partial b_{old}}
 $$
 
-The equations are applied to each of the parameter values in the network.
+The equations are applied to each of the parameter values in the network. That is, these equations are applied to each scalar element of the matrices $$\mathbf{W}$$ and $$\mathbf{B}$$.
+
+All that's left now is to implement in code the equations presented in this article.
