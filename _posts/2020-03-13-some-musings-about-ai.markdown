@@ -34,7 +34,7 @@ My feeling is if you want to understand a really complicated device like a brain
 
 The entirety of the above paragraph is one of my favourite quotes by Geoffrey Hinton, one of the three Godfathers of Deep Learning. I don’t think we need any further motivation for why we should peek under the hood to see precisely what’s really going on in a deep learning AI system.
 
-Tearing apart whatever is under the hood has been my canon for my machine learning journey, so it was natural that I would build a deep neural network from scratch especially after I couldn’t find any such complete implementation online (as of early 2019). Some of my colleagues thought it would be good if I put together some explanation of what I did, and so the idea for this writeup was born.
+Tearing apart whatever is under the hood has been my canon for my machine learning journey, so it was natural that I would build a deep neural network from scratch especially after I couldn’t find any such complete implementation online (as of 2018 to early 2019). Some of my colleagues thought it would be good if I put together some explanation of what I did, and so the idea for this writeup was born.
 
 ## **Artificial General Intelligence: The Holy Grail of AI**
 Artificial intelligence (AI) is the intelligence, or the impression thereof, exhibited by things made by we humans. The kind of intelligence we have is natural intelligence. A lot of things can fall under the umbrella of AI because the definition is vague. Everything from the computer player of Chess Titans on Windows 7 to Tesla’s autopilot is called AI.
