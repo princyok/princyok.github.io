@@ -203,7 +203,11 @@ One way to better encode nominal data is to use onehot encoding. The idea is to 
 <br><br>
 For example, the ground truth could look something like this:
 $$
-\mathbf{Y}=\left[\begin{matrix}``Canada"&``Mexico"&``United\ States"&``Mexico"&``Canada"\\\end{matrix}\right]=\left[\begin{matrix}\begin{matrix}1&0&0\\\end{matrix}&0&1\\\begin{matrix}0&1&0\\\end{matrix}&1&0\\\begin{matrix}0&0&1\\\end{matrix}&0&0\\\end{matrix}\right]
+\mathbf{Y}=\left[\begin{matrix}``Canada"&``Mexico"&``United\ States"&``Mexico"&``Canada"\\\end{matrix}\right]
+$$
+
+$$
+\mathbf{Y}=\left[\begin{matrix}\begin{matrix}1&0&0\\\end{matrix}&0&1\\\begin{matrix}0&1&0\\\end{matrix}&1&0\\\begin{matrix}0&0&1\\\end{matrix}&0&0\\\end{matrix}\right]
 $$
 
 But with binary classification, the ground truth will always be a 1-by-$ m $ vector, $ \vec{y} $.

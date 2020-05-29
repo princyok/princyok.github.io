@@ -389,7 +389,7 @@ $$
 
 Keep in mind that these statements about the shapes of these tensors are all for a single artificial neuron, as there are some changes when moving unto neural networks (a network of neurons).
 
-Let’s illustrate with our toy dataset how the preactivation equation works in matrix format. Let’s say we decide that our batch size will be 3, which means we will feed our neuron 3 datapoints (3 rows from our toy dataset), then our $$X$$ will look like this:
+Let’s illustrate with our toy dataset how the preactivation equation works in matrix format. Let’s say we decide that our batch size will be 3, which means we will feed our neuron 3 datapoints (3 rows from our toy dataset), then our $$\mathbf{X}$$ will look like this:
 
 $$
 \mathbf{X}=\left[\begin{matrix}6.5233&9.2112&1.7315\\1.5484&12.7141&45.6200\\\end{matrix}\right]
@@ -461,7 +461,7 @@ This is the whole point of a neural network (a.k.a. network of artificial neuron
 
 Unfortunately, the original perceptron did not fair very well in practice and failed to deliver on the high hopes heaped on it. I can assure you that it will not do too well with image classification of, say, cats and dogs. We need something more complex with some more nonlinearity.
 
-Note that linearity is not the biggest reason Heaviside functions went out of favour. In fact, a Heaviside function is not purely linear, but instead piecewise linear. It’s also common to see lack of differentiability at zero blamed for the disfavour, but again this cannot be the critical reason, as there are cheap tricks around this too (e.g. the same type of schemes used to get around the undifferentiability of the rectified linear function at zero, which by the way is currently the most widely used activation function in deep learning).
+Note that linearity is not the biggest reason Heaviside functions went out of favour. In fact, a Heaviside function is not purely linear, but instead piecewise linear. It’s also common to see lack of differentiability at zero blamed for the disfavour, but again this cannot be the only critical reason, as there are cheap tricks around this too (e.g. the same type of schemes used to get around the undifferentiability of the rectified linear function at zero, which by the way is currently the most widely used activation function in deep learning).
 
 The main problem is that the Heaviside function jumps too rapidly, in fact instantaneously, between the two extremes of its range. That is, when traversing the domain of the Heaviside function, starting from positive to negative infinity, we will keep outputting one (the highest value in its range), until suddenly at the input of zero, its output snaps to 0 (the minimum value in its range) and then continues outputting that for the rest of negative infinity. This causes a lot of instability. When doing mathematical optimization, we typically prefer small changes to also produce small changes.
 

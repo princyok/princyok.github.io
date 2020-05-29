@@ -38,7 +38,7 @@ As we [saw in part 2](/understand-an-artificial-neuron-from-scratch.html#loss-fu
 
 There are many ways to solve this optimization problem, but we will go with the one that scales excellently with deep neural networks, since that is the eventual goal of this writeup. And that brings us to the gradient descent algorithm. A method for finding local extrema of a function using the gradient of that function. It was introduced in 1847 by Augustin-Louis Cauchy, and still remains widely used in deep learning today.
 
-We will illustrate how it works using a simple scenario where we have a dataset made of one feature and one target, and we want to use the mean square error as cost function. We specify a linear activation function ($$a=f(a)$$) for the neuron. Then the equation for our neuron will be:
+We will illustrate how it works using a simple scenario where we have a dataset made of one feature and one target, and we want to use the mean squared error as cost function. We specify a linear activation function ($$a=f(a)$$) for the neuron. Then the equation for our neuron will be:
 
 $$
 a=f\left(z\right)=w_1\ \cdot x_1+w_0
@@ -387,7 +387,7 @@ $$
 Which also means for any activation function $ f $, the following is also true:
 
 $$
-diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=f\prime(\vec{z})
+diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=f'(\vec{z})
 $$
 
 This is all strictly under the assumption that we are dealing with the model of a single artificial neuron with only feedforward connections (i.e. no loops and such).
