@@ -33,6 +33,9 @@ We want the activation to be as close as possible to the ground truth by getting
 What remains to be seen is how we find this $ \vec{w} $ that minimizes the loss.
 "%}
 
+### **Notation for tensors**
+Just like in every article for this blog series, unless explicitly started otherwise, matrices (and higher-order tensors, which should be rare in this blog series) are denoted with boldfaced, non-italic, uppercase letters; vectors are denoted with non-boldfaced, italic letters accented with a right arrow; and scalars are denoted with non-boldfaced, italic letters. E.g. $$\mathbf{A}$$ is a matrix, $$\vec{a}$$ is a vector, and $$a$$ or $$A$$ is a scalar.
+
 ## **Gradient Descent Algorithm**
 As we [saw in part 2](/understand-an-artificial-neuron-from-scratch.html#loss-function){:target="_blank"}, we have a loss function that is a function of the weights and biases, and we need a way to find the set of weights and biases that minimizes the loss. This is a clearcut optimization problem.
 

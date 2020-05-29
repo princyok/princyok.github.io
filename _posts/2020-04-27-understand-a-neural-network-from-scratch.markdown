@@ -51,14 +51,21 @@ Now, let’s consider a three-layer multilayer perceptron, with two units in the
 The notations being used here are as follows:
 
 {% include indent_paragraph.html content="
-The activations are written as $ a_i^{(l)} $, where $ l $ is the serial number of the layer, and $ i $ is the serial number of the unit in the $ l $<sup>th</sup> layer. E.g. for the second unit of the second layer, it is $ a_2^{(2)} $
+The activations are written as $ a_i^{(l)} $, where $ l $ is the serial number of the layer, and $ i $ is the serial number of the unit in the $ l $<sup>th</sup> layer. E.g. for the second unit of the second layer, it is $ a_2^{(2)} $.
 <br><br>
-Ideally the weight for each connection will be denoted by $ w_{i^{(l)},\ \ {\ i}^{(l-1)}}^{(l)} $, where $ l $ is the serial number of the layer, $ i^{(l)} $ is the serial number of the unit in the $ l $<sup>th</sup> layer, which is the destination of the connection, and $ i^{(l-1)} $ is the serial number of the unit in the $ (l-1) $th layer, which the origin of the connection. 
+The weight for each connection is denoted as $ w_{i,\ \ h}^{(l)} $, where $ l $ is the serial number of the layer (it always is), $ i $ is the serial number of the unit in the $ l $<sup>th</sup> layer, which is the destination of the connection, and $ h $ is the serial number of the unit in the $ (l-1) $<sup>th</sup> layer, which the origin of the connection.
 <br><br>
-But to keep things cleaner, we will instead denote $ i^{(l)} $ as simply $ i $ and $ {\ i}^{(l-1)} $ as $ h $. So, $ w_{i,\ \ h}^{(l)} $ becomes the cleaner way to denote $ w_{i^{(l)},\ \ {\ i}^{(l-1)}}^{(l)} $. As an example, $ w_{1,2}^{(3)} $ is the weight of the connection pointing to the 1<sup>st</sup> unit of the 3<sup>rd</sup> layer and originating from the 2<sup>nd</sup> unit of the preceding layer (which is the second layer).
+As an example, $ w_{1,2}^{(3)} $ is the weight of the connection pointing from the 2<sup>nd</sup> unit of the 2<sup>nd</sup> layer (the unit with activation $ a_2^{(2)} $) to the 1<sup>st</sup> unit of the 3<sup>rd</sup> layer (the unit with activation $ a_1^{(3)} $).
+<br><br>
+Note that whenever we are focused on a specific layer, let's designate it as the current layer, it will be regarded as layer $ l $, and the layer before it will be layer $ l-1 $, while the layer after it will be layer $ l+1 $.
+<br><br>
+
+Just like in every article for this blog series, unless explicitly started otherwise, matrices (and higher-order tensors, which should be rare in this blog series) are denoted with boldfaced, non-italic, uppercase letters (e.g. $ \mathbf{A}^{(l)} $ for the matrix that holds all activations in layer $ l $); vectors are denoted with non-boldfaced, italic letters accented with a right arrow; and scalars are denoted with non-boldfaced, italic letters.
+<br><br>
+Other notations will be introduced along the way.
 "%}
 
-The input layer can be treated as the 0<sup>th</sup> layer, where $$x_i$$ becomes denoted as $$a_i^{(0)}$$. This means the number of features is now the same as the number of units in the input layer. The bias node, which is usually never shown and always equal to 1, is treated as the 0<sup>th</sup> unit in each layer.
+The input layer can be treated as the 0<sup>th</sup> layer, where $$x_i$$ becomes denoted as $$a_i^{(0)}$$. This means the number of features now becomes the number of units in the input layer. The bias node, which is usually never shown and always equal to 1, is treated as the 0<sup>th</sup> unit (node) in each layer .
 
 {% include image.html url="/assets/images/neural_network/three_layer_MLP_input_layer_activations.png" description="A three-layer multilayer perceptron with the input treated as activations of the input layer." %}
 
@@ -67,7 +74,7 @@ Since we’ve thoroughly gone over how to mathematically characterize a single u
 
 {% include image.html url="/assets/images/neural_network/second_unit_second_layer_in_three_layer_MLP.png" description="Focusing on the second unit of the second layer of the three-layer multilayer perceptron, as well as the units and connections feeding into it." %}
 
-The inputs to the second unit of the second layer are the activations produced by the units of the first layer. We’ve seen exactly this in part 2, except that now our input to the unit are activations ($$\mathbf{A}^{(1)}$$) instead of the data ($$\mathbf{X}$$). 
+The inputs to the second unit of the second layer are the activations produced by the units of the first layer. We’ve seen exactly this in part 2, except that here our input to the second unit are activations ($$\mathbf{A}^{(1)}$$) instead of the data ($$\mathbf{X}$$). 
 
 Therefore, our equation of tensors is going to be:
 
@@ -217,6 +224,6 @@ But with binary classification, the ground truth will always be a 1-by-$ m $ vec
 </td>
 </table>
 
-In the analysis covered in this writeup, we will restrict our network to just binary classification or regression. The reason is to preclude the need for a softmax output layer (an output layer that’s using the softmax activation function), which is the preferred kind of output layer for dealing with multiclass classification problems. The reason we are excluding the softmax output layer is because it will add another layer of complexity to the backprop calculations, and that’s best kept for a separate article as multiclass classification is a topic in its own right.
+In the analysis covered in this writeup, we will restrict our network to just binary classification or regression. The reason is to preclude the need for a softmax output layer (an output layer that’s using the softmax activation function), which is the preferred kind of output layer for dealing with multiclass classification problems. The reason we are excluding the softmax output layer is because it will add another stratum of complexity to the backprop calculations, and that’s best kept for a separate article as multiclass classification is a topic in its own right.
 
-However, given the premise we decided to work with, we should denote the activation of the last layer as $$\vec{a}^{(L)}$$ because we know it can only be a 1-by-$$m$$ vector or a scalar (actually a 1-by-1 vector) if a batch of only 1 datapoint, but we will eschew all that and continue to denote it as $$\mathbf{A}^{(L)}$$. This is purely for the sake of aesthetics and uniformity with the notations for the hidden layers, because the hidden layers are rightly denoted as $$\mathbf{A}^{(l)}$$ as they are matrices.
+However, given the premise we decided to work with, we should've denoted the activation of the last layer as $$\vec{a}^{(L)}$$ because we know it can only be a 1-by-$$m$$ vector or a scalar (actually a 1-by-1 vector) if a batch of only 1 datapoint. But we will eschew all that and continue to denote it as $$\mathbf{A}^{(L)}$$. This is purely for the sake of aesthetics and uniformity with the notations for the hidden layers, because the hidden layers are rightly denoted as $$\mathbf{A}^{(l)}$$ as they are matrices (unless we limit each hidden layer to only one unit, which results in a vector).

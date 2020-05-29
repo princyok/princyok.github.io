@@ -22,6 +22,9 @@ In this part, I will go over the biological inspiration for the artificial neuro
 
 {% include blogseries_index_catching_ai.html %}
 
+### **Notation for tensors**
+Just like in every article for this blog series, unless explicitly started otherwise, matrices (and higher-order tensors, which should be rare in this blog series) are denoted with boldfaced, non-italic, uppercase letters; vectors are denoted with non-boldfaced, italic letters accented with a right arrow; and scalars are denoted with non-boldfaced, italic letters. E.g. $$\mathbf{A}$$ is a matrix, $$\vec{a}$$ is a vector, and $$a$$ or $$A$$ is a scalar.
+
 ## **The brain as a function**
 The computational theory of mind (CTM) says that we can interpret human cognitive processes as computational functions. That is, the human mind behaves just like a computer. 
 

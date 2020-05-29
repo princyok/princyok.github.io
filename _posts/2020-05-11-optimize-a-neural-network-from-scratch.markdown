@@ -23,13 +23,20 @@ In this part, I will go over the math of backpropagation and how to solve the gr
 
 {% include blogseries_index_catching_ai.html %}
 
+### **Notation for tensors**
+Just like in every article for this blog series, unless explicitly started otherwise, matrices (and higher-order tensors, which should be rare in this blog series) are denoted with boldfaced, non-italic, uppercase letters; vectors are denoted with non-boldfaced, italic letters accented with a right arrow; and scalars are denoted with non-boldfaced, italic letters. E.g. $$\mathbf{A}$$ is a matrix, $$\vec{a}$$ is a vector, and $$a$$ or $$A$$ is a scalar.
+
+Note that, as explained at the end of part 5, we are denoting the tensors for the last layer with boldfaced, non-italic, uppercase letters (i.e. as matrices), even though they are actually vectors (because we've restricted our scope to binary classification, which means only one unit in the last layer). This is purely for the sake of aesthetics and uniformity with the notations for the hidden layers, which are rightly matrices.
 
 ## **Backward pass**
 
 Once we have computed the activations of the output layer $$\mathbf{A}^{(L)}$$, we can then compute the loss or cost between it and the ground truth ($$y$$ or $$\vec{y}$$). Then we execute backward pass. For that, we use backpropagation to compute the cost gradients and then use gradient descent to update the parameters (weights and biases) in such a way that the cost is progressively reduced. 
 
 ## **Loss**
-How we compute loss for a binary classification task doesn’t change from how we did it part 1 because our ground truth still looks the same (it is dependent on data), and recall we are sticking to binary classification, i.e. only two classes, like 0 or 1 (e.g. high or low, cat or dog, etc.). Binary classification means that we only need one unit in the output layer (which is unit 1 of the last layer, layer $$L$$):
+
+Recall we are sticking to binary classification, i.e. only two classes, 0 or 1 (e.g. high or low, cat or dog, etc.). Binary classification means that we only need one unit in the output layer (which is unit 1 of the last layer, layer $$L$$).
+
+How we compute loss for a binary classification task doesn’t change from how we did it in part 2, because our ground truth still looks the same (it is dependent on data) and our output layer is just a single unit (neuron):
 
 $$
 Cross\ entropy\ loss:\ \ J=-\frac{1}{m}\bullet\sum_{j}^{m}{y_j\bullet\log{\left(a_j^{\left(L\right)}\right)}+\left(1-y_j\right)\bullet\ \log{(1-a_j^{\left(L\right)})}}
@@ -53,9 +60,9 @@ The newer and better approach for computing gradients is to use [automatic diffe
 
 The goal of backpropagation is to compute the cost gradients needed for gradient descent, which are $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$ and $$\frac{\partial J}{\partial\mathbf{B}^{(l)}}$$ for every layer $$l$$ in the network.
 
-The results for the cost gradients of the last layer of the network, i.e. layer with $$l = L$$, is identical in substance to the results obtained in part 3 for a single artificial neuron. The reason is because the last layer is exactly a single artificial neuron receiving activations from a preceding layer. Recall, as mentioned in part 5, we are limiting our scope to binary classification or regression, which requires only one unit (node or artificial neuron) in the output layer. In a model of just a single artificial neuron, that preceding layer is the data ($$\mathbf{X}$$), but here it will be the activations coming from layer $$L-1$$ (i.e. $$\mathbf{A}^{(L-1)}$$) .
+The results for the cost gradients of the last layer of the network, i.e. the layer where $$l = L$$, is identical in substance to the results obtained in part 3 for a single artificial neuron. The reason is because the last layer is exactly a single artificial neuron receiving activations from a preceding layer. Recall, as mentioned in part 5, we are limiting our scope to binary classification or regression, which requires only one unit (node or artificial neuron) in the output layer. In a model of just a single artificial neuron, that preceding layer is the data ($$\mathbf{X}$$), but here it will be the activations coming from layer $$L-1$$ (i.e. $$\mathbf{A}^{(L-1)}$$) .
 
-Once we have the cost gradients for the last layer, we can then specify exactly how those cost gradients get propagated backward through the layers.
+Once we have the cost gradients for the last layer, we can then specify exactly how those cost gradients get propagated backward through the layers (which is backpropagation).
 
 The same way we think of the activations being propagated forward through the layers is similar to how we think of the cost gradients as being propagated backward through the layers.
 
@@ -70,18 +77,15 @@ $$
 
 {% include indent_paragraph.html content=
 "
-Although the variables are written as matrices (uppercase boldface), in reality they are always vectors for the last layer because of the restriction to binary classification or regression. But we keep them that way to be in uniform with the equations for the hidden layers, which will be introduced later.
+Although the variables are written as matrices (uppercase boldface), in reality they are always vectors for the last layer because of the restriction to one unit (i.e. binary classification or regression). But we keep them that way for cosmetic reasons (to be in uniform with the equations for the hidden layers, which will be introduced later).
 "%}
 
-Say we continue using the logistic activation function as we did in part 3, then we get, for $$\frac{\partial J}{\partial\mathbf{A}^{(L)}}$$, a result analogous to part 3:
+Say we continue using the logistic loss function (cross entropy loss) as we did in part 3, then we get, for $$\frac{\partial J}{\partial\mathbf{A}^{(L)}}$$, a result analogous to part 3:
 
 $$
 \frac{\partial J}{\partial\mathbf{A}^{(L)}}=\frac{1}{m}\cdot\left(\frac{ \vec{y}}{\mathbf{A}^{(L)}}-\frac{1-\vec{y}}{1-\mathbf{A}^{(L)}}\right)
 
 $$
-
-Note that $$\frac{\partial J}{\partial\mathbf{A}^{(L)}}$$ will have same shape as $$\mathbf{A}^{\left(L\right)}$$.
-
 
 Note that $$\frac{\partial J}{\partial\mathbf{A}^{(L)}}$$ will have same shape as $$\mathbf{A}^{\left(L\right)}$$.
 
@@ -114,7 +118,13 @@ $$
 For the three-layer example, it will be:
 
 $$
-\frac{\partial J}{\partial\mathbf{W}^{(\mathbf{3})}}=\ \frac{\partial J}{\partial\mathbf{Z}^{(\mathbf{3})}}{\mathbf{A}^{(2)}}^T=\left(-\frac{1}{m}\bullet\left(\frac{y}{\mathbf{A}^{(3)}}-\frac{1-y}{1-\mathbf{A}^{(3)}}\right)\ \odot\left(\mathbf{A}^{(3)}\odot\left(1-\mathbf{A}^{(3)}\right)\right)\right){\mathbf{A}^{(2)}}^T
+\frac{\partial J}{\partial\mathbf{W}^{(3)}}= \frac{\partial J}{\partial\mathbf{Z}^{(3)}}{\mathbf{A}^{(2)}}^T=\left(-\frac{1}{m}\bullet\left(\frac{y}{\mathbf{A}^{(3)}}-\frac{1-y}{1-\mathbf{A}^{(3)}}\right)\ \odot\left(\mathbf{A}^{(3)}\odot\left(1-\mathbf{A}^{(3)}\right)\right)\right){\mathbf{A}^{(2)}}^T
+$$
+
+We can also write the equation for $$\frac{\partial J}{\partial\mathbf{W}^{(L)}}$$ as (see part 3 for more detials on how we got it):
+
+$$
+\frac{\partial J}{\partial\mathbf{W}^{(L)}}=\ \frac{\partial J}{\partial\mathbf{Z}^{(L)}}{\mathbf{A}^{(L-1)}}^T = \frac{\partial J}{\partial\mathbf{A}^{(L)}} \odot f'(\mathbf{Z}^{\left(l\right)}){\mathbf{A}^{(L-1)}}^T 
 $$
 
 The procedure for $$\frac{\partial J}{\partial\mathbf{B}^{(L)}}$$ is analogous to part 3 as well, and note that despite how the notation for $$\frac{\partial J}{\partial\mathbf{B}^{(L)}}$$ looks (we are using it because as we move into the hidden layers, it will become valid), it is still a scalar here in the last layer, just as it was in part 3:
@@ -123,21 +133,23 @@ $$
 \frac{\partial J}{\partial\mathbf{B}^{(L)}}=\frac{\partial J}{\partial\mathbf{Z}^{(L)}}\frac{\partial\mathbf{Z}^{(L)}}{\partial\mathbf{B}^{(L)}}=\sum_{j=1}^{m}\left(\frac{\partial J}{\partial\mathbf{Z}^{(L)}}\right)_j
 $$
 
+The lesson here is that by restricting the output layer to one unit (which in turn restricts the network to binary classification or regression tasks), we end with with results mostly identical to those of the single artificial neuron model, which was covered in part 3.
+
 ### **Gradients of the hidden layers**
 
 Now we propagate $$\frac{\partial J}{\partial\mathbf{W}^{(L)}}$$ to the layer preceding the output layer, i.e. layer $$L-1$$. In fact, the steps we use to do this will be repeated for rest of the hidden layers. So, we can generalize it to $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$ for any hidden layer $$l$$, where $$l<L$$.
 
-This is where the big differences between a single neuron (part 1) and neural networks (part 2) emerges.
+This is where the big differences between a single neuron (covered in part 1 to 4) and neural networks emerges.
 
-At first, we may hastily expand $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$ via chain rule in the following manner:
+At first, we may hastily expand $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$ via chain rule in a manner similar to what we did in part 3:
 
 $$
 \frac{\partial J}{\partial\mathbf{W}^{(l)}}=\frac{\partial J}{\partial\mathbf{Z}^{(l)}}\frac{\partial\mathbf{Z}^{(l)}}{\partial\mathbf{W}^{(l)}}
 $$
 
-But on a closer observation, we notice that the right-hand side is invalid for matrix multiplication because $$\frac{\partial J}{\partial\mathbf{Z}^{(l)}}$$ is an $$n^{(l)}$$-by-$$m$$ matrix and $$\frac{\partial\mathbf{Z}^{(l)}}{\partial\mathbf{W}^{(l)}}$$ is a tensor of order 4 that would appropriately have a shape of $$n^{(l)}$$-by-$$m$$-by-$$m$$-by-$$n^{(l)}$$.
+But on a closer observation, we notice that the RHS of the equation is invalid for matrix multiplication because $$\frac{\partial J}{\partial\mathbf{Z}^{(l)}}$$ is an $$n^{(l)}$$-by-$$m$$ matrix and $$\frac{\partial\mathbf{Z}^{(l)}}{\partial\mathbf{W}^{(l)}}$$ is a order-4 tensor that would appropriately have a shape of $$n^{(l)}$$-by-$$m$$-by-$$m$$-by-$$n^{(l)}$$.
  
-It will actually be easier to evaluate the cost gradients for each scalar weight. That is, we first evaluate $$\frac{\partial J}{\partial w_{i,h}^{(l)}}$$, which represents an arbitrary element of the $$n^{(l)}$$-by-$$n^{(l-1)}$$ matrix $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$, and then use the solution to populate the matrix $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$. To accomplish this, we need to look at each scalar weight, $$w_{i,h}^{(l)}$$, and ask how it is interacting with other quantities in the network.
+It will actually be easier to evaluate the cost gradients for each scalar weight. That is, we first evaluate $$\frac{\partial J}{\partial w_{i,h}^{(l)}}$$, which represents an arbitrary scalar element of the matrix $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$ (which has the shape of $$n^{(l)}$$-by-$$n^{(l-1)}$$), and then use the solution to populate the matrix $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$. To accomplish this, we need to look at each scalar weight, $$w_{i,h}^{(l)}$$, and ask how it is interacting with other quantities in the network.
 
 We know that each weight connects a particular node from a preceding layer to another in the current layer, and the same weight will be used on all the datapoints (examples) in the batch. Since each weight has a direct effect on only one particular node in the current layer, this also means that each weight only directly affects the batch of preactivations for the one particular node it impacts.
 
@@ -161,7 +173,7 @@ $$
 
 We are making the derivative with respect to $$w_{1,1}^{(l)}$$ expand into terms that we know are directly impacted by it. We also notice that the expansion is valid for matrix multiplication: $$\frac{\partial J}{\partial w_{1,1}^{(l)}}$$ is a scalar, $$\frac{\partial J}{\partial{\vec{z}}_1^{(l)}}$$ has a shape of 1-by-$$m$$, and $$\frac{\partial{\vec{z}}_1^{(l)}}{\partial w_{1,1}^{(l)}}$$ has a shape of $$m$$-by-1. Once again, when the procedure is logical, the math beautifully comes together.
 
-Now let’s generalize the above chain rule expansion for any arbitrary element of the cost gradient $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$:
+Now let’s generalize the above chain rule expansion for any arbitrary scalar element of the cost gradient $$\frac{\partial J}{\partial\mathbf{W}^{(l)}}$$:
 
 $$
 \frac{\partial J}{\partial w_{i,h}^{(l)}}=\frac{\partial J}{\partial{\vec{z}}_i^{(l)}}\frac{\partial{\vec{z}}_i^{(l)}}{\partial w_{i,h}^{(l)}}
@@ -173,7 +185,7 @@ $$
 \frac{\partial{\vec{z}}_i^{(l)}}{\partial w_{i,h}^{(l)}}=\left[\begin{matrix}\frac{\partial z_{i,1}^{(l)}}{\partial w_{i,h}^{(l)}}\\\frac{\partial z_{i,2}^{(l)}}{\partial w_{i,h}^{(l)}}\\\vdots\\\frac{\partial z_{i,m}^{(l)}}{\partial w_{i,h}^{(l)}}\\\end{matrix}\right]
 $$
 
-Let $$\frac{\partial z_{i,j}^{(l)}}{\partial w_{i,h}^{(l)}}$$ represent an arbitrary element of the vector $$\frac{\partial{\vec{z}}_i^{(l)}}{\partial w_{i,h}^{(l)}}$$. Then we solve $$\frac{\partial z_{i,j}^{(l)}}{\partial w_{i,h}^{(l)}}$$:
+Let $$\frac{\partial z_{i,j}^{(l)}}{\partial w_{i,h}^{(l)}}$$ represent an arbitrary scalar element of the vector $$\frac{\partial{\vec{z}}_i^{(l)}}{\partial w_{i,h}^{(l)}}$$. Then we solve $$\frac{\partial z_{i,j}^{(l)}}{\partial w_{i,h}^{(l)}}$$:
 
 $$
 \frac{\partial z_{i,j}^{(l)}}{\partial w_{i,h}^{(l)}}=\frac{\partial(\sum_{g=1}^{n^{(l-1)}}{w_{i,g}^{(l)}\cdot a_{i,j}^{(l-1)}})}{\partial w_{i,h}^{(l)}}=a_{h,j}^{(l-1)}
@@ -227,7 +239,7 @@ $$
 
 And therefore $$\frac{\partial J}{\partial{\vec{z}}_i^{(l)}}$$ is simply row $$i$$ in $$\frac{\partial J}{\partial\mathbf{Z}^{(l)}}$$.
 
-Let’s represent an arbitrary element of the vector $$\frac{\partial J}{\partial{\vec{z}}_i^{(l)}}$$ as $$\frac{\partial J}{\partial z_{i,j}^{(l)}}$$, and solve for it. The chain rule expansion is:
+Let’s represent an arbitrary scalar element of the vector $$\frac{\partial J}{\partial{\vec{z}}_i^{(l)}}$$ as $$\frac{\partial J}{\partial z_{i,j}^{(l)}}$$, and solve for it. The chain rule expansion is:
 
 $$
 \frac{\partial J}{\partial z_{i,j}^{(l)}}=\frac{\partial J}{\partial a_{i,j}^{(l)}}\frac{\partial a_{i,j}^{(l)}}{\partial z_{i,j}^{(l)}}
@@ -263,7 +275,11 @@ Notice that if we specify our arbitrary current layer $$l$$ to be layer $$L-1$$ 
 
 Therefore, following the pattern we’ve established, the next thing is to look to $$z_{p,j}^{(l+1)}$$. We want to expand $$\frac{\partial J}{\partial a_{i,j}^{(l)}}$$ in such a way that $$z_{p,j}^{(l+1)}$$ appears somewhere in there. Now, how do we logically ensure that $$z_{p,j}^{(l+1)}$$ appears in our chain rule expansion?
  
-To answer that, we need to look at how a single scalar activation value from layer $$l$$ influences the preactivations values of layer $$l+1$$? If you change $$a_{i,j}^{(l)}$$, which means we’ve specified a particular datapoint as well (i.e. we are setting $$j$$ to a fixed number), and run a forward pass on the network, then all the preactivations in the next layer, layer $$l+1$$, will be impacted for that specified datapoint but not for any other datapoint. To summarize, $$a_{i,j}^{(l)}$$ directly impacts only column $$j$$ in the matrix $$\mathbf{Z}^{(l+1)}$$. Let’s represent column $$j$$ of $$\mathbf{Z}^{(l+1)}$$ as a column vector $${\vec{z}}_j^{(l+1)}$$:
+To answer that, we need to look at how a single scalar activation value from layer $$l$$ influences the preactivations values of layer $$l+1$$. 
+
+If you change $$a_{i,j}^{(l)}$$, which means we’ve specified a particular datapoint as well (i.e. we are setting $$j$$ to a fixed number), and run a forward pass on the network, then all the preactivations in the next layer, layer $$l+1$$, will be impacted for that specified datapoint but not for any other datapoint. 
+
+To summarize, $$a_{i,j}^{(l)}$$ directly impacts only column $$j$$ in the matrix $$\mathbf{Z}^{(l+1)}$$. Let’s represent column $$j$$ of $$\mathbf{Z}^{(l+1)}$$ as a column vector $${\vec{z}}_j^{(l+1)}$$:
 
 $$
 {\vec{z}}_j^{(l+1)}=\left[\begin{matrix}z_{1,j}^{(l+1)}\\z_{1,j}^{(l+1)}\\\vdots\\z_{n^{(l+1)},j}^{(l+1)}\\\end{matrix}\right]
@@ -283,9 +299,9 @@ $$
 \frac{\partial J}{\partial{\vec{z}}_j^{(l+1)}}=\left[\begin{matrix}\frac{\partial J}{\partial z_{1,1}^{(l+1)}}\\\frac{\partial J}{\partial z_{2,1}^{(l+1)}}\\\vdots\\\frac{\partial J}{\partial z_{n^{(l)},1}^{(l+1)}}\\\end{matrix}\right]
 $$
 
-Also notice that if we were trying to solve the gradients for the last hidden layer, i.e. if $$l=\ L-1$$, which is the layer before the output layer, then $$\frac{\partial J}{\partial\mathbf{Z}^{(l+1)}}$$ will be $$\frac{\partial J}{\partial\mathbf{Z}^{(L)}}$$, which we already computed.
+Also notice that if we were trying to solve the gradients for the last hidden layer, i.e. $$l=\ L-1$$, which is the layer before the output layer, then $$\frac{\partial J}{\partial\mathbf{Z}^{(l+1)}}$$ will be $$\frac{\partial J}{\partial\mathbf{Z}^{(L)}}$$, which we already computed.
 
-In fact, by the time we are computing the gradients for any hidden layer $$l$$, we will already have $$\frac{\partial J}{\partial\mathbf{Z}^{(l+1)}}$$ (because we already computed it when computing gradients for $$l+1$$). **This is the ultimate crux of backpropagation**. This is what is meant by the “gradients flowing backward”, because you are directly using the gradients from a succeeding layer (layer $$l+1$$) to compute those of a preceding layer (layer $$l$$).
+In fact, by the time we are computing the gradients for any hidden layer $$l$$, we will already have $$\frac{\partial J}{\partial\mathbf{Z}^{(l+1)}}$$ (because we already computed it when computing gradients for $$l+1$$). **This is the ultimate crux of backpropagation**. This is what is meant by the “gradients flowing backward”, because you are directly using the gradients from a succeeding layer (layer $$l+1$$) to compute those of a preceding layer (layer $$l$$), and you continue that until you reach the input layer.
 
 So, we have established that we don’t need to further solve for $$\frac{\partial J}{\partial{\vec{z}}_j^{(l+1)}}$$ because we always already have it. Let’s tackle $$\frac{\partial{\vec{z}}_j^{(l+1)}}{\partial a_{i,j}^{(l)}}$$:
 
@@ -380,7 +396,7 @@ And we already noted that $$\frac{\partial J}{\partial{\vec{z}}_i^{(l)}}$$ is ex
 Therefore:
 
 $$
-\frac{\partial J}{\partial\mathbf{W}^{(l)}}=\frac{\partial J}{\partial\mathbf{Z}^{(l)}}\mathbf{A}^{(l-1)T}
+\frac{\partial J}{\partial\mathbf{W}^{(l)}}=\frac{\partial J}{\partial\mathbf{Z}^{(l)}}\mathbf{A}^{(l-1)T} = \frac{\partial J}{\partial\mathbf{A}^{\left(l\right)}}\odot f'(\mathbf{Z}^{\left(l\right)})\mathbf{A}^{(l-1)T}
 $$
 
 The last gradient we need to solve is $$\frac{\partial J}{\partial\mathbf{B}^{(l)}}$$. I will leave that to the reader (as the procedure is vastly simpler than what we’ve done so far). The final result is:
@@ -389,7 +405,9 @@ $$
 \frac{\partial J}{\partial\mathbf{B}^{(l)}}=\sum_{j=1}^{m}\left(\frac{\partial J}{\partial\mathbf{Z}^{(l)}}\right)_j
 $$
 
-We have now fully solved our network symbolically and have all our gradients as compact matrices. But you may have noticed that the results for the hidden layers are identical to the results for the output layer, except for $$\frac{\partial J}{\partial A^{\left(l\right)}}$$ (for $$l<L$$) and $$\frac{\partial J}{\partial A^{\left(L\right)}}$$. This is completely logical as there is no layer beyond the output layer $$L$$, instead the next set of computations after the output layer is the calculation of the cost (in a sense, the cost is the final component in any arbitrary pathway in the network). Hence $$\frac{\partial J}{\partial\mathbf{A}^{\left(L\right)}}$$ is directly the derivative of the cost function, while in the case of $$\frac{\partial J}{\partial\mathbf{A}^{(l)}}$$ for $$l<L$$, we look to the next component in our arbitrary pathway (which is the next layer of nodes, layer $$l+1$$) for answers.
+We have now fully solved our network symbolically and have all our gradients as compact matrices. But you may have noticed that the results for the hidden layers are identical to the results for the output layer, except for $$\frac{\partial J}{\partial A^{\left(l\right)}}$$ (for $$l<L$$, i.e. hidden layers) and $$\frac{\partial J}{\partial A^{\left(L\right)}}$$, which do not have identical results. 
+
+This is completely logical as there is no layer beyond the output layer $$L$$, instead the next set of computations after the output layer is the calculation of the cost (in a sense, the cost is the final component in any arbitrary pathway in the network). Hence $$\frac{\partial J}{\partial\mathbf{A}^{\left(L\right)}}$$ is directly the derivative of the cost function, while in the case of $$\frac{\partial J}{\partial\mathbf{A}^{(l)}}$$ for $$l<L$$, we look to the next component in our arbitrary pathway (which is the next layer of nodes, layer $$l+1$$) for answers.
 
 ## **Updating parameters via gradient descent**
 
