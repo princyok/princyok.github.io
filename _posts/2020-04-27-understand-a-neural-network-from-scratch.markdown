@@ -178,11 +178,11 @@ There is a reason why each of the above matrices is also presented as a column v
 And as you probably already expect, the full forward propagation equation for a feedforward neural network is:
 
 $$
-\mathbf{A}^{(l)}=f(\mathbf{Z}^{\left(l\right)})
+\mathbf{Z}^{(l)}=\mathbf{W}^{(l)}\mathbf{A}^{(l-1)}+\mathbf{B}^{(l)}
 $$
 
 $$
-\mathbf{Z}^{(l)}=\mathbf{W}^{(l)}\mathbf{A}^{(l-1)}+\mathbf{B}^{(l)}
+\mathbf{A}^{(l)}=f(\mathbf{Z}^{\left(l\right)})
 $$
 
 The way it works is we use our data (maybe after some preprocessing, like scaling the data, binning it, etc.) as the activations of the input layer $$\mathbf{A}^{(0)}$$ to compute $$\mathbf{Z}^{(1)}$$, and then use that to get $$\mathbf{A}^{(1)}$$. Then we use $$\mathbf{A}^{(1)}$$ to compute $$\mathbf{A}^{(2)}$$. Then we use $$\mathbf{A}^{(2)}$$ to compute $$\mathbf{Z}^{(3)}$$ and subsequently $$\mathbf{A}^{(3)}$$. We continue the pattern until we finally compute the activations of the output layer $$\mathbf{A}^{(L)}$$ (where $$L$$ is the serial number of the last layer).

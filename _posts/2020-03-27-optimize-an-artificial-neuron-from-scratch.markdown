@@ -345,7 +345,7 @@ The $ diagonal\ vector\ of\ \frac{\partial\vec{a}}{\partial \vec{z}} $ is the $ 
 %}
 
 
-We also observe that the $$diagonal\ vector\ of\frac{\partial\vec{a}}{\partial \vec{z}}$$ (the vector that you get if you pulled out the diagonal of the matrix $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ and put it into a row vector) is simply the derivative of activation function elementwise to the vector $$\vec{z}$$:
+We also observe that the $$diagonal\ vector\ of\frac{\partial\vec{a}}{\partial \vec{z}}$$ (the vector that you get if you pulled out the diagonal of the matrix $$\frac{\partial\vec{a}}{\partial \vec{z}}$$ and put it into a row vector) is simply the elementwise derivative of the activation function:
 
 $$
 diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=\left[\begin{matrix}a_1\cdot\left(1-a_1\ \right)&a_2\cdot\left(1-a_2\ \right)&\cdots&a_m\cdot\left(1-a_m\ \right)\\\end{matrix}\right]
@@ -393,7 +393,7 @@ $$
 diagonal\ vector\ of\frac{\partial\vec{a}}{\partial\vec{z}}=f'(\vec{z})
 $$
 
-This is all strictly under the assumption that we are dealing with the model of a single artificial neuron with only feedforward connections (i.e. no loops and such).
+**This is all strictly under the assumption that we are dealing with the model of a single artificial neuron with only feedforward connections (i.e. no loops and such)**.
 </p>
 </details>
 </td>
