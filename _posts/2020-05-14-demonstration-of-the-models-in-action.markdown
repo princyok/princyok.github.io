@@ -35,7 +35,7 @@ The US adult income dataset contains data on 48842 individuals, and includes fie
 
 The model (a neural network) learned to reach a **78% accuracy** in predicting whether an individual makes over 50k a year or not, based on just data from other fields.
 
-Full details can be found in [**this Jupyter notebook**](https://github.com/princyok/deep_learning_without_ml_libraries/tree/master/neural_network/US_Adult_Income.ipynb){:target="_blank"}.
+Full details can be found in [**this Jupyter notebook**](https://github.com/princyok/deep_learning_without_ml_libraries#demonstrations){:target="_blank"}.
 
 ### **Chest X-Ray Pneumonia Image Dataset**
 
@@ -43,7 +43,7 @@ This is a dataset containing 4273 chest x-ray images of children suffering from 
 
 The model (a standard feedforward neural network) learned to reach a **92% accuracy** in predicting whether a patient has pneumonia or not, based on their chest x-ray image. This is despite being less suited for image learning when compared to convolutional neural networks.
 
-Full details can be found in [**this Jupyter notebook**](https://github.com/princyok/deep_learning_without_ml_libraries/blob/master/neural_network/Chest_X-Ray_Pneumonia.ipynb){:target="_blank"}.
+Full details can be found at [**this GitHub repo**](https://github.com/princyok/deep_learning_without_ml_libraries#demonstrations){:target="_blank"}.
 
 ### **Cat vs Not-Cat Dataset**
 
@@ -54,7 +54,7 @@ The model (a standard feedforward neural network) learned to reach a **73% accur
 ***Will be released soon.***
 
 
-## **Demonstrations for the Single Artificial Neuron Model**
+## **Demonstrations for the Single Unit Model**
 
 These are the demonstrations done for the model that involves just a single artificial neuron.
 
@@ -64,11 +64,11 @@ The Breast cancer Wisconsin dataset is a dataset that describe the characteristi
 
 The model (a single artificial neuron) was able to reach a **92% accuracy** in distinguishing whether the tumour is malignant or benign.
 
-Full details can be found in [**this Jupyter notebook**](https://github.com/princyok/deep_learning_without_ml_libraries/tree/master/one_neuron/Breast_Cancer_Wisconsin.ipynb){:target="_blank"}.
+Full details can be found in [**this GitHub repo**](https://github.com/princyok/deep_learning_without_ml_libraries#demonstrations){:target="_blank"}.
 
 ### **Toy dataset**
 The toy dataset was originally introduce in [part 2](/understand-an-artificial-neuron-from-scratch.html#toy-dataset-for-this-blog-series){:target="_blank"} of this blog series. It's a dataset simulated using [classical mechanics](https://en.wikipedia.org/wiki/Kinetic_energy) and random uniform noise. It had two features, `velocity` and `mass`, and a categorical binary output, `energy level`.
 
 The model (a single artificial neuron) was able to reach a **89% accuracy** in distinguishing whether the motion of a ball, characterized by its velocity and mass, was high or low energy level.
 
-Full details can be found in [**this Jupyter notebook**](https://github.com/princyok/deep_learning_without_ml_libraries/tree/master/one_neuron/Toy_Dataset_vs_Artificial_Neuron.ipynb){:target="_blank"}.
+Full details can be found in [**this GitHub repo**](https://github.com/princyok/deep_learning_without_ml_libraries#demonstrations){:target="_blank"}.

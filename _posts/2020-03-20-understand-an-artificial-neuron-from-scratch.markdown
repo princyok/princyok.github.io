@@ -113,7 +113,7 @@ z=w_1\ \cdot x_1+w_2\ \cdot x_2+\ldots+w_n\ \cdot x_n+w_0=\sum_{i=0}^{n}{w_i\ \c
 $$
 
 {% include indent_paragraph.html content=
-"Where $ n $ is the number of features in our dataset, which means $ i $ tracks the features (i.e. it is the variable for the serial number of the features)."
+"Where $ n $ is the number of features in our dataset, which means $ i $ tracks the features (i.e. it is the serial number of the features)."
 %}
 
 Now check back with the diagram of an artificial neuron and see if you can make the connection between the equations and the diagram. Don't move on unless you already have this down.

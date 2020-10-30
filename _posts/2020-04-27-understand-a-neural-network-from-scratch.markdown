@@ -67,6 +67,8 @@ Other notations will be introduced along the way.
 
 The input layer can be treated as the 0<sup>th</sup> layer, where $$x_i$$ becomes denoted as $$a_i^{(0)}$$. This means the number of features now becomes the number of units in the input layer. The bias node, which is usually never shown and always equal to 1, is treated as the 0<sup>th</sup> unit (node) in each layer .
 
+Also, keep in mind that the diagrams do not reflect multiple examples (or datappoints or records). In otherwords, the diagrams are as if only one example is fed into the network per batch. Hence, $$a_2^{(2)}$$ in the diagram is actually $${\vec{a}}_2^{(2)}$$, and the latter reduces to the former for a batch size of one example.
+
 {% include image.html url="/assets/images/neural_network/three_layer_MLP_input_layer_activations.png" description="A three-layer multilayer perceptron with the input treated as activations of the input layer." %}
 
 
