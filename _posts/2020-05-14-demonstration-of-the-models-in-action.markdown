@@ -35,7 +35,7 @@ The US adult income dataset contains data on 48842 individuals, and includes fie
 
 The model (a neural network) learned to reach a **78% accuracy** in predicting whether an individual makes over 50k a year or not, based on just data from other fields.
 
-Full details can be found in [**this Jupyter notebook**](https://github.com/princyok/deep_learning_without_ml_libraries#demonstrations){:target="_blank"}.
+Full details can be found in [**this GitHub repo**](https://github.com/princyok/deep_learning_without_ml_libraries#demonstrations){:target="_blank"}.
 
 ### **Chest X-Ray Pneumonia Image Dataset**
 
